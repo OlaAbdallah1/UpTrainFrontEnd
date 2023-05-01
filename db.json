@@ -1,0 +1,228 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Ola",
+      "lastName": "Abdallah",
+      "email": "ola@gmail.com",
+      "password": "12345678",
+      "phone": "0594650943",
+      "picture": "profile.png",
+      "field": 1,
+      "skills": "1,2,3"
+    }
+  ],
+  "companies": [
+    {
+      "id": 1,
+      "name": "Auxilium Technology",
+      "email": "auxilium@gmail.com",
+      "photo": "auxilium.png",
+      "description": "Auxilium Technology is a web development company specializes in E-commerce web solutions located in Nablus, Palestine established by a group of highly skilled designers, developers, and marketing experts.",
+      "website": "https://auxiliumps.com",
+      "location": "Nablus, Albasateen",
+      "phone": "0594650943",
+      "password":"12345678"
+    },
+    {
+      "id": 2,
+      "name": "Foothill solution",
+      "email": "foothill@gmail.com",
+      "photo": "foothill.png",
+      "description": "Foothill Technology Solutions is a Software development company. We provide array of advanced development and consulting services with the highest standards, along with an in-house engineering function added as a direct expansion to our clients’ team.",
+      "website": "https://www.foothillsolutions.com/",
+      "location": "Nablus",
+      "phone": "0594650943",
+      "password":"12345678"
+    }
+  ],
+  "trainers": [
+    {
+      "first_name": "Ola",
+      "last_name": "Abdallah",
+      "email": "ola@gmail.com",
+      "password": "12345678",
+      "phone": "0594650943",
+      "photo": "profile.png",
+      "company_id": 1
+    },
+    {
+      "first_name": "Waseem",
+      "last_name": "Ghazal",
+      "email": "waseem@gmail.com",
+      "password": "12345678",
+      "phone": "0594650943",
+      "photo": "profile.png",
+      "company_id": 2
+    }
+  ],
+  "programs": [
+    {
+      "title": "FullStack",
+      "description": "Full-stack web development ",
+      "start_date": "10 Jan",
+      "end_date": "1 April",
+      "image": "auxilium.png",
+      "branch": "FullStack",
+      "company": "Auxilium Technology",
+      "details": "•Full-stack web development using PHP Laravel 9, MySQL 8, and Bootstrap 5 for the frontend. •Self-development, time management, and search skills. •Webhosting & Domains.",
+      "trainer": "Ola"
+    },
+    {
+      "title": "Reactjs",
+      "description": "Front end development program",
+      "start_date": "10 Jan",
+      "end_date": "1 April",
+      "image": "splash1.png",
+      "branch": "Frontend",
+      "company": "Foothill solution",
+      "details": "•Full-stack web development using PHP Laravel 9, MySQL 8, and Bootstrap 5 for the frontend. •Self-development, time management, and search skills. •Webhosting & Domains.",
+      "trainer": "Ola"
+    },
+    {
+      "title": "Nodejs",
+      "description": "Backend development program ",
+      "start_date": "10 Jan",
+      "end_date": "1 April",
+      "image": "splash2.png",
+      "branch": "Backend",
+      "company": "Foothill solution",
+      "details": "•Full-stack web development using PHP Laravel 9, MySQL 8, and Bootstrap 5 for the frontend. •Self-development, time management, and search skills. •Webhosting & Domains.",
+      "trainer": "Ola"
+    },
+    {
+      "title": "Reactjs",
+      "description": "Front end development program",
+      "start_date": "10 Jan",
+      "end_date": "1 April",
+      "image": "splash1.png",
+      "branch": "QA",
+      "company": "Foothill solution",
+      "details": "•Full-stack web development using PHP Laravel 9, MySQL 8, and Bootstrap 5 for the frontend. •Self-development, time management, and search skills. •Webhosting & Domains.",
+      "trainer": "Ola"
+    },
+    {
+      "title": "Reactjs",
+      "description": "Front end development program",
+      "start_date": "10 Jan",
+      "end_date": "1 April",
+      "image": "splash1.png",
+      "branch": "Frontend",
+      "company": "Foothill solution",
+      "details": "•Full-stack web development using PHP Laravel 9, MySQL 8, and Bootstrap 5 for the frontend. •Self-development, time management, and search skills. •Webhosting & Domains.",
+      "trainer": "Ola"
+    },
+    {
+      "title": "Reactjs",
+      "description": "Front end development program",
+      "start_date": "10 Jan",
+      "end_date": "1 April",
+      "image": "splash1.png",
+      "branch": "Frontend",
+      "company": "Foothill solution",
+      "details": "•Full-stack web development using PHP Laravel 9, MySQL 8, and Bootstrap 5 for the frontend. •Self-development, time management, and search skills. •Webhosting & Domains.",
+      "trainer": "Ola"
+    }
+  ],
+  "branches": [
+    {
+      "name": "Frontend"
+    },
+    {
+      "name": "Backend"
+    },
+    {
+      "name": "QA"
+    },
+    {
+      "name": "Devops"
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    },
+    {
+      "id": 2,
+      "body": "some comment2",
+      "postId": 2
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "Field1"
+    },
+    {
+      "id": 2,
+      "name": "Field2"
+    }
+  ],
+  "collages": [
+    {
+      "name": "collage1"
+    },
+    {
+      "name": "collage2"
+    }
+  ],
+  "skills": [
+    {
+      "id": 1,
+      "name": "skill1"
+    },
+    {
+      "id": 2,
+      "name": "skill2"
+    },
+    {
+      "id": 3,
+      "name": "skill3"
+    },
+    {
+      "id": 4,
+      "name": "skill4"
+    }
+  ],
+  "admins": [
+    {
+      "first_name": "Ola",
+      "last_name": "Abdallah",
+      "password": "12345678",
+      "email": "ola@gmail.com",
+      "field": "Computer Engineering",
+      "phone": "0594650943",
+      "photo": "profile.png"
+    },
+    {
+      "first_name": "Waseem",
+      "last_name": "Ghazal",
+      "password": "12345678",
+      "email": "waseem@gmail.com",
+      "field": "Elictrical Engineering",
+      "phone": "0594650943",
+      "photo": "profile.png"
+    },
+    {
+      "first_name": "Ola",
+      "last_name": "Abdallah",
+      "password": "12345678",
+      "email": "admin@gmail.com",
+      "field": "Architicture Engineering",
+      "phone": "0594650943",
+      "photo": "profile.png"
+    }
+  ]
+}
