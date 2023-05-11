@@ -10,17 +10,28 @@ import 'body.dart';
 
 class HomeScreen extends StatelessWidget {
   static String routeName = "/home";
-  //  final User user ;
-  const HomeScreen({super.key, 
-  // required this.user
-  });
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final User user1;
+  const HomeScreen(
+      {super.key, required this.user, required this.user1, required this.student});
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    // print(user);
+    // print(student);
     return Scaffold(
       appBar: buildAppBar(),
-      body: Body(),
-      bottomNavigationBar: CustomBottomNavBar(selectedMenu: MenuState.home),
+      body: Body(
+        user1: user1,
+        user: user,
+        student: student,
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedMenu: MenuState.home,
+        user: user,
+        student: student,
+      ),
     );
   }
 }

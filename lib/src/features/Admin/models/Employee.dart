@@ -1,27 +1,27 @@
-class Admin {
+class Employee {
   String email;
   String password;
   String first_name;
   String last_name;
-  String field;
+  // String field;
   String phone;
   String photo;
 
-  Admin({
+  Employee({
     required this.email,
     required this.password,
     required this.first_name,
     required this.last_name,
-    required this.field,
+    // required this.field,
     required this.phone,
     required this.photo,
   });
 
-  static Admin fromJson(json) => Admin(
+  static Employee fromJson(json) => Employee(
         first_name: json['first_name'],
         last_name: json['last_name'],
-        field: json['field'],
-        phone: json['phone'],
+        // field: json['field'],
+        phone: json['phone_number'],
         photo: json['photo'],
         email: json['email'],
         password: json['password'],
@@ -30,10 +30,10 @@ class Admin {
   Map<String, dynamic> toJson() => {
         'first_name': first_name,
         'last_name': last_name,
-        'field': field,
+        // 'field': field,
         'email': email,
         'password': password,
-        'phone': phone,
+        'phone_number': phone,
         'photo': photo,
       };
 }

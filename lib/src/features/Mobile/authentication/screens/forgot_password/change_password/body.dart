@@ -73,7 +73,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
   String email = '';
   String pass = '';
   String errorImg = "";
-  User user = User(id: 0,firstName: '',lastName: '', email: '',password: '', phone: '',field: 0, skills:"" , picture: '');
+  User user = User(firstName: '',lastName: '', email: '',password: '', phone: '',field_id: 0, skills:"" , picture: '');
 
   TextFormField buildPasswordFormField() {
     return TextFormField(

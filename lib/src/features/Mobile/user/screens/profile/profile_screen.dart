@@ -4,18 +4,25 @@ import '../../../../../../enums.dart';
 import '../../../../../constants/size_config.dart';
 import '../../../../../utils/theme/widget_themes/appbar.dart';
 import '../../../../../utils/theme/widget_themes/bottom_nav_bar.dart';
+import '../../../authentication/models/user.dart';
 import 'body.dart';
 
 class ProfileScreen extends StatelessWidget {
   static String routeName = "/profile";
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  const ProfileScreen({super.key, 
+  required this.user,
+  required this.student
+  });
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
     return Scaffold(
-       appBar: buildAppBar(),
+      appBar: buildAppBar(),
       body: Body(),
-      bottomNavigationBar: CustomBottomNavBar(selectedMenu: MenuState.profile),
+      bottomNavigationBar: CustomBottomNavBar(selectedMenu: MenuState.profile, user: user,student: student,),
     );
   }
 }

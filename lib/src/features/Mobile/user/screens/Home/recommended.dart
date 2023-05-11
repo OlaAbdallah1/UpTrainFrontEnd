@@ -114,11 +114,13 @@ class _RecommendedState extends State<Recommended> {
                                         children: [
                                           ListTile(
                                             title: Text(
-                                              "${snapshot.data![index].company} - ${snapshot.data![index].title}",
+                                              // ${snapshot.data![index].company}
+                                              " - ${snapshot.data![index].title}",
                                               // style: TextStyle(color: tPrimaryColor),
                                             ),
-                                            subtitle: Text(
-                                                "${snapshot.data![index].description}"),
+                                            subtitle: Text(""
+                                                // "${snapshot.data![index].description}"
+                                                ),
                                           )
                                         ],
                                       ),
@@ -140,22 +142,16 @@ class _RecommendedState extends State<Recommended> {
                                                   ProgramDetailsScreen(
                                                     title: snapshot
                                                         .data![index].title,
-                                                    description: snapshot
-                                                        .data![index]
-                                                        .description,
-                                                    details: snapshot
-                                                        .data![index].details,
+                                                    details: '',
                                                     image:
                                                         'assets/images/${snapshot.data![index].image}',
-                                                    company: snapshot
-                                                        .data![index].company,
+                                                    company: '',
                                                     startDate: snapshot
                                                         .data![index]
                                                         .start_date,
                                                     endDate: snapshot
                                                         .data![index].end_date,
-                                                    trainer: snapshot
-                                                        .data![index].trainer,
+                                                    trainer: '',
                                                   ))),
                                       style: OutlinedButton.styleFrom(
                                         backgroundColor: tPrimaryColor,

@@ -1,16 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/size_config.dart';
-import 'package:uptrain/src/constants/text.dart';
-import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
-import 'package:uptrain/src/utils/theme/widget_themes/button_theme.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../company/profile/company_profile_screen.dart';
 import '../../trainer/profile/trainer_profile_screen.dart';
 
 class Body extends StatelessWidget {
-
   //  final Trainer _trainer = Trainer(
   //     email: '',
   //     password: '',
@@ -22,7 +20,6 @@ class Body extends StatelessWidget {
 
   late final String title;
   late final String image;
-  late final String description;
   late final String details;
   late final String company;
   late final String startDate;
@@ -32,12 +29,12 @@ class Body extends StatelessWidget {
   Body(
       {required this.title,
       required this.image,
-      required this.description,
       required this.details,
       required this.company,
       required this.startDate,
       required this.endDate,
       required this.trainer});
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -47,9 +44,8 @@ class Body extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset(
-                image,
-                height: 200.0,
+              ClipOval(
+                child: ImageFromUrl(imageUrl: image),
               ),
               SizedBox(height: getProportionateScreenHeight(16)),
               TextButton(
@@ -59,6 +55,7 @@ class Body extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => CompanyAccount(
                                 companyName: company,
+                                
                               )));
                 },
                 child: Text(
@@ -79,13 +76,6 @@ class Body extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Ubuntu',
                     color: tPrimaryColor),
-              ),
-              SizedBox(height: getProportionateScreenHeight(8)),
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: getProportionateScreenHeight(16),
-                ),
               ),
               SizedBox(height: getProportionateScreenHeight(16)),
               const Text(
@@ -127,26 +117,27 @@ class Body extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [  TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TrainerAccount(
-                                trainer: trainer,
-                              )));
-                },
-                child: Text(
-                  trainer.toString(),
-                  style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontSize: getProportionateScreenHeight(18),
-                      fontFamily: 'Ubuntu',
-                      color: Colors.black),
-                ),
-              ),],
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TrainerAccount(
+                                    trainer: trainer,
+                                  )));
+                    },
+                    child: Text(
+                      trainer,
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: getProportionateScreenHeight(18),
+                          fontFamily: 'Ubuntu',
+                          color: Colors.black),
+                    ),
+                  ),
+                ],
               ),
-            
             ],
           ),
         ));

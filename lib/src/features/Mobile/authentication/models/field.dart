@@ -3,7 +3,7 @@ class Field {
   late int id;
   Field({required this.name, required this.id});
 
-  static Field fromJson(json) => Field(name: json['name'], id: json['id']);
+  static Field fromJson(json) => Field(name: json['fName'], id: json['id']);
 
   @override
   toString() => 'Field: $name, $id';

@@ -6,10 +6,11 @@ import 'body.dart';
 
 class CompanyAccount extends StatelessWidget {
   static String routeName = "/";
- final String companyName;
-  const CompanyAccount({super.key,required this.companyName});
+  final String companyName;
+  const CompanyAccount({super.key, required this.companyName});
   @override
   Widget build(BuildContext context) {
+    print(companyName);
     SizeConfig().init(context);
     return Scaffold(
       appBar: buildAppBar(),

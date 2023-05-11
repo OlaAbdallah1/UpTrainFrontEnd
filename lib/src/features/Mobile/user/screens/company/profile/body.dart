@@ -4,6 +4,7 @@ import 'package:uptrain/src/constants/size_config.dart';
 import 'package:uptrain/src/constants/text.dart';
 
 import 'company_details.dart';
+import 'company_programs.dart';
 
 class Body extends StatelessWidget {
   final String companyName;
@@ -19,16 +20,18 @@ class Body extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: getProportionateScreenHeight(10)),
-           Text(
-            companyName,
-            style: const TextStyle(
-                color: tPrimaryColor,
+          CompanyDetails(companyName: companyName),
+          SizedBox(height: getProportionateScreenHeight(10)),
+          Text(
+            "Trainings Provided by $companyName:",
+            style: TextStyle(
+                fontSize: getProportionateScreenHeight(22),
+                decoration: TextDecoration.underline,
                 fontFamily: 'Ubuntu',
-                fontWeight: FontWeight.bold,
-                fontSize: 30),
+                color: tPrimaryColor),
           ),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          CompanyDetails(companyName: companyName)
+          SizedBox(height: getProportionateScreenHeight(10)),
+          CompanyPrograms(companyName: companyName)
         ],
       ),
     );

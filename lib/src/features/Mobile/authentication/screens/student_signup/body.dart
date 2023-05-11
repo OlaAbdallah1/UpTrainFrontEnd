@@ -17,7 +17,6 @@ class Body extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: SizeConfig.screenHeight * 0.001), // 1%
                 Text("New Account", style: headingStyle),
                 // ProfilePic(),
                 SizedBox(height: SizeConfig.screenHeight * 0.01),

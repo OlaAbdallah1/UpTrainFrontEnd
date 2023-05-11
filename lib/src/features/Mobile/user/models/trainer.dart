@@ -5,7 +5,7 @@ class Trainer {
   String last_name;
   String phone;
   String photo;
-  int company_id;
+  String company;
 
   Trainer({
     required this.email,
@@ -14,17 +14,17 @@ class Trainer {
     required this.last_name,
     required this.phone,
     required this.photo,
-    required this.company_id,
+    required this.company,
   });
 
   static Trainer fromJson(json) => Trainer(
         first_name: json['first_name'],
         last_name: json['last_name'],
-        phone: json['phone'],
-        photo: json['photo'],
+        phone: json['tPhone_number'],
+        photo: json['tPhoto'],
         email: json['email'],
         password: json['password'],
-        company_id: json['company_id'],
+        company: json['cName'],
       );
 
   Map<String, dynamic> toJson() => {

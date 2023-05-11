@@ -54,14 +54,13 @@ class _AccountDetailsState extends State<AccountDetails> {
   }
 
   static User user = User(
-      id: 0,
       email: '',
       password: '',
       firstName: '',
       lastName: '',
       phone: '',
       picture: '',
-      field: 0,
+      field_id: 0,
       skills: '');
 
   bool circular = true;
@@ -170,7 +169,7 @@ class _AccountDetailsState extends State<AccountDetails> {
     user.email = userData['email'];
     user.password = userData['password'];
     user.phone = userData['phone'];
-    user.field = userData['field'];
+    user.field_id = userData['field'];
     user.skills = userData['skills'];
 
     circular = false;
@@ -294,77 +293,105 @@ class _AccountDetailsState extends State<AccountDetails> {
       return fieldsData;
     }
   }
-  
+
   void removeSkill(String skill) {
     print(skill);
     print('removed');
     setState(() {
       selectedSkills.remove(skill);
-
     });
   }
 
   @override
-  Widget build(BuildContext context) => (Form(
-        key: _formKey,
-        child: SafeArea(
-          child: SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(20)),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: 115,
-                          width: 115,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            fit: StackFit.expand,
-                            children: [
-                              image != null
-                                  ? CircleAvatar(
-                                      backgroundImage: new FileImage(image!),
-                                      radius: 200.0)
-                                  : const CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/images/profile.png"),
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(20)),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 115,
+                        width: 115,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          fit: StackFit.expand,
+                          children: [
+                            image != null
+                                ? CircleAvatar(
+                                    backgroundImage: FileImage(image!),
+                                    radius: 200.0)
+                                : const CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage("assets/images/profile.png"),
+                                  ),
+                            Positioned(
+                              right: -16,
+                              bottom: 0,
+                              child: SizedBox(
+                                height: 46,
+                                width: 46,
+                                child: TextButton(
+                                  child: SvgPicture.asset(
+                                      "assets/icons/Camera Icon.svg"),
+                                  onPressed: () {
+                                    myAlert();
+                                  },
+                                  style: TextButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                      side:
+                                          const BorderSide(color: Colors.white),
                                     ),
-                              Positioned(
-                                right: -16,
-                                bottom: 0,
-                                child: SizedBox(
-                                  height: 46,
-                                  width: 46,
-                                  child: TextButton(
-                                    child: SvgPicture.asset(
-                                        "assets/icons/Camera Icon.svg"),
-                                    onPressed: () {
-                                      myAlert();
-                                    },
-                                    style: TextButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                        side: const BorderSide(
-                                            color: Colors.white),
-                                      ),
-                                      backgroundColor: Colors.white,
-                                    ),
+                                    backgroundColor: Colors.white,
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         ),
-                        // ProfilePic(),
-                        const SizedBox(width: 50.0),
-                        Text(
-                          "${user.firstName} ${user.lastName}",
-                          style: const TextStyle(
-                            fontSize: 20,
+                      ),
+                      // ProfilePic(),
+                      const SizedBox(width: 50.0),
+                      Text(
+                        "${user.firstName} ${user.lastName}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'Ubuntu',
+                          fontWeight: FontWeight.bold,
+                          color: tPrimaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(34),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isEnabled = true;
+                                isButtonEnabled = true;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: tPrimaryColor,
+                            )),
+                        const Text(
+                          "Edit",
+                          style: TextStyle(
+                            fontSize: 16,
                             fontFamily: 'Ubuntu',
                             fontWeight: FontWeight.bold,
                             color: tPrimaryColor,
@@ -372,169 +399,141 @@ class _AccountDetailsState extends State<AccountDetails> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: getProportionateScreenHeight(34),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isEnabled = true;
-                                  isButtonEnabled = true;
-                                });
-                              },
-                              icon: const Icon(
-                                Icons.edit,
-                                color: tPrimaryColor,
-                              )),
-                          const Text(
-                            "Edit",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Ubuntu',
-                              fontWeight: FontWeight.bold,
-                              color: tPrimaryColor,
-                            ),
-                          ),
-                        ],
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Email',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
-                    const Divider(color: Colors.black54),
                     SizedBox(
-                      height: getProportionateScreenHeight(10),
+                      width: getProportionateScreenWidth(20),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Email',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                    Expanded(
+                      child: TextFormField(
+                        controller: emailController,
+                        enabled: isEnabled,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
                         ),
                       ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(20),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Phone',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: emailController,
-                          enabled: isEnabled,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: tPrimaryColor,
-                          ),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: phoneController,
+                        enabled: isEnabled,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
                         ),
                       ),
-                    ]),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
                     ),
-                    const Divider(color: Colors.black54),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Field',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Phone',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        // controller: ,
+                        enabled: isEnabled,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
                         ),
                       ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(20),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: phoneController,
-                          enabled: isEnabled,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: tPrimaryColor,
-                          ),
-                        ),
-                      ),
-                    ]),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
                     ),
-                    const Divider(color: Colors.black54),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Skills',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Field',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(20),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          // controller: ,
-                          enabled: isEnabled,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: tPrimaryColor,
-                          ),
-                        ),
-                      ),
-                    ]),
                     SizedBox(
-                      height: getProportionateScreenHeight(10),
+                      width: getProportionateScreenWidth(10),
                     ),
-                    const Divider(color: Colors.black54),
                     SizedBox(
-                      height: getProportionateScreenHeight(10),
+                      width: getProportionateScreenWidth(200),
+                      child: Wrap(
+                        spacing: 4,
+                        children: selectedSkills
+                            .map((skill) => Chip(
+                                  label: Text(skill),
+                                  backgroundColor: Colors.grey[300],
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  deleteIconColor: tPrimaryColor,
+                                  onDeleted: () => removeSkill(skill),
+                                ))
+                            .toList(),
+                      ),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Skills',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(10),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(200),
-                        child: Wrap(
-                          spacing: 4,
-                          children: selectedSkills
-                              .map((skill) => Chip(
-                                    label: Text(skill),
-                                    backgroundColor: Colors.grey[300],
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    deleteIconColor: tPrimaryColor,
-                                    onDeleted: () => removeSkill(skill),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                    ]),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
-                    ),
-                    if(isEnabled)
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  if (isEnabled)
                     FutureBuilder(
                         future: getSkills(),
                         builder: (context, snapshot) {
@@ -612,67 +611,67 @@ class _AccountDetailsState extends State<AccountDetails> {
                           print("No skills");
                           return const CircleAvatar();
                         }),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
-                    ),
-                    SizedBox(
-                      height: getProportionateScreenHeight(20),
-                    ),
-                    Column(
-                      children: <Widget>[
-                        SizedBox(
-                          width: 300,
-                          height: getProportionateScreenHeight(50),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(25.0),
-                                        side: const BorderSide(
-                                            color: tPrimaryColor))),
-                                backgroundColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                    if (isButtonEnabled == false)
-                                      return Colors.grey;
-                                    else
-                                      return tPrimaryColor; // Use the component's default.
-                                  },
-                                )),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                isButtonEnabled ? edit() : null;
-                              } else {
-                                print("not oky");
-                              }
-                            },
-                            child: const Text(
-                              "Save Changes",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontFamily: 'Ubuntu'),
-                            ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(20),
+                  ),
+                  Column(
+                    children: <Widget>[
+                      SizedBox(
+                        width: 300,
+                        height: getProportionateScreenHeight(50),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      side: const BorderSide(
+                                          color: tPrimaryColor))),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (isButtonEnabled == false)
+                                    return Colors.grey;
+                                  else
+                                    return tPrimaryColor; // Use the component's default.
+                                },
+                              )),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              isButtonEnabled ? edit() : null;
+                            } else {
+                              print("not oky");
+                            }
+                          },
+                          child: const Text(
+                            "Save Changes",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontFamily: 'Ubuntu'),
                           ),
                         ),
-                        SizedBox(height: SizeConfig.screenHeight * 0.015),
-                        Button2(
-                          text: "Change password",
-                          press: () {},
-                          child: const Text(''),
-                        ),
-                        SizedBox(height: SizeConfig.screenHeight * 0.04),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      SizedBox(height: SizeConfig.screenHeight * 0.015),
+                      Button2(
+                        text: "Change password",
+                        press: () {},
+                        child: const Text(''),
+                      ),
+                      SizedBox(height: SizeConfig.screenHeight * 0.04),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      ));
+      ),
+    );
+  }
 }
 
 // Image logoWidget(String imageName){

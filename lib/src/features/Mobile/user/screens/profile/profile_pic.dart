@@ -97,7 +97,15 @@ class _ProfilePicFormState extends State<ProfilePic> {
         });
   }
 
-  User user = User(id:0,firstName: '',lastName: '', email: '',password: '', phone: '',field: 0, skills:'', picture: '');
+  User user = User(
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      phone: '',
+      field_id: 0,
+      skills: '',
+      picture: '');
   // void save() async {
   //   try {
   //     if (image != null) {
@@ -134,7 +142,7 @@ class _ProfilePicFormState extends State<ProfilePic> {
         clipBehavior: Clip.none,
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage("assets/images/${user.picture}"),
+            backgroundImage: NetworkImage(user.picture),
           ),
           Positioned(
             right: -16,

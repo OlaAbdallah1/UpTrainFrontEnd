@@ -57,6 +57,10 @@ dependencies:
   fl_chart: ^0.62.0
   data_table_2: ^2.4.2
   provider: ^6.0.5
+  cached_network_image: ^3.2.3
+  flutter_widget_from_html: ^0.10.0
+  flutter_html: ^3.0.0-alpha.6
+  open_mail_app: ^0.4.5
 
 
 

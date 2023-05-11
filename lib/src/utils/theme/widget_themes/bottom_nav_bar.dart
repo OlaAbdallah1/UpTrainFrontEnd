@@ -9,11 +9,14 @@ import '../../../features/Mobile/user/screens/Home/home_page_screen.dart';
 import '/enums.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
-  late User user;
-
-   CustomBottomNavBar({
+  late User user1;
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  CustomBottomNavBar({
     Key? key,
     required this.selectedMenu,
+    required this.user,
+    required this.student
   }) : super(key: key);
 
   final MenuState selectedMenu;
@@ -53,7 +56,19 @@ class CustomBottomNavBar extends StatelessWidget {
                 onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  HomeScreen())),
+                        builder: (context) => HomeScreen(
+                              user1: User(
+                                  email: '',
+                                  password: '',
+                                  firstName: '',
+                                  lastName: '',
+                                  phone: '',
+                                  picture: '',
+                                  field_id: 0,
+                                  skills: ''),
+                              user: user,
+                              student: student,
+                            ))),
               ),
               IconButton(
                 icon: Icon(
@@ -95,7 +110,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       : inActiveIconColor,
                 ),
                 onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen())),
+                    MaterialPageRoute(builder: (context) => ProfileScreen(user: user, student: student,))),
               ),
             ],
           )),

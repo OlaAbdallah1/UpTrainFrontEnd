@@ -114,74 +114,180 @@ class _VerifyEmailFormState extends State<VerifyEmailForm> {
           ),
           SizedBox(height: getProportionateScreenHeight(30)),
           TextButton(
-            onPressed: () {},
+            onPressed: () async {
+              // final url = 'https://$ip/api/resend/${widget.user.email}';
+              var response = await http.post(
+                Uri.parse('https://$ip/api/resend/${widget.user.email}'),
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: jsonEncode({'email': email}),
+              );
+              if (response.statusCode == 201) {
+                print("Code resent successfully");
+              } else {
+                final responseBody = json.decode(response.body);
+                final errors = responseBody['errors']['message'];
+                print(responseBody);
+                print(errors);
+              }
+            },
             child: const Text("Resend Code"),
           ),
 
           DefaultButton(
-            text: "Confirm",
-            press: () async {
-              if (_formKey.currentState!.validate()) {
+              text: "Confirm",
+              press: () async {
+                if (_formKey.currentState!.validate()) {
+                  print(verifyController.text);
+                  print(widget.user.email);
+                //   submitVerificationCode(
+                //       widget.user.email, verifyController.text);
+                // }
                 var response = await http.post(
-                  Uri.parse("http://$ip:8000/api/verify"),
-                  headers: <String, String>{
-                    'Context-Type': 'application/json;charSet=UTF-8'
-                  },
-                  body: json.encode(widget.user.email),
-                );
-                if (response.statusCode == 201) {
-                  print("body : ${response.body}");
-                  print("json : ${json.decode(response.body)}");
-                } else {
-                  print("final error : jaym " + response.body);
-                }
+                    Uri.parse("http://$ip/api/verify"),
+                    headers: <String, String>{
+                      'Context-Type': 'application/json;charSet=UTF-8'
+                    },
+                    body: jsonEncode({
+                      'email': widget.user.email,
+                      'code': verifyController.text
+                    })
+                    // {'code': verifyController.text,
+                    // 'email': widget.user.email},
+                    );
+                // if (response.statusCode == 201) {
+                //   // Verification successful
+                //   final responseBody = jsonDecode(response.body);
+                //   final token = responseBody['token'];
+                //   // Do something with the token
 
-                // print(json.encode(widget.user.toJson()));
-                print(response.statusCode);
-
-                // ignore: use_build_context_synchronously
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Welcome'),
-                    content: const Text("Your account created successfully"),
-                    actions: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: tPrimaryColor,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
+                //   // ignore: use_build_context_synchronously
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Welcome'),
+                      content: const Text("Your account created successfully"),
+                      actions: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: tPrimaryColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                          ),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen())),
+                          child: Text('Login',
+                              style: TextStyle(
+                                fontSize: getProportionateScreenWidth(14),
+                                color: Colors.white,
+                              )),
                         ),
-                        onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen())),
-                        child: Text('Login',
-                            style: TextStyle(
-                              fontSize: getProportionateScreenWidth(14),
-                              color: Colors.white,
-                            )),
-                      ),
-                    ],
-                  ),
-                );
-                if (response.statusCode == 400) {
-                  setState(() {
-                    codeError = "Your code does not match the right one";
-                  });
+                      ],
+                    ),
+                  );
+                }
+                // else {
+                //   // Verification failed
+                //   final responseBody = json.decode(response.body);
+                //   final errors = responseBody['errors']['message'];
+                //   print(responseBody);
+                //   print(errors);
+                //   // Do something with the error message
+                // }
+                // //   else {
+                // //   print("final error : jaym " + response.body);
+                // // }
 
-                  return;
-                } else {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const LoginScreen()));
+                // // print(json.encode(widget.user.toJson()));
+                // // print(response.statusCode);
+
+                // // // ignore: use_build_context_synchronously
+
+                // // if (response.statusCode == 400) {
+                // //   setState(() {
+                // //     codeError = "Your code does not match the right one";
+                // //   });
+
+                // //   return;
+                // }
+                else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Error'),
+                      actions: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: tPrimaryColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                          ),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen())),
+                          child: Text('Login',
+                              style: TextStyle(
+                                fontSize: getProportionateScreenWidth(14),
+                                color: Colors.white,
+                              )),
+                        ),
+                      ],
+                    ),
+                  );
                 }
               }
-            },
-          ),
+              // },
+              ),
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           // NoAccountText(),
         ],
       ),
     );
+  }
+
+  Future<void> submitVerificationCode(String email, String code) async {
+    print(email);
+    print(code);
+    const url = 'https://$ip/api/verify';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({'email': email, 'code': code}),
+    );
+
+    print(response.statusCode);
+    
+    if (response.statusCode == 201) {
+      // Verification successful
+      print(response.statusCode);
+
+      final responseBody = jsonDecode(response.body);
+      final token = responseBody['token'];
+      // Do something with the token
+    } else if (response.statusCode == 400) {
+      print(response.statusCode);
+
+      // Verification failed
+      final responseBody = jsonDecode(response.body);
+      final errors = responseBody['errors']['message'];
+      print(errors);
+      print(responseBody);
+      // Do something with the error message
+    } else {
+      // Other error
+
+
+      print(response.statusCode);
+
+      print(jsonDecode(response.body));
+      throw Exception('Failed to submit verification code');
+        
+    }
   }
 }
