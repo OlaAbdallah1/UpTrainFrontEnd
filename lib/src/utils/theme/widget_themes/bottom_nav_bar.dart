@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/profile/profile_screen.dart';
 
 import '../../../constants/colors.dart';
@@ -9,11 +10,15 @@ import '../../../features/Mobile/user/screens/Home/home_page_screen.dart';
 import '/enums.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
-  late User user;
-
-   CustomBottomNavBar({
+  late User user1;
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final  List<Skill> skills;
+  CustomBottomNavBar({
     Key? key,
     required this.selectedMenu,
+    required this.user,
+    required this.student, required this.skills
   }) : super(key: key);
 
   final MenuState selectedMenu;
@@ -53,7 +58,11 @@ class CustomBottomNavBar extends StatelessWidget {
                 onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  HomeScreen())),
+                        builder: (context) => HomeScreen(
+                              user: user,
+                              student: student,
+                              skills: skills,
+                            ))),
               ),
               IconButton(
                 icon: Icon(
@@ -95,7 +104,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       : inActiveIconColor,
                 ),
                 onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen())),
+                    MaterialPageRoute(builder: (context) => ProfileScreen(user: user, student: student,skills: skills,))),
               ),
             ],
           )),

@@ -50,9 +50,9 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: const Text('Please choose your profile photo'),
+            title: const Text('Please choose company photo'),
             content: SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: MediaQuery.of(context).size.height / 8,
               child: Column(
                 children: [
                   ElevatedButton(
@@ -64,17 +64,18 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                       Navigator.pop(context);
                     },
                     child: Row(
-                      children: [
-                        const Icon(Icons.image),
+                      children: const [
+                        Icon(Icons.image),
                         Text(
                           ' From Gallery',
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(18),
+                            fontSize: 22,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 12,),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: tPrimaryColor,
@@ -87,10 +88,10 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                     child: Row(
                       children: [
                         const Icon(Icons.camera),
-                        Text(
+                        const Text(
                           ' From Camera',
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(18),
+                            fontSize: 22,
                           ),
                         ),
                       ],
@@ -129,8 +130,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
         });
         print("Picture $company.photo");
       }
-      var response = await http.post(
-          Uri.parse("http://$ip:8000/api/addCompany"),
+      var response = await http.post(Uri.parse("http://$ip/api/addCompany"),
           headers: <String, String>{
             'Context-Type': 'application/json;charset=UTF-8'
           },
@@ -138,11 +138,15 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
             'name': company.name,
             'email': company.email,
             'password': company.password,
-            'phone': company.phone,
+            // 'phone': company.phone,
             'photo': company.photo,
             'location': company.location,
             'website': company.website,
           });
+
+      // if (response.statusCode == 201) {
+
+      // }
       print(response.statusCode);
       // print(response.headers);
 
@@ -150,6 +154,29 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
 
       print(json.encode(company.toJson()));
       print(response.statusCode);
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Welcome'),
+          content: const Text("Company Added Successfully"),
+          actions: [
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: tPrimaryColor,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+              ),
+              onPressed: () => {},
+              child: Text('Ok',
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(14),
+                    color: tPrimaryColor,
+                  )),
+            ),
+          ],
+        ),
+      );
+      print("${company.name} added successfully");
 
       // ignore: use_build_context_synchronously
     } catch (error) {
@@ -161,12 +188,10 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
 
   Company company = Company(
       email: '',
-      phone: '',
-      password: '',
+      // password: '',
       name: '',
       description: '',
       location: '',
-      id: 0,
       website: '',
       photo: '');
 
@@ -191,10 +216,10 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
               SizedBox(
                 height: getProportionateScreenHeight(15),
               ),
-              Text(
+              const Text(
                 "New Company",
                 style: TextStyle(
-                    fontFamily: 'Ubintu',
+                    fontFamily: 'Ubuntu',
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: tPrimaryColor),
@@ -440,10 +465,10 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
         if (value.isNotEmpty) {
           setState(() {
             errorImg = 'assets/icons/white.svg';
-            phonedata = value;
+            phonedata = '';
           });
         }
-        company.phone = value;
+        // company.phone = value;
       },
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -543,7 +568,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
             namedata = '';
           });
         }
-        company.name = value;
+        company.description = value;
       },
       // onSaved: (savedValue) {
       //   company.email = savedValue!;
@@ -593,7 +618,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
             namedata = '';
           });
         }
-        company.name = value;
+        company.website = value;
       },
       // onSaved: (savedValue) {
       //   company.email = savedValue!;

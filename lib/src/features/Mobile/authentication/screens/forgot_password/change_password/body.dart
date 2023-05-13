@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 
 import '../../../../../../constants/size_config.dart';
 import '../../../../../../utils/theme/widget_themes/button_theme.dart';
-import '../../../models/skills.dart';
 import '../../../models/user.dart';
 
 class Body extends StatelessWidget {
@@ -73,7 +70,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
   String email = '';
   String pass = '';
   String errorImg = "";
-  User user = User(id: 0,firstName: '',lastName: '', email: '',password: '', phone: '',field: 0, skills:"" , picture: '');
+  User user = User(firstName: '',lastName: '', email: '', phone: '',field_id: 0 , picture: '',field: '');
 
   TextFormField buildPasswordFormField() {
     return TextFormField(

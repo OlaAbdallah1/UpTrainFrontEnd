@@ -1,29 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/colors.dart';
-import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Mobile/authentication/models/user_skills.dart';
 import 'package:uptrain/src/utils/theme/widget_themes/button2_theme.dart';
 import '../../../../../../constants/connections.dart';
 import '../../../../../../constants/size_config.dart';
-import '../../../../../../utils/theme/widget_themes/button_theme.dart';
 import 'package:uptrain/global.dart' as global;
 import 'dart:convert';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 
 import '../../../../authentication/models/field.dart';
 import '../../../../authentication/models/skills.dart';
 import '../../../../authentication/models/user.dart';
-import '../profile_pic.dart';
 
 class AccountDetails extends StatefulWidget {
   // AccountDetails({Key? key}) : super(key: key);
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO;
+
+  const AccountDetails(
+      {super.key,
+      required this.user,
+      required this.student,
+      required this.skillsO});
 
   @override
   State<AccountDetails> createState() => _AccountDetailsState();
@@ -34,11 +39,46 @@ class _AccountDetailsState extends State<AccountDetails> {
 
   bool isEnabled = false;
   bool isButtonEnabled = false;
+  late Map<String, dynamic> combined = {};
+
+  UserSkills userSkills = UserSkills(
+      user: User(
+          email: '',
+          firstName: '',
+          lastName: '',
+          phone: '',
+          field: '',
+          picture: '',
+          field_id: 0),
+      skills: []);
+  late User _user = User(
+    email: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    field: '',
+    picture: '',
+    field_id: 0,
+  );
+  void combineData() {
+    combined.addAll(widget.user);
+    combined.addAll(widget.student);
+    print(combined);
+    _user = User.fromMap(combined);
+    // print(_user);
+  }
+
+  void fetchData() {
+    userSkills = UserSkills(user: _user, skills: widget.skillsO);
+    print(userSkills.skills);
+  }
 
   @override
   void initState() {
     fields = getFields();
     skills = getSkills();
+    selectedSkills = userSkills.skills;
+    combineData();
     fetchData();
 
     super.initState();
@@ -52,17 +92,6 @@ class _AccountDetailsState extends State<AccountDetails> {
 
     super.dispose();
   }
-
-  static User user = User(
-      id: 0,
-      email: '',
-      password: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
-      picture: '',
-      field: 0,
-      skills: '');
 
   bool circular = true;
   String errorPhoneImg = "assets/icons/white.svg";
@@ -147,44 +176,13 @@ class _AccountDetailsState extends State<AccountDetails> {
         });
   }
 
-  Future fetchData() async {
-    var res = await http.get(
-      Uri.parse("http://192.168.1.48:3000/users?id=1"),
-      headers: <String, String>{
-        'Context-Type': 'application/json;charSet=UTF-8',
-        'Authorization': global.token
-      },
-    );
-
-    final decodedJson = json.decode(res.body);
-    // List<User> list = List<User>.from(decodedJson.map((i) => User.fromJson(i)));
-
-    Map<String, dynamic> userData = {};
-    for (Map<String, dynamic> data in decodedJson) {
-      userData = data;
-      print(userData);
-      break;
-    }
-    user.firstName = userData['firstName'];
-    user.lastName = userData['lastName'];
-    user.email = userData['email'];
-    user.password = userData['password'];
-    user.phone = userData['phone'];
-    user.field = userData['field'];
-    user.skills = userData['skills'];
-
-    circular = false;
-    print(userData);
-    return userData;
-  }
-
   void edit() async {
     try {
       if (image != null) {
         final cloudinary = CloudinaryPublic('dsmn9brrg', 'ul29zf8l');
 
         CloudinaryResponse resImage = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(image!.path, folder: user.firstName),
+          CloudinaryFile.fromFile(image!.path, folder: _user.firstName),
         );
 
         setState(() {
@@ -199,17 +197,16 @@ class _AccountDetailsState extends State<AccountDetails> {
         'Context-Type': 'application/json;charSet=UTF-8',
         'Authorization': global.token
       }, body: {
-        'firstName': user.firstName,
-        'lastName': user.lastName,
-        'email': user.email,
-        'password': user.password,
-        'phone': user.phone,
-        'picture': user.picture,
-        'field': fieldChooseint as int,
+        'firstName': _user.firstName,
+        'lastName': _user.lastName,
+        'email': _user.email,
+        'password': _user.password,
+        'phone': _user.phone,
+        'picture': _user.picture,
+        'field_id': fieldChooseint as int,
         'skills': selectedSkillsId.join(','),
         // 'field':
       });
-      // global. = valueChoose;
       // ignore: use_build_context_synchronously
       showDialog(
         context: context,
@@ -240,20 +237,11 @@ class _AccountDetailsState extends State<AccountDetails> {
     }
   }
 
-  TextEditingController emailController =
-      TextEditingController(text: user.email);
-  TextEditingController phoneController =
-      TextEditingController(text: user.phone);
-  // TextEditingController fieldController =
-  // TextEditingController(text: user.field as String);
-  TextEditingController editSkillsController =
-      TextEditingController(text: user.skills);
-
   String fieldChoose = '';
   int fieldChooseint = 0;
   List skillsList = [];
   List filteredSkills = [];
-  Set selectedSkills = {};
+  List<Skill> selectedSkills = [];
   Set selectedSkillsId = {};
 
   TextEditingController skillsSearchController = TextEditingController();
@@ -262,11 +250,11 @@ class _AccountDetailsState extends State<AccountDetails> {
   List<Skill> skillsData = [];
   late Future<List<Skill>> skills = getSkills();
   Future<List<Skill>> getSkills() async {
-    String url = "http://192.168.1.48:3000/skills";
+    String url = "http://$ip/api/getSkills";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       for (Map skill in responseData) {
         skillsData.add(Skill.fromJson(skill));
       }
@@ -280,7 +268,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   List<Field> fieldsData = [];
   late Future<List<Field>> fields;
   Future<List<Field>> getFields() async {
-    String url = "http://192.168.1.48:3000/fields";
+    String url = "http://$ip/api/getFields";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
     // json.decode(response.body);
@@ -294,77 +282,114 @@ class _AccountDetailsState extends State<AccountDetails> {
       return fieldsData;
     }
   }
-  
-  void removeSkill(String skill) {
+
+  void removeSkill(Skill skill) {
     print(skill);
     print('removed');
     setState(() {
-      selectedSkills.remove(skill);
-
+      userSkills.skills.remove(skill);
     });
   }
 
   @override
-  Widget build(BuildContext context) => (Form(
-        key: _formKey,
-        child: SafeArea(
-          child: SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: getProportionateScreenWidth(20)),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          height: 115,
-                          width: 115,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            fit: StackFit.expand,
-                            children: [
-                              image != null
-                                  ? CircleAvatar(
-                                      backgroundImage: new FileImage(image!),
-                                      radius: 200.0)
-                                  : const CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/images/profile.png"),
+  Widget build(BuildContext context) {
+    TextEditingController emailController =
+        TextEditingController(text: _user.email);
+    TextEditingController phoneController =
+        TextEditingController(text: _user.phone);
+    TextEditingController fieldController =
+        TextEditingController(text: _user.field);
+    // TextEditingController editSkillsController =
+    //     TextEditingController(text: widget.skills);
+
+    return Form(
+      key: _formKey,
+      child: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(20)),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 115,
+                        width: 115,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          fit: StackFit.expand,
+                          children: [
+                            image != null
+                                ? CircleAvatar(
+                                    backgroundImage: FileImage(image!),
+                                    radius: 200.0)
+                                : const CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage("assets/images/profile.png"),
+                                  ),
+                            Positioned(
+                              right: -16,
+                              bottom: 0,
+                              child: SizedBox(
+                                height: 46,
+                                width: 46,
+                                child: TextButton(
+                                  child: SvgPicture.asset(
+                                      "assets/icons/Camera Icon.svg"),
+                                  onPressed: () {
+                                    myAlert();
+                                  },
+                                  style: TextButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                      side:
+                                          const BorderSide(color: Colors.white),
                                     ),
-                              Positioned(
-                                right: -16,
-                                bottom: 0,
-                                child: SizedBox(
-                                  height: 46,
-                                  width: 46,
-                                  child: TextButton(
-                                    child: SvgPicture.asset(
-                                        "assets/icons/Camera Icon.svg"),
-                                    onPressed: () {
-                                      myAlert();
-                                    },
-                                    style: TextButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                        side: const BorderSide(
-                                            color: Colors.white),
-                                      ),
-                                      backgroundColor: Colors.white,
-                                    ),
+                                    backgroundColor: Colors.white,
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         ),
-                        // ProfilePic(),
-                        const SizedBox(width: 50.0),
-                        Text(
-                          "${user.firstName} ${user.lastName}",
-                          style: const TextStyle(
-                            fontSize: 20,
+                      ),
+                      // ProfilePic(),
+                      const SizedBox(width: 50.0),
+                      Text(
+                        "${_user.firstName} ${_user.lastName}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'Ubuntu',
+                          fontWeight: FontWeight.bold,
+                          color: tPrimaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(34),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isEnabled = true;
+                                isButtonEnabled = true;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: tPrimaryColor,
+                            )),
+                        const Text(
+                          "Edit",
+                          style: TextStyle(
+                            fontSize: 16,
                             fontFamily: 'Ubuntu',
                             fontWeight: FontWeight.bold,
                             color: tPrimaryColor,
@@ -372,175 +397,147 @@ class _AccountDetailsState extends State<AccountDetails> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: getProportionateScreenHeight(34),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  isEnabled = true;
-                                  isButtonEnabled = true;
-                                });
-                              },
-                              icon: const Icon(
-                                Icons.edit,
-                                color: tPrimaryColor,
-                              )),
-                          const Text(
-                            "Edit",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Ubuntu',
-                              fontWeight: FontWeight.bold,
-                              color: tPrimaryColor,
-                            ),
-                          ),
-                        ],
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Email',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
-                    const Divider(color: Colors.black54),
                     SizedBox(
-                      height: getProportionateScreenHeight(10),
+                      width: getProportionateScreenWidth(20),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Email',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                    Expanded(
+                      child: TextFormField(
+                        controller: emailController,
+                        enabled: isEnabled,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
                         ),
                       ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(20),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Phone',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: emailController,
-                          enabled: isEnabled,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: tPrimaryColor,
-                          ),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: phoneController,
+                        enabled: isEnabled,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
                         ),
                       ),
-                    ]),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
                     ),
-                    const Divider(color: Colors.black54),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Field',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Phone',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: fieldController,
+                        enabled: isEnabled,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
                         ),
                       ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(20),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          controller: phoneController,
-                          enabled: isEnabled,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: tPrimaryColor,
-                          ),
-                        ),
-                      ),
-                    ]),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
                     ),
-                    const Divider(color: Colors.black54),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  const Divider(color: Colors.black54),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Skills',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Field',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(20),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          // controller: ,
-                          enabled: isEnabled,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: tPrimaryColor,
-                          ),
-                        ),
-                      ),
-                    ]),
                     SizedBox(
-                      height: getProportionateScreenHeight(10),
+                      width: getProportionateScreenWidth(10),
                     ),
-                    const Divider(color: Colors.black54),
                     SizedBox(
-                      height: getProportionateScreenHeight(10),
+                      width: getProportionateScreenWidth(200),
+                      child: Wrap(
+                        spacing: 4,
+                        children: userSkills.skills
+                            .map((skill) => Chip(
+                                  label: Text(skill.name),
+                                  backgroundColor: Colors.grey[300],
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  deleteIconColor: tPrimaryColor,
+                                  onDeleted: () => removeSkill(skill),
+                                ))
+                            .toList(),
+                      ),
                     ),
-                    Row(children: [
-                      const Text(
-                        'Skills',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(10),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(200),
-                        child: Wrap(
-                          spacing: 4,
-                          children: selectedSkills
-                              .map((skill) => Chip(
-                                    label: Text(skill),
-                                    backgroundColor: Colors.grey[300],
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 20),
-                                    deleteIconColor: tPrimaryColor,
-                                    onDeleted: () => removeSkill(skill),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                    ]),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
-                    ),
-                    if(isEnabled)
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  if (isEnabled)
                     FutureBuilder(
-                        future: getSkills(),
+                        future: skills,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             skillsList = snapshot.data!;
-                            // print("skillslist");
+                            print("skillslist");
                             print(skillsList.length);
                             return Column(
                               children: [
@@ -578,27 +575,26 @@ class _AccountDetailsState extends State<AccountDetails> {
                                       itemCount: filteredSkills.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        final skill =
-                                            filteredSkills[index].name;
-                                        final skillId =
-                                            filteredSkills[index].id;
+                                        final skill = filteredSkills[index];
+                                        final skillId = skill.id;
                                         final bool isSelected =
-                                            selectedSkills.contains(skill);
+                                            userSkills.skills.contains(skill);
                                         return CheckboxListTile(
-                                          title: Text(skill),
+                                          title: Text(skill.name),
                                           value: isSelected,
                                           onChanged: (value) {
                                             setState(() {
                                               if (isSelected) {
-                                                selectedSkills.remove(skill);
+                                                userSkills.skills
+                                                    .remove(skill.name);
                                               } else {
-                                                selectedSkills.add(skill);
+                                                userSkills.skills.add(skill);
                                                 selectedSkillsId.add(skillId);
-                                                user.skills =
+                                                _user.skills =
                                                     selectedSkillsId.join(',');
                                                 print(
                                                     selectedSkillsId.join(','));
-                                                print(user.skills);
+                                                print(_user.skills);
                                               }
                                             });
                                           },
@@ -612,67 +608,67 @@ class _AccountDetailsState extends State<AccountDetails> {
                           print("No skills");
                           return const CircleAvatar();
                         }),
-                    SizedBox(
-                      height: getProportionateScreenHeight(10),
-                    ),
-                    SizedBox(
-                      height: getProportionateScreenHeight(20),
-                    ),
-                    Column(
-                      children: <Widget>[
-                        SizedBox(
-                          width: 300,
-                          height: getProportionateScreenHeight(50),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(25.0),
-                                        side: const BorderSide(
-                                            color: tPrimaryColor))),
-                                backgroundColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                    if (isButtonEnabled == false)
-                                      return Colors.grey;
-                                    else
-                                      return tPrimaryColor; // Use the component's default.
-                                  },
-                                )),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                isButtonEnabled ? edit() : null;
-                              } else {
-                                print("not oky");
-                              }
-                            },
-                            child: const Text(
-                              "Save Changes",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontFamily: 'Ubuntu'),
-                            ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(20),
+                  ),
+                  Column(
+                    children: <Widget>[
+                      SizedBox(
+                        width: 300,
+                        height: getProportionateScreenHeight(50),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      side: const BorderSide(
+                                          color: tPrimaryColor))),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (isButtonEnabled == false)
+                                    return Colors.grey;
+                                  else
+                                    return tPrimaryColor; // Use the component's default.
+                                },
+                              )),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              isButtonEnabled ? edit() : null;
+                            } else {
+                              print("not oky");
+                            }
+                          },
+                          child: const Text(
+                            "Save Changes",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontFamily: 'Ubuntu'),
                           ),
                         ),
-                        SizedBox(height: SizeConfig.screenHeight * 0.015),
-                        Button2(
-                          text: "Change password",
-                          press: () {},
-                          child: const Text(''),
-                        ),
-                        SizedBox(height: SizeConfig.screenHeight * 0.04),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      SizedBox(height: SizeConfig.screenHeight * 0.015),
+                      Button2(
+                        text: "Change password",
+                        press: () {},
+                        child: const Text(''),
+                      ),
+                      SizedBox(height: SizeConfig.screenHeight * 0.04),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      ));
+      ),
+    );
+  }
 }
 
 // Image logoWidget(String imageName){

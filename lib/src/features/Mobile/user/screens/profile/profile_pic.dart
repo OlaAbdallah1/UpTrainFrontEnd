@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/size_config.dart';
+import '../../../authentication/models/field.dart';
 import '../../../authentication/models/user.dart';
 
 class ProfilePic extends StatefulWidget {
@@ -97,7 +97,15 @@ class _ProfilePicFormState extends State<ProfilePic> {
         });
   }
 
-  User user = User(id:0,firstName: '',lastName: '', email: '',password: '', phone: '',field: 0, skills:'', picture: '');
+  // User user = User(
+  //     firstName: '',
+  //     lastName: '',
+  //     email: '',
+  //     password: '',
+  //     phone: '',
+  //     field_id: 0,
+  //     skills: '',
+  //     picture: '');
   // void save() async {
   //   try {
   //     if (image != null) {
@@ -133,8 +141,10 @@ class _ProfilePicFormState extends State<ProfilePic> {
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          CircleAvatar(
-            backgroundImage: AssetImage("assets/images/${user.picture}"),
+          ClipOval(
+            child: ImageFromUrl(
+              imageUrl: '',
+            ),
           ),
           Positioned(
             right: -16,
@@ -157,7 +167,8 @@ class _ProfilePicFormState extends State<ProfilePic> {
                 child: SvgPicture.asset("assets/icons/Camera Icon.svg"),
               ),
             ),
-          )
+          ),
+          // Text(user.firstName)
         ],
       ),
     );

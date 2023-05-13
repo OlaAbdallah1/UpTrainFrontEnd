@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uptrain/src/constants/colors.dart';
+import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../../../../../constants/size_config.dart';
 import '../../../models/company.dart';
@@ -18,30 +21,27 @@ class CompanyDetails extends StatefulWidget {
   State<CompanyDetails> createState() => _CompanyDetailsState();
 }
 
-Future<List<Company>> getCompany(String companyName) async {
-  final response = await http
-      .get(Uri.parse('http://192.168.1.48:3000/companies/?name=$companyName'));
-
-  final List<dynamic> data = json.decode(response.body);
-  print(data);
-  return data.map((json) => Company.fromJson(json)).toList();
-}
-
 class _CompanyDetailsState extends State<CompanyDetails> {
   late Company _company = Company(
-    password: '',
-    phone: '',
-      id: 0,
       name: '',
       description: '',
       email: '',
       photo: '',
       website: '',
       location: '');
+
   @override
   void initState() {
     super.initState();
     _loadCompany();
+  }
+
+  Future<List<Company>> getCompany(String companyName) async {
+    final response = await http
+        .get(Uri.parse('http://$ip/api/getProgramCompany/$companyName'));
+
+    final List<dynamic> data = json.decode(response.body);
+    return data.map((json) => Company.fromJson(json)).toList();
   }
 
   void _loadCompany() async {
@@ -66,66 +66,76 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image(
-                      image: AssetImage("assets/images/${_company.photo}"),
-                    ),
-                  ],
+                  children: [ImageFromUrl(imageUrl: _company.photo)],
                 ),
-                const Text(
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    _company.name,
+                    style: const TextStyle(
+                        color: tPrimaryColor,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
+                  ),
+                ]),
+                SizedBox(height: getProportionateScreenHeight(20)),
+                Text(
                   "About:",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: 22,
-                    fontFamily: 'Ubuntu',
-                  ),
+                      decoration: TextDecoration.underline,
+                      fontSize: getProportionateScreenHeight(22),
+                      fontFamily: 'Ubuntu',
+                      color: tPrimaryColor),
                 ),
                 SizedBox(
                   height: getProportionateScreenHeight(10),
                 ),
                 Text(
                   _company.description,
-                  style: bodyTextStyle,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenHeight(16),
+                  ),
                 ),
                 SizedBox(
                   height: getProportionateScreenHeight(20),
                 ),
-                const Text(
+                Text(
                   "Location:",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: 22,
-                    fontFamily: 'Ubuntu',
-                  ),
+                      decoration: TextDecoration.underline,
+                      fontSize: getProportionateScreenHeight(22),
+                      fontFamily: 'Ubuntu',
+                      color: tPrimaryColor),
                 ),
                 SizedBox(
                   height: getProportionateScreenHeight(10),
                 ),
                 Text(
                   _company.location,
-                  style: bodyTextStyle,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenHeight(16),
+                  ),
                 ),
                 SizedBox(
                   height: getProportionateScreenHeight(20),
                 ),
-                const Text(
+                Text(
                   "Website:",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: 22,
-                    fontFamily: 'Ubuntu',
-                  ),
+                      decoration: TextDecoration.underline,
+                      fontSize: getProportionateScreenHeight(22),
+                      fontFamily: 'Ubuntu',
+                      color: tPrimaryColor),
                 ),
-                // SizedBox(
-                //   height: getProportionateScreenHeight(10),
-                // ),
                 TextButton(
-                 onPressed: _launchURL,
-                 child: Text(_company.website,
-                  style:const TextStyle(decoration: TextDecoration.underline,
-                  color: Colors.blue,
-                  fontSize: 18),
-                 ) ,
+                  onPressed: _launchURL,
+                  child: Text(
+                    _company.website,
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Colors.blue,
+                        fontSize: getProportionateScreenHeight(16)),
+                  ),
                 ),
               ],
             ),
@@ -133,7 +143,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
   }
 
   _launchURL() async {
-     var url = _company.website;
+    var url = _company.website;
+
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);

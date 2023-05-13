@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:uptrain/src/features/Admin/screens/Fields_Admins/Admins_header.dart';
 
 import '../../../../../../responsive.dart';
 import '../../../../../constants/colors.dart';
 import '../../../../../utils/background.dart';
 import '../../main/components/side_menu.dart';
+import '../admins_header.dart';
 import 'add_admin_form.dart';
 
-class AddAdminScreen extends StatelessWidget {
-  const AddAdminScreen({super.key});
+class AddEmployeeScreen extends StatelessWidget {
+  const AddEmployeeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +33,11 @@ class AddAdminScreen extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  AdminHeader(),
+                  EmployeeHeader(),
                   SizedBox(
                     height: defaultPadding,
                   ),
-                  AddAdminForm()
+                  AddEmployeeForm()
                 ]),
           ),
         ),

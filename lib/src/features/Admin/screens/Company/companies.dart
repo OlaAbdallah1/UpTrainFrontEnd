@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../constants/colors.dart';
+import '../../../../constants/connections.dart';
 import '../../../../constants/size_config.dart';
 import '../../../Mobile/user/models/company.dart';
 
@@ -18,7 +19,7 @@ class CompanyPage extends StatefulWidget {
 class _CompanyPageState extends State<CompanyPage> {
   Future<List<Company>> fetchCompanies() async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.48:3000/companies'));
+        await http.get(Uri.parse('http://$ip/api/getCompanies'));
     final List<dynamic> data = json.decode(response.body);
     return data
         .map((json) => Company.fromJson(json))
@@ -71,7 +72,7 @@ class _CompanyPageState extends State<CompanyPage> {
                               DataCell(Text(data.name,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               DataCell(Text(data.email,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               DataCell(Text(data.location,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
-                              DataCell(Text(data.phone,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
+                              // DataCell(Text(data.phone,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               // DataCell(Text(data.description)),
                               DataCell(
                                 TextButton(

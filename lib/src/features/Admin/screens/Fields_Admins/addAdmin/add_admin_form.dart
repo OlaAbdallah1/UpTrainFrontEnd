@@ -10,7 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uptrain/global.dart';
 import 'package:uptrain/src/constants/text.dart';
-import 'package:uptrain/src/features/Admin/models/Admin.dart';
+import 'package:uptrain/src/features/Admin/models/Employee.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
@@ -20,14 +20,14 @@ import '../../../../../constants/size_config.dart';
 import '../../../../../utils/theme/widget_themes/button_theme.dart';
 import '../../../../Mobile/authentication/models/field.dart';
 
-class AddAdminForm extends StatefulWidget {
-  const AddAdminForm({super.key});
+class AddEmployeeForm extends StatefulWidget {
+  const AddEmployeeForm({super.key});
 
   @override
-  State<AddAdminForm> createState() => _AddAdminFormState();
+  State<AddEmployeeForm> createState() => _AddEmployeeFormState();
 }
 
-class _AddAdminFormState extends State<AddAdminForm> {
+class _AddEmployeeFormState extends State<AddEmployeeForm> {
   final _formKey = GlobalKey<FormState>();
 
   File? image;
@@ -47,16 +47,16 @@ class _AddAdminFormState extends State<AddAdminForm> {
     }
   }
 
-  void myAlert() {
+   void myAlert() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            title: const Text('Please choose your profile photo'),
+            title: const Text('Please choose employee photo'),
             content: SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: MediaQuery.of(context).size.height / 8,
               child: Column(
                 children: [
                   ElevatedButton(
@@ -68,22 +68,23 @@ class _AddAdminFormState extends State<AddAdminForm> {
                       Navigator.pop(context);
                     },
                     child: Row(
-                      children: [
-                        const Icon(Icons.image),
+                      children: const [
+                        Icon(Icons.image),
                         Text(
                           ' From Gallery',
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(18),
+                            fontSize: 22,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 12,),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: tPrimaryColor,
                     ),
-                    //if admin click this button. admin can upload image from camera
+                    //if Company click this button. Company can upload image from camera
                     onPressed: () {
                       pickImage(ImageSource.camera);
                       Navigator.pop(context);
@@ -91,10 +92,10 @@ class _AddAdminFormState extends State<AddAdminForm> {
                     child: Row(
                       children: [
                         const Icon(Icons.camera),
-                        Text(
+                        const Text(
                           ' From Camera',
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(18),
+                            fontSize: 22,
                           ),
                         ),
                       ],
@@ -133,7 +134,7 @@ class _AddAdminFormState extends State<AddAdminForm> {
         });
         print("Picture $admin.photo");
       }
-      var response = await http.post(Uri.parse("http://$ip:8000/api/addAdmin"),
+      var response = await http.post(Uri.parse("http://$ip/api/addEmployee"),
           headers: <String, String>{
             'Context-Type': 'application/json;charset=UTF-8'
           },
@@ -168,9 +169,8 @@ class _AddAdminFormState extends State<AddAdminForm> {
     super.initState();
   }
 
-  Admin admin = Admin(
+  Employee admin = Employee(
       email: '',
-      field: '',
       first_name: '',
       last_name: '',
       password: '',
@@ -192,7 +192,7 @@ class _AddAdminFormState extends State<AddAdminForm> {
   List<Field> fieldsData = [];
   late Future<List<Field>> fields;
   Future<List<Field>> getFields() async {
-    String url = "http://192.168.1.48:3000/fields";
+    String url = "http://$ip/api/getFields";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
     // json.decode(response.body);
@@ -220,7 +220,7 @@ class _AddAdminFormState extends State<AddAdminForm> {
                 height: getProportionateScreenHeight(15),
               ),
               Text(
-                "New Admin",
+                "New Employee",
                 style: TextStyle(
                     fontFamily: 'Ubintu',
                     fontSize: 25,
@@ -326,44 +326,44 @@ class _AddAdminFormState extends State<AddAdminForm> {
                     width: SizeConfig.screenWidth * 0.25,
                     child: buildPasswordFormField(),
                   ),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.25,
-                    child: FutureBuilder(
-                        future: fields,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            fieldsList = snapshot.data!;
-                            return FormBuilder(
-                              child: FormBuilderDropdown<dynamic>(
-                                decoration: const InputDecoration(
-                                  labelText: 'Select Field',
-                                  labelStyle: TextStyle(color: Colors.black),
-                                  prefixIcon: Icon(
-                                    Icons.work_outline,
-                                    color: tPrimaryColor,
-                                  ),
-                                ),
-                                onChanged: (dynamic newField) {
-                                  setState(() {
-                                    fieldChoose = newField.name;
-                                    admin.field = fieldChoose;
-                                    // print("field selected");
-                                    print(admin.field);
-                                  });
-                                },
-                                valueTransformer: (dynamic value) => value.id,
-                                items: fieldsList
-                                    .map((field) => DropdownMenuItem(
-                                        value: field, child: Text(field.name)))
-                                    .toList(),
-                                name: '',
-                              ),
-                            );
-                          }
-                          print("No fields");
-                          return const CircleAvatar();
-                        }),
-                  ),
+                  // SizedBox(
+                  //   width: SizeConfig.screenWidth * 0.25,
+                  //   child: FutureBuilder(
+                  //       future: fields,
+                  //       builder: (context, snapshot) {
+                  //         if (snapshot.hasData) {
+                  //           fieldsList = snapshot.data!;
+                  //           return FormBuilder(
+                  //             child: FormBuilderDropdown<dynamic>(
+                  //               decoration: const InputDecoration(
+                  //                 labelText: 'Select Field',
+                  //                 labelStyle: TextStyle(color: Colors.black),
+                  //                 prefixIcon: Icon(
+                  //                   Icons.work_outline,
+                  //                   color: tPrimaryColor,
+                  //                 ),
+                  //               ),
+                  //               onChanged: (dynamic newField) {
+                  //                 setState(() {
+                  //                   fieldChoose = newField.name;
+                  //                   admin.field = fieldChoose;
+                  //                   // print("field selected");
+                  //                   print(admin.field);
+                  //                 });
+                  //               },
+                  //               valueTransformer: (dynamic value) => value.id,
+                  //               items: fieldsList
+                  //                   .map((field) => DropdownMenuItem(
+                  //                       value: field, child: Text(field.name)))
+                  //                   .toList(),
+                  //               name: '',
+                  //             ),
+                  //           );
+                  //         }
+                  //         print("No fields");
+                  //         return const CircleAvatar();
+                  //       }),
+                  // ),
                   SizedBox(
                     height: getProportionateScreenHeight(10),
                   ),
@@ -371,12 +371,12 @@ class _AddAdminFormState extends State<AddAdminForm> {
                     height: getProportionateScreenHeight(30),
                   ),
                   DefaultButton(
-                    text: "Add Admin",
+                    text: "Add Employee",
                     press: () {
                       if (_formKey.currentState!.validate()) {
                         save();
                         print(
-                            "${admin.first_name} ${admin.last_name} added successfully as ${admin.field} Admin");
+                            "${admin.first_name} ${admin.last_name} added successfully");
                       } else {
                         print("not oky");
                       }
@@ -505,7 +505,7 @@ class _AddAdminFormState extends State<AddAdminForm> {
         if (value.isNotEmpty) {
           setState(() {
             errorImg = 'assets/icons/white.svg';
-            phonedata = value;
+            phonedata = "";
           });
         }
         admin.phone = value;

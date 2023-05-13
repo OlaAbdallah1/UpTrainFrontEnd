@@ -9,8 +9,8 @@ import '../../../../constants/colors.dart';
 import '../../../../utils/theme/widget_themes/button_theme.dart';
 import '../../controllers/MenuAppController.dart';
 
-class AdminHeader extends StatelessWidget {
-  const AdminHeader({
+class EmployeeHeader extends StatelessWidget {
+  const EmployeeHeader({
     Key? key,
   }) : super(key: key);
 
@@ -27,7 +27,7 @@ class AdminHeader extends StatelessWidget {
           Column(
             children: [
               const Text(
-                "Admins",
+                "Employees",
                 style: TextStyle(
                     fontFamily: 'Ubuntu',
                     fontSize: 40,

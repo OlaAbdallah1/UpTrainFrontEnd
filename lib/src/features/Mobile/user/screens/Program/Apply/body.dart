@@ -26,7 +26,7 @@ class Body extends StatelessWidget {
                   "Application for $title program",
                   style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: tPrimaryColor,fontFamily: 'Ubuntu'),
                 ),
-                SizedBox(height: SizeConfig.screenHeight * 0.06),
+                SizedBox(height: SizeConfig.screenHeight * 0.04),
                 const ApplicationForm(),
                 SizedBox(height: SizeConfig.screenHeight * 0.02),
               ],

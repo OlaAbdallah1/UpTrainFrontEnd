@@ -7,26 +7,26 @@ import 'package:uptrain/src/constants/connections.dart';
 import '../../../../constants/colors.dart';
 import '../../../../constants/size_config.dart';
 import '../../../Mobile/user/models/company.dart';
-import '../../models/Admin.dart';
+import '../../models/Employee.dart';
 
-class AdminPage extends StatefulWidget {
-  const AdminPage({super.key});
+class EmployeePage extends StatefulWidget {
+  const EmployeePage({super.key});
 
   @override
-  State<AdminPage> createState() => _AdminPageState();
+  State<EmployeePage> createState() => _EmployeePageState();
 }
 
-class _AdminPageState extends State<AdminPage> {
-  Future<List<Admin>> fetchAdmins() async {
-    final response = await http.get(Uri.parse('http://$ipdb/admins'));
+class _EmployeePageState extends State<EmployeePage> {
+  Future<List<Employee>> fetchAdmins() async {
+    final response = await http.get(Uri.parse('http://$ip/api/getEmployees'));
     final List<dynamic> data = json.decode(response.body);
     return data
-        .map((json) => Admin.fromJson(json))
+        .map((json) => Employee.fromJson(json))
         // .where((item) => item.branch == _selectedBranch)
         .toList();
   }
 
-  late Future<List<Admin>> _futureAdmins = fetchAdmins();
+  late Future<List<Employee>> _futureAdmins = fetchAdmins();
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _AdminPageState extends State<AdminPage> {
                     DataColumn(label: Text('Photo',style: TextStyle(fontFamily: 'Ubuntu',fontWeight: FontWeight.bold,fontSize: 18,color: tPrimaryColor),)),
                     DataColumn(label: Text('Name',style: TextStyle(fontFamily: 'Ubuntu',fontWeight: FontWeight.bold,fontSize: 18,color: tPrimaryColor))),
                     DataColumn(label: Text('Email',style: TextStyle(fontFamily: 'Ubuntu',fontWeight: FontWeight.bold,fontSize: 18,color: tPrimaryColor))),
-                    DataColumn(label: Text('Field',style: TextStyle(fontFamily: 'Ubuntu',fontWeight: FontWeight.bold,fontSize: 18,color: tPrimaryColor))),
+                    // DataColumn(label: Text('Field',style: TextStyle(fontFamily: 'Ubuntu',fontWeight: FontWeight.bold,fontSize: 18,color: tPrimaryColor))),
                     DataColumn(label: Text('Phone',style: TextStyle(fontFamily: 'Ubuntu',fontWeight: FontWeight.bold,fontSize: 18,color: tPrimaryColor))),
                     DataColumn(label: Text(' ')),
                     DataColumn(label: Text(' '))
@@ -68,7 +68,7 @@ class _AdminPageState extends State<AdminPage> {
                               DataCell(
                                   Text('${data.first_name} ${data.last_name}',style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               DataCell(Text(data.email,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
-                              DataCell(Text(data.field,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
+                              // DataCell(Text(data.field,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               DataCell(Text(data.phone,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                                DataCell(IconButton(
                                 icon: Icon(Icons.edit),color: tPrimaryColor,

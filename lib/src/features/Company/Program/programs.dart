@@ -60,8 +60,8 @@ class _ProgramPageState extends State<ProgramPage> {
                             cells: [
                               DataCell(Text(data.title,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               DataCell(Text(data.branch,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
-                              DataCell(Text(data.company,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
-                              DataCell(Text(data.description,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
+                              // DataCell(Text(data.company,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
+                              // DataCell(Text(data.description,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               // DataCell(Text(data.details)),
                               DataCell(Text(data.start_date,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),
                               DataCell(Text(data.end_date,style: const TextStyle(fontWeight: FontWeight.normal,fontSize: 16,color: Colors.black))),

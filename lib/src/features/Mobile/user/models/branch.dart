@@ -1,29 +1,28 @@
 class Branch {
-  final String title;
+  final String name;
 
   Branch({
-    required this.title,
+    required this.name,
   });
 
-   static Branch fromJson(json) => Branch(title: json['name']);
+  static Branch fromJson(json) => Branch(name: json['bName']);
 
   @override
-  toString() => 'Branch: $title';
+  toString() => 'Branch: $name';
 
-     Map<String, dynamic> toJson() => {
-       'name':title,
-      
+  Map<String, dynamic> toJson() => {
+        'name': name,
       };
 }
 
 // class Branch {
-//   final String title;
+//   final String name;
 
-//   Branch({required this.title});
+//   Branch({required this.name});
 
 //   factory Branch.fromJson(Map json) {
 //     return Branch(
-//       title: json['title'],
+//       name: json['name'],
 //     );
 //   }
 // }

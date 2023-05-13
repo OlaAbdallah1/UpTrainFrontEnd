@@ -12,7 +12,7 @@ final headingStyle = TextStyle(
   height: getProportionateScreenHeight(2),
 );
 final bodyTextStyle = TextStyle(
-  fontSize: getProportionateScreenWidth(16),
+  fontSize: getProportionateScreenWidth(20),
   fontWeight: FontWeight.normal,
   color: Colors.black,
   height: getProportionateScreenHeight(1),

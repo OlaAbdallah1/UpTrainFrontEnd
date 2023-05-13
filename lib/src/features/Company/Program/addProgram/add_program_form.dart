@@ -143,9 +143,9 @@ class _AddProgramFormState extends State<AddProgramForm> {
             'image': program.image,
             'title': program.title,
             'branch': program.branch,
-            'company': program.company,
-            'descreption': program.description,
-            'details': program.details,
+            // 'company': program.company,
+            // 'descreption': program.description,
+            // 'details': program.details,
             'start_date': _selectedDateRange?.start.toString().split(' ')[0],
             'end_date': _selectedDateRange?.end.toString().split(' ')[0],
           });
@@ -176,9 +176,8 @@ class _AddProgramFormState extends State<AddProgramForm> {
 
   Program program = Program(
       title: '',
-      description: '',
       image: '',
-      company: '',
+      company:'',
       start_date: '',
       end_date: '',
       branch: '',
@@ -186,9 +185,7 @@ class _AddProgramFormState extends State<AddProgramForm> {
       trainer: '');
 
   Company company = Company(
-      id: 0,
-      password: '',
-      phone: '',
+      // password: '',
       name: '',
       description: '',
       email: '',
@@ -196,7 +193,7 @@ class _AddProgramFormState extends State<AddProgramForm> {
       website: '',
       location: '');
 
-  Branch branch = Branch(title: '');
+  Branch branch = Branch(name: '');
   String name = '';
   String errorImg = '';
   String titledata = '';
@@ -208,7 +205,7 @@ class _AddProgramFormState extends State<AddProgramForm> {
   List<Trainer> trainersData = [];
   late Future<List<Trainer>> trainers;
   Future<List<Trainer>> getTrainers() async {
-    String url = "http://$ipdb/trainers";
+    String url = "http://$ip/getTrainers";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
     // json.decode(response.body);
@@ -230,7 +227,7 @@ class _AddProgramFormState extends State<AddProgramForm> {
   List<Company> companiesData = [];
   late Future<List<Company>> companies;
   Future<List<Company>> getCompanies() async {
-    String url = "http://$ipdb/companies";
+    String url = "http://$ip/api/getCompanies";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
     // json.decode(response.body);
@@ -252,7 +249,7 @@ class _AddProgramFormState extends State<AddProgramForm> {
   List<Branch> branchesData = [];
   late Future<List<Branch>> branches;
   Future<List<Branch>> getBranches() async {
-    String url = "http://$ipdb/branches";
+    String url = "http://$ip/api/getBranches";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
     // json.decode(response.body);
@@ -411,7 +408,6 @@ class _AddProgramFormState extends State<AddProgramForm> {
                             "From ${_selectedDateRange?.start.toString().split(' ')[0]} to ${_selectedDateRange?.end.toString().split(' ')[0]}",
                             style: TextStyle(color: Colors.black, fontSize: 16),
                           ),
-                          
                   ]),
                 ),
                 SizedBox(
@@ -435,9 +431,9 @@ class _AddProgramFormState extends State<AddProgramForm> {
                                 setState(() {
                                   trainerChoosed =
                                       '${trainer.first_name} ${trainer.last_name}';
-                                  program.trainer = trainerChoosed;
+                                  // program.trainer = trainerChoosed;
                                   // print("trainer selected");
-                                  print(program.trainer);
+                                  // print(program.trainer);
                                 });
                               },
                               valueTransformer: (dynamic value) => value.id,
@@ -475,9 +471,9 @@ class _AddProgramFormState extends State<AddProgramForm> {
                               onChanged: (dynamic company) {
                                 setState(() {
                                   companyChoosed = company.name;
-                                  program.company = companyChoosed;
+                                  // program.company = companyChoosed;
                                   // print("trainer selected");
-                                  print(program.company);
+                                  // print(program.company);
                                 });
                               },
                               valueTransformer: (dynamic value) => value.id,
@@ -620,7 +616,7 @@ class _AddProgramFormState extends State<AddProgramForm> {
             detailsdata = '';
           });
         }
-        program.details = value;
+        // program.details = value;
       },
       // onSaved: (savedValue) {
       //   program.email = savedValue!;

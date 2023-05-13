@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/features/Admin/screens/Fields_Admins/addAdmin/add_admin_screen.dart';
+import 'package:uptrain/src/features/Admin/screens/Fields_Admins/admins_header.dart';
 import '../../../../../responsive.dart';
 import '../../../../constants/size_config.dart';
 import '../../controllers/MenuAppController.dart';
 import '../main/components/side_menu.dart';
-import 'Admins_header.dart';
+import 'admins_header.dart';
 import 'admins.dart';
 
 class Body extends StatelessWidget {
@@ -39,7 +40,7 @@ class Body extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const AdminHeader(),
+                      const EmployeeHeader(),
                       const SizedBox(
                         height: defaultPadding,
                       ),
@@ -62,7 +63,7 @@ class Body extends StatelessWidget {
                               onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddAdminScreen())),
+                                      builder: (context) => AddEmployeeScreen())),
                               child: const Text(
                                 "Add Admin",
                                 style: TextStyle(
@@ -79,7 +80,7 @@ class Body extends StatelessWidget {
                       ),
                       const SizedBox(
                         width: 1100,
-                        child: AdminPage(),
+                        child: EmployeePage(),
                       ),
                     ],
                   )),

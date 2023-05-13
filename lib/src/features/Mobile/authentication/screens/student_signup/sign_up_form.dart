@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -132,7 +133,7 @@ class _SignUpFormState extends State<SignUpForm> {
         CloudinaryResponse resImage = await cloudinary.uploadFile(
           CloudinaryFile.fromFile(image!.path, folder: user.firstName),
         );
-        String basename = path.basename(image!.path);
+        // String basename = path.basename(image!.path);
 
         setState(() {
           imageUrl = resImage.secureUrl;
@@ -142,7 +143,8 @@ class _SignUpFormState extends State<SignUpForm> {
         });
       } else {
         setState(() {
-          user.picture = path.basename("assets/images/profile.png");
+          user.picture =
+              "https://res.cloudinary.com/dsmn9brrg/image/upload/v1673876307/dngdfphruvhmu7cie95a.jpg"; //set default url
           print(user.picture);
 
           // const Image(image: AssetImage("assets/images/profile.png"))
@@ -150,88 +152,73 @@ class _SignUpFormState extends State<SignUpForm> {
         });
         print("Picture $user.picture");
       }
-      var response = await http.post(Uri.parse("http://$ip:8000/api/register"),
-          headers: <String, String>{
-            'Context-Type': 'application/json;charset=UTF-8'
-          },
-          body:
-              // json.encode(user.toJson()),
-
-              {
-            'firstName': user.firstName,
-            'lastName': user.lastName,
-            'email': user.email,
-            'password': user.password,
-            'phone': user.phone,
-            'picture': user.picture,
-            'field': fieldChooseint.toString(),
-            'skills': selectedSkillsId.join(','),
-
-            // 'collage': collage,
-          }
-          // email: user.email,
-          //                 password: user.password,
-          //                 firstName: firstName,
-          //                 lastName: user.lastName,
-          //                 phone: user.phone,
-          //                 picture: user.picture,
-          //                 field: fieldChooseint,
-          //                 skills: selectedSkillsId.join(',')
-          );
+      var response = await http
+          .post(Uri.parse("http://$ip/api/register"), headers: <String, String>{
+        'Context-Type': 'application/json;charset=UTF-8'
+      }, body: {
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'email': user.email,
+        'password': user.password,
+        'phone': user.phone,
+        'picture': user.picture,
+        'field': '1',
+        'skills': selectedSkillsId.join(','),
+      });
       print(response.statusCode);
+      print(user.field_id);
       // print(response.headers);
-      if (response.statusCode == 302) {
-        html_parser.parse(response.body);
-        print("body : ");
-        print(html_parser.parse(response.body));
+      if (response.statusCode == 201) {
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Welcome'),
+            content: const Text("Your have to verify your email"),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: tPrimaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                ),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => VerifyEmailScreen(user: user))),
+                child: Text('Verify',
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(14),
+                      color: Colors.white,
+                    )),
+              ),
+            ],
+          ),
+        );
       } else {
         print("final error : jaym " + response.body);
       }
-      print(json.encode(user.toJson()));
-      print(response.statusCode);
-
-      // ignore: use_build_context_synchronously
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Welcome'),
-          content: const Text("Your have to verify your email"),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: tPrimaryColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-              ),
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => VerifyEmailScreen(user: user))),
-              child: Text('Verify',
-                  style: TextStyle(
-                    fontSize: getProportionateScreenWidth(14),
-                    color: Colors.white,
-                  )),
-            ),
-          ],
-        ),
-      );
+      if (kDebugMode) {
+        print(json.encode(user.toJson()));
+      }
+      if (kDebugMode) {
+        print(response.statusCode);
+      }
     } catch (error) {
-      print("error : ${error}");
-    } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print("error : $error");
+      }
     }
   }
 
   User user = User(
-      id: 0,
       firstName: '',
       lastName: '',
       email: '',
-      password: '',
+      field: '',
       phone: '',
-      field: 0,
-      skills: '',
+      field_id: 0,
+    
       picture: '');
   String Name = "";
   String email = "";
@@ -260,7 +247,7 @@ class _SignUpFormState extends State<SignUpForm> {
   List<Skill> skillsData = [];
   late Future<List<Skill>> skills;
   Future<List<Skill>> getSkills() async {
-    String url = "http://$ip:8000/api/getSkills";
+    String url = "http://$ip/api/getSkills";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
 
@@ -274,12 +261,20 @@ class _SignUpFormState extends State<SignUpForm> {
     }
   }
 
+  void removeSkill(String skill) {
+    print(skill);
+    print('removed');
+    setState(() {
+      selectedSkills.remove(skill);
+    });
+  }
+
   List fieldsList = [];
 
   List<Field> fieldsData = [];
   late Future<List<Field>> fields;
   Future<List<Field>> getFields() async {
-    String url = "http://$ip:8000/api/getFields";
+    String url = "http://$ip/api/getFields";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
     // json.decode(response.body);
@@ -288,6 +283,7 @@ class _SignUpFormState extends State<SignUpForm> {
       for (Map field in responseData) {
         fieldsData.add(Field.fromJson(field));
       }
+
       return fieldsData;
     } else {
       return fieldsData;
@@ -296,331 +292,351 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          SizedBox(
-            height: 115,
-            width: 115,
-            child: Stack(
-              clipBehavior: Clip.none,
-              fit: StackFit.expand,
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      // physics: const AlwaysScrollableScrollPhysics(),
+      reverse: true,
+      child: Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Container(
+          child: Form(
+            key: _formKey,
+            child: Column(
               children: [
-                image != null
-                    ? CircleAvatar(
-                        backgroundImage: FileImage(image!), radius: 200.0)
-                    : const CircleAvatar(
-                        backgroundImage:
-                            AssetImage("assets/images/profile.png"),
-                      ),
-                Positioned(
-                  right: -16,
-                  bottom: 0,
-                  child: SizedBox(
-                    height: 46,
-                    width: 46,
-                    child: TextButton(
-                      onPressed: () {
-                        myAlert();
-                      },
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          side: const BorderSide(color: Colors.white),
+                SizedBox(
+                  height: 115,
+                  width: 115,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    fit: StackFit.expand,
+                    children: [
+                      image != null
+                          ? CircleAvatar(
+                              backgroundImage: FileImage(image!), radius: 200.0)
+                          : const CircleAvatar(
+                              backgroundImage:
+                                  AssetImage("assets/images/profile.png"),
+                            ),
+                      Positioned(
+                        right: -16,
+                        bottom: 0,
+                        child: SizedBox(
+                          height: 46,
+                          width: 46,
+                          child: TextButton(
+                            onPressed: () {
+                              myAlert();
+                            },
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                side: const BorderSide(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.white,
+                            ),
+                            child: SvgPicture.asset(
+                                "assets/icons/Camera Icon.svg"),
+                          ),
                         ),
-                        backgroundColor: Colors.white,
-                      ),
-                      child: SvgPicture.asset("assets/icons/Camera Icon.svg"),
-                    ),
+                      )
+                    ],
                   ),
-                )
+                ),
+                // SizedBox(
+                //   height: getProportionateScreenHeight(10),
+                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              errorNameImg,
+                              height: getProportionateScreenWidth(14),
+                              width: getProportionateScreenWidth(14),
+                            ),
+                            SizedBox(
+                              width: getProportionateScreenWidth(5),
+                            ),
+                            Text(firstName),
+                          ],
+                        ),
+                        SizedBox(
+                          width: SizeConfig.screenWidth * 0.40,
+                          child: buildFirstNameFormField(),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              errorNameImg,
+                              height: getProportionateScreenWidth(14),
+                              width: getProportionateScreenWidth(14),
+                            ),
+                            SizedBox(
+                              width: getProportionateScreenWidth(10),
+                            ),
+                            Text(lastName),
+                          ],
+                        ),
+                        SizedBox(
+                          width: SizeConfig.screenWidth * 0.40,
+                          child: buildLastNameFormField(),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      errorImg,
+                      height: getProportionateScreenWidth(14),
+                      width: getProportionateScreenWidth(14),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(10),
+                    ),
+                    Text(data),
+                  ],
+                ),
+                buildEmailFormField(),
+
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      errorPhoneImg,
+                      height: getProportionateScreenWidth(14),
+                      width: getProportionateScreenWidth(14),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(10),
+                    ),
+                    Text(phone)
+                  ],
+                ),
+                buildPhoneFormField(),
+
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      errorPassImg,
+                      height: getProportionateScreenWidth(14),
+                      width: getProportionateScreenWidth(14),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(10),
+                    ),
+                    Text(pass),
+                  ],
+                ),
+                buildPasswordFormField(),
+
+                FutureBuilder(
+                    future: getFields(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        fieldsList = snapshot.data!;
+
+                        return FormBuilder(
+                          child: FormBuilderDropdown<dynamic>(
+                            decoration: const InputDecoration(
+                              labelText: 'Select Your Field',
+                              labelStyle: TextStyle(color: Colors.black),
+                              prefixIcon: Icon(
+                                Icons.work_outline,
+                                color: tPrimaryColor,
+                              ),
+                            ),
+                            onChanged: (dynamic newFieldId) {
+                              setState(() {
+                                fieldChooseint = newFieldId.id;
+                                user.field_id = fieldChooseint;
+                                print(newFieldId.fName);
+                                print(user.field_id);
+                              });
+                            },
+                            valueTransformer: (dynamic value) => value.id,
+                            items: fieldsList
+                                .map((field) => DropdownMenuItem(
+                                    value: field, child: Text(field.name)))
+                                .toList(),
+                            name: '',
+                          ),
+                        );
+                      }
+                      print("No fields");
+                      return const CircleAvatar();
+                    }),
+                SizedBox(
+                  height: getProportionateScreenHeight(10),
+                ),
+
+                FutureBuilder(
+                    future: skills,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        skillsList = snapshot.data!;
+                        // print("skillslist");
+                        // print(skillsData);
+                        return Column(
+                          children: [
+                            TextField(
+                              controller: skillsSearchController,
+                              decoration: const InputDecoration(
+                                hintText: 'Search for skills',
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: tPrimaryColor,
+                                ),
+                                hintStyle: TextStyle(color: Colors.black),
+                              ),
+                              style: const TextStyle(color: Colors.black),
+                              onChanged: (value) {
+                                setState(() {
+                                  filteredSkills = skillsList
+                                      .where((skill) => skill.name
+                                          .toLowerCase()
+                                          .contains(value.toLowerCase()))
+                                      .toList();
+                                });
+                              },
+                            ),
+                            if (skillsSearchController.text
+                                .isNotEmpty) // Only show when search text exists
+                              const SizedBox(height: 16.0),
+                            if (skillsSearchController.text
+                                .isNotEmpty) // Only show when search text exists
+                              SizedBox(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: filteredSkills.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final sKill = filteredSkills[index];
+                                    final skill = filteredSkills[index].name;
+                                    final skillId = filteredSkills[index].id;
+                                    final bool isSelected =
+                                        selectedSkills.contains(skill);
+                                    return CheckboxListTile(
+                                      title: Text(skill),
+                                      value: isSelected,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          if (isSelected) {
+                                            selectedSkills.remove(skill);
+                                          } else {
+                                            // user.sKills = sKill;
+                                            selectedSkills.add(skill);
+                                            selectedSkillsId.add(skillId);
+                                            user.skills =
+                                                selectedSkillsId.join(',');
+                                            print(selectedSkillsId.join(','));
+                                            print(user.skills);
+                                          }
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                              )
+                          ],
+                        );
+                      }
+                      print("No skills");
+                      return const CircleAvatar();
+                    }),
+
+                SizedBox(
+                  height: getProportionateScreenHeight(10),
+                ),
+                SizedBox(
+                  width: getProportionateScreenWidth(200),
+                  child: Wrap(
+                    // spacing: 6,
+                    children: selectedSkills
+                        .map((skill) => Chip(
+                              label: Text(
+                                skill,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              backgroundColor: Colors.grey[300],
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              deleteIconColor: tPrimaryColor,
+                              onDeleted: () => removeSkill(skill),
+                            ))
+                        .toList(),
+                  ),
+                ),
+
+                SizedBox(
+                  height: getProportionateScreenHeight(30),
+                ),
+                DefaultButton(
+                  text: "Sign Up".toUpperCase(),
+                  press: () {
+                    if (_formKey.currentState!.validate()) {
+                      save();
+                      print("Registered successfully");
+                    } else {
+                      print("not oky");
+                    }
+                  },
+                ),
               ],
             ),
           ),
-          // SizedBox(
-          //   height: getProportionateScreenHeight(10),
-          // ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        errorImg,
-                        height: getProportionateScreenWidth(14),
-                        width: getProportionateScreenWidth(14),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(5),
-                      ),
-                      Text(firstName),
-                    ],
-                  ),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.40,
-                    child: buildFirstNameFormField(),
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        errorImg,
-                        height: getProportionateScreenWidth(14),
-                        width: getProportionateScreenWidth(14),
-                      ),
-                      SizedBox(
-                        width: getProportionateScreenWidth(10),
-                      ),
-                      Text(lastName),
-                    ],
-                  ),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.40,
-                    child: buildLastNameFormField(),
-                  ),
-                ],
-              )
-            ],
-          ),
+        ),
+      ),
+    );
+  }
 
-          Row(
-            children: [
-              SvgPicture.asset(
-                errorImg,
-                height: getProportionateScreenWidth(14),
-                width: getProportionateScreenWidth(14),
-              ),
-              SizedBox(
-                width: getProportionateScreenWidth(10),
-              ),
-              Text(data),
-            ],
-          ),
-          buildEmailFormField(),
-
-          Row(
-            children: [
-              SvgPicture.asset(
-                errorPhoneImg,
-                height: getProportionateScreenWidth(14),
-                width: getProportionateScreenWidth(14),
-              ),
-              SizedBox(
-                width: getProportionateScreenWidth(10),
-              ),
-            ],
-          ),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                setState(() {
-                  errorPhoneImg = 'assets/icons/white.svg';
-                  phone = value;
-                });
-              }
-              user.phone = value;
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                setState(() {
-                  errorPhoneImg = "assets/icons/Error.svg";
-                  phone = 'Please enter your phone';
-                });
-                return "";
-              } else {
-                setState(() {
-                  errorPhoneImg = 'assets/icons/white.svg';
-                  phone = phone;
-                });
-              }
-              return null;
-            },
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
-                Icons.phone,
-                color: tPrimaryColor,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-              ),
-              labelText: 'Phone',
-              labelStyle: TextStyle(color: Colors.black),
-            ),
-          ),
-          // SizedBox(
-          //   height: getProportionateScreenHeight(10),
-          // ),
-          Row(
-            children: [
-              SvgPicture.asset(
-                errorPassImg,
-                height: getProportionateScreenWidth(14),
-                width: getProportionateScreenWidth(14),
-              ),
-              SizedBox(
-                width: getProportionateScreenWidth(10),
-              ),
-              Text(pass),
-            ],
-          ),
-          buildPasswordFormField(),
-
-          FutureBuilder(
-              future: getFields(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  fieldsList = snapshot.data!;
-                  // print("fieldsList");
-                  // print(fieldsData);
-                  return FormBuilder(
-                    child: FormBuilderDropdown<dynamic>(
-                      decoration: const InputDecoration(
-                        labelText: 'Select Your Field',
-                        labelStyle: TextStyle(color: Colors.black),
-                        prefixIcon: Icon(
-                          Icons.work_outline,
-                          color: tPrimaryColor,
-                        ),
-                      ),
-                      onChanged: (dynamic newFieldId) {
-                        setState(() {
-                          fieldChooseint = newFieldId.id;
-                          user.field = fieldChooseint;
-                          // print("field selected");
-                          print(user.field);
-                        });
-                      },
-                      valueTransformer: (dynamic value) => value.id,
-                      items: fieldsList
-                          .map((field) => DropdownMenuItem(
-                              value: field, child: Text(field.name)))
-                          .toList(),
-                      name: '',
-                    ),
-                  );
-                }
-                print("No fields");
-                return const CircleAvatar();
-              }),
-          SizedBox(
-            height: getProportionateScreenHeight(10),
-          ),
-
-          FutureBuilder(
-              future: skills,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  skillsList = snapshot.data!;
-                  // print("skillslist");
-                  // print(skillsData);
-                  return Column(
-                    children: [
-                      TextField(
-                        controller: skillsSearchController,
-                        decoration: const InputDecoration(
-                          hintText: 'Search for skills',
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: tPrimaryColor,
-                          ),
-                          hintStyle: TextStyle(color: Colors.black),
-                        ),
-                        style: const TextStyle(color: Colors.black),
-                        onChanged: (value) {
-                          setState(() {
-                            filteredSkills = skillsList
-                                .where((skill) => skill.name
-                                    .toLowerCase()
-                                    .contains(value.toLowerCase()))
-                                .toList();
-                          });
-                        },
-                      ),
-                      if (skillsSearchController
-                          .text.isNotEmpty) // Only show when search text exists
-                        const SizedBox(height: 16.0),
-                      if (skillsSearchController
-                          .text.isNotEmpty) // Only show when search text exists
-                        SizedBox(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: filteredSkills.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final skill = filteredSkills[index].name;
-                              final skillId = filteredSkills[index].id;
-                              final bool isSelected =
-                                  selectedSkills.contains(skill);
-                              return CheckboxListTile(
-                                title: Text(skill),
-                                value: isSelected,
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (isSelected) {
-                                      selectedSkills.remove(skill);
-                                    } else {
-                                      selectedSkills.add(skill);
-                                      selectedSkillsId.add(skillId);
-                                      user.skills = selectedSkillsId.join(',');
-                                      print(selectedSkillsId.join(','));
-                                      print(user.skills);
-                                    }
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                        )
-                    ],
-                  );
-                }
-                print("No skills");
-                return const CircleAvatar();
-              }),
-          SizedBox(
-            height: getProportionateScreenHeight(10),
-          ),
-
-          Column(
-            children: [
-              TextFormField(
-                controller:
-                    TextEditingController(text: selectedSkills.join(', ')),
-                decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.settings,
-                      color: tPrimaryColor,
-                    ),
-                    hintText: 'Your Skills',
-                    hintStyle: TextStyle(color: Colors.black)),
-                enabled: false,
-                // onChanged: (dynamic value) => user.skills = value.split(', ').toSet(),
-                // onSaved: (dynamic newValue) => user.skills = newValue,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: getProportionateScreenHeight(30),
-          ),
-          DefaultButton(
-            text: "Sign Up".toUpperCase(),
-            press: () {
-              if (_formKey.currentState!.validate()) {
-                save();
-                print("Registered successfully");
-              } else {
-                print("not oky");
-              }
-            },
-          ),
-        ],
+  TextFormField buildPhoneFormField() {
+    return TextFormField(
+      keyboardType: TextInputType.number,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorPhoneImg = 'assets/icons/white.svg';
+            phone = '';
+          });
+        }
+        user.phone = value;
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          setState(() {
+            errorPhoneImg = "assets/icons/Error.svg";
+            phone = 'Please enter your phone';
+          });
+          return "";
+        } else {
+          setState(() {
+            errorPhoneImg = 'assets/icons/white.svg';
+            phone = phone;
+          });
+        }
+        return null;
+      },
+      decoration: const InputDecoration(
+        prefixIcon: Icon(
+          Icons.phone,
+          color: tPrimaryColor,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        labelText: 'Phone',
+        labelStyle: TextStyle(color: Colors.black),
       ),
     );
   }

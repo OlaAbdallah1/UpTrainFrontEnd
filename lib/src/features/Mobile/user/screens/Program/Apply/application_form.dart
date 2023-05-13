@@ -1,12 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:email_validator/email_validator.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
+import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
+import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
 
 import '../../../../../../constants/connections.dart';
 import '../../../../../../constants/size_config.dart';
@@ -60,94 +57,365 @@ class _ApplicationFormState extends State<ApplicationForm> {
     }
   }
 
+  String email = "";
+  String password = "";
+  String data = '';
+  String errorPassImg = "assets/icons/white.svg";
+  String errorPhoneImg = "assets/icons/white.svg";
+  String errorImg = "assets/icons/white.svg";
+  String errorNameImg = "assets/icons/white.svg";
+  String pass = '';
+  String firstName = '';
+  String lastName = '';
+  String phone = '';
+
+  User user = User(
+      email: '',
+      field: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      picture: '',
+      field_id: 0,
+      // skills: '',
+      
+      // sKills: Skill(name: '', id: 0)
+      );
+
+  TextEditingController emailController =
+      TextEditingController(text: "user.email");
+  TextEditingController firstNameController =
+      TextEditingController(text: "user.firstName");
+  TextEditingController lastNameController =
+      TextEditingController(text: "user.lastName");
+  TextEditingController phoneController =
+      TextEditingController(text: "user.phone");
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-           Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Your Resume",style: TextStyle(fontSize: 18,color: tPrimaryColor,fontFamily: 'Ubuntu'),),
-              SizedBox(height: getProportionateScreenHeight(8),),
-          Row(
-            children: [
-
-              SizedBox(
-                width: getProportionateScreenWidth(200),
-                height: getProportionateScreenHeight(45),
-                child: buildAttachCVFormField(),
-              ),
-              SizedBox(
-                width: getProportionateScreenWidth(12),
-              ),
-              OutlinedButton(
-                onPressed: () {
-                  attachFile(context);
-                },
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(
-                    width: 1.5,
-                    color: tPrimaryColor,
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text(
-                  'Attach Resume',
-                  style: TextStyle(color: tPrimaryColor,),
-                ),
-              ),
-            ],
-          ),
-            ],),
-          // FormError(errors: errors),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("More Details..",style: TextStyle(fontSize: 18,color: tPrimaryColor,fontFamily: 'Ubuntu'),),
-              SizedBox(height: getProportionateScreenHeight(8),),
-              Row(children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(320),
-                  child: const TextField(
-                    textAlignVertical: TextAlignVertical.top,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.details_outlined,
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        // physics: const AlwaysScrollableScrollPhysics(),
+        reverse: true,
+        child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Container(
+                child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Row(children: [
+                    const Text(
+                      'Name',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.normal,
                         color: tPrimaryColor,
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: firstNameController,
+                        enabled: false,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
+                        ),
                       ),
                     ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: lastNameController,
+                        enabled: false,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
+                        ),
+                      ),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
                   ),
-                ),
-              ]),
-            ],
-          ),
+                  Row(children: [
+                    const Text(
+                      'Email',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.normal,
+                        color: tPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: emailController,
+                        enabled: false,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
+                        ),
+                      ),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Phone',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.normal,
+                        color: tPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: phoneController,
+                        enabled: false,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
+                        ),
+                      ),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Skills',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.normal,
+                        color: tPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: emailController,
+                        enabled: false,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: tPrimaryColor,
+                        ),
+                      ),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
 
-          SizedBox(height: getProportionateScreenHeight(20)),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Your Resume",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: tPrimaryColor,
+                            fontFamily: 'Ubuntu'),
+                      ),
+                      SizedBox(
+                        height: getProportionateScreenHeight(8),
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: getProportionateScreenWidth(200),
+                            height: getProportionateScreenHeight(45),
+                            child: buildAttachCVFormField(),
+                          ),
+                          SizedBox(
+                            width: getProportionateScreenWidth(12),
+                          ),
+                          OutlinedButton(
+                            onPressed: () {
+                              attachFile(context);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                width: 1.5,
+                                color: tPrimaryColor,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: const Text(
+                              'Attach Resume',
+                              style: TextStyle(
+                                color: tPrimaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  // FormError(errors: errors),
+                  SizedBox(height: getProportionateScreenHeight(20)),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "More Details..",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: tPrimaryColor,
+                            fontFamily: 'Ubuntu'),
+                      ),
+                      SizedBox(
+                        height: getProportionateScreenHeight(8),
+                      ),
+                      Row(children: [
+                        SizedBox(
+                          width: getProportionateScreenWidth(320),
+                          child: const TextField(
+                            textAlignVertical: TextAlignVertical.top,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.details_outlined,
+                                color: tPrimaryColor,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ],
+                  ),
 
-          DefaultButton(
-            text: "Apply".toUpperCase(),
-            press: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                // if all are valid then go to success screen
-              } else {
-                print("kjhvg");
-              }
-              // KeyboardUtil.hideKeyboard(context);
-              // Navigator.pushNamed(context, LoginSuccessScreen.routeName);
-            },
-          ),
-        ],
+                  SizedBox(height: getProportionateScreenHeight(20)),
+
+                  DefaultButton(
+                    text: "Apply".toUpperCase(),
+                    press: () {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save();
+                        // if all are valid then go to success screen
+                      } else {
+                        print("kjhvg");
+                      }
+                      // KeyboardUtil.hideKeyboard(context);
+                      // Navigator.pushNamed(context, LoginSuccessScreen.routeName);
+                    },
+                  ),
+                ],
+              ),
+            ))));
+  }
+
+  TextFormField buildFirstNameFormField() {
+    return TextFormField(
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorNameImg = 'assets/icons/white.svg';
+            firstName = '';
+          });
+        }
+        // user.firstName = value;
+      },
+      // onSaved: (savedValue) {
+      //   user.firstName = savedValue!;
+      // },
+      validator: (Name) {
+        if (Name == null || Name.isEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/Error.svg";
+            firstName = 'Fill this field';
+          });
+          return "";
+        } else if (Name.isNotEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/white.svg";
+            firstName = '';
+          });
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        prefixIcon: const Icon(
+          Icons.drive_file_rename_outline,
+          color: tPrimaryColor,
+        ),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        labelText: user.firstName,
+        labelStyle: const TextStyle(color: Colors.black),
+      ),
+    );
+  }
+
+  TextFormField buildLastNameFormField() {
+    return TextFormField(
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorNameImg = 'assets/icons/white.svg';
+            lastName = '';
+          });
+        }
+        // user.lastName = value;
+      },
+      //  onSaved : (savedValue) {
+      //     user.lastName = savedValue!;
+      //   },
+      validator: (Name) {
+        if (Name == null || Name.isEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/Error.svg";
+            lastName = 'Fill this field';
+          });
+          return "";
+        } else if (Name.isNotEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/white.svg";
+            lastName = '';
+          });
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        prefixIcon: const Icon(
+          Icons.drive_file_rename_outline,
+          color: tPrimaryColor,
+        ),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        labelText: user.lastName,
+        labelStyle: const TextStyle(color: Colors.black),
       ),
     );
   }

@@ -14,7 +14,6 @@ class ProgramDetailsScreen extends StatelessWidget {
 
   final String title;
   final String image;
-  final String description;
   final String details;
   final String company;
   final String startDate;
@@ -24,37 +23,25 @@ class ProgramDetailsScreen extends StatelessWidget {
   ProgramDetailsScreen(
       {required this.title,
       required this.image,
-      required this.description,
       required this.details,
       required this.company,
       required this.startDate,
       required this.endDate,
       required this.trainer});
 
-  Trainer _trainer = new Trainer(
-      email: '',
-      password: '',
-      first_name: '',
-      last_name: '',
-      phone: '',
-      photo: '',
-      company_id: 0);
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-
     return Scaffold(
       appBar: buildAppBar(),
       body: Body(
         title: title,
         image: image,
-        description: description,
         details: details,
         company: company,
         startDate: startDate,
         endDate: endDate,
-        trainer: _trainer.email,
+        trainer: trainer,
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.center,
