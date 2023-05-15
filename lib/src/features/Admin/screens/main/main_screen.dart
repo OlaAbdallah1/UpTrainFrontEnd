@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../../../../../responsive.dart';
 import '../../controllers/MenuAppController.dart';
-import '../dashboard/dashboard_screen.dart';
+import '../Admin_Dashboard/dashboard_screen.dart';
 import 'components/side_menu.dart';
 
 class MainScreen extends StatelessWidget {
+  MainScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

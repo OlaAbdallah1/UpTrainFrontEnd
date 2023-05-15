@@ -1,5 +1,7 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/colors.dart';
@@ -15,8 +17,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 import '../../../../authentication/models/field.dart';
+import '../../../../authentication/models/location.dart';
 import '../../../../authentication/models/skills.dart';
 import '../../../../authentication/models/user.dart';
+import '../profile_pic.dart';
 
 class AccountDetails extends StatefulWidget {
   // AccountDetails({Key? key}) : super(key: key);
@@ -38,46 +42,55 @@ class _AccountDetailsState extends State<AccountDetails> {
   final _formKey = GlobalKey<FormState>();
 
   bool isEnabled = false;
+  bool isNameEnabled = false;
   bool isButtonEnabled = false;
   late Map<String, dynamic> combined = {};
 
   UserSkills userSkills = UserSkills(
       user: User(
+          // id: 0,
           email: '',
           firstName: '',
           lastName: '',
           phone: '',
+          location: '',
+          location_id: 0,
           field: '',
-          picture: '',
+          photo: '',
           field_id: 0),
       skills: []);
+
   late User _user = User(
-    email: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    field: '',
-    picture: '',
-    field_id: 0,
-  );
+      // id: 0,
+      email: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      field: '',
+      photo: '',
+      location: '',
+      field_id: 0,
+      location_id: 0);
   void combineData() {
     combined.addAll(widget.user);
     combined.addAll(widget.student);
     print(combined);
     _user = User.fromMap(combined);
-    // print(_user);
   }
 
   void fetchData() {
     userSkills = UserSkills(user: _user, skills: widget.skillsO);
+    for (Skill skill in userSkills.skills) {
+      selectedSkills.add(skill.name);
+      selectedSkillsId.add(skill.id);
+    }
+    print(selectedSkills);
     print(userSkills.skills);
   }
 
   @override
   void initState() {
-    fields = getFields();
     skills = getSkills();
-    selectedSkills = userSkills.skills;
     combineData();
     fetchData();
 
@@ -93,11 +106,22 @@ class _AccountDetailsState extends State<AccountDetails> {
     super.dispose();
   }
 
-  bool circular = true;
+  String Name = "";
+  String email = "";
+  String password = "";
+  String data = '';
+  String errorPassImg = "assets/icons/white.svg";
   String errorPhoneImg = "assets/icons/white.svg";
-  String phone = '';
-  String namme = '';
+  String errorImg = "assets/icons/white.svg";
   String errorNameImg = "assets/icons/white.svg";
+  String errorLocImg = 'assets/icons/white.svg';
+  String locationData = '';
+  String pass = '';
+  String firstName = '';
+  String lastName = '';
+  String phone = '';
+  bool circular = true;
+  String namme = '';
 
   File? image;
   String imageUrl = '';
@@ -192,21 +216,21 @@ class _AccountDetailsState extends State<AccountDetails> {
         });
       }
 
-      var res = await http
-          .patch(Uri.parse("http://$ip:3000/users"), headers: <String, String>{
-        'Context-Type': 'application/json;charSet=UTF-8',
-        'Authorization': global.token
-      }, body: {
-        'firstName': _user.firstName,
-        'lastName': _user.lastName,
-        'email': _user.email,
-        'password': _user.password,
-        'phone': _user.phone,
-        'picture': _user.picture,
-        'field_id': fieldChooseint as int,
-        'skills': selectedSkillsId.join(','),
-        // 'field':
-      });
+      var res = await http.patch(Uri.parse("http://$ip/api/updateStudent"),
+          headers: <String, String>{
+            'Context-Type': 'application/json;charSet=UTF-8',
+            'Authorization': global.token
+          },
+          body: {
+            // 'id': _user.id,
+            'firstName': _user.firstName,
+            'lastName': _user.lastName,
+            'email': _user.email,
+            'phone': _user.phone,
+            'photo': _user.photo,
+            'location_id': '1',
+            'skills': selectedSkillsId.join(','),
+          });
       // ignore: use_build_context_synchronously
       showDialog(
         context: context,
@@ -221,7 +245,13 @@ class _AccountDetailsState extends State<AccountDetails> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => {
+                isButtonEnabled = false,
+                isEnabled = false,
+                print(_user.email),
+                print(_user.skills),
+                Navigator.pop(context)
+              },
               child: Text('OK',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(14),
@@ -237,11 +267,11 @@ class _AccountDetailsState extends State<AccountDetails> {
     }
   }
 
-  String fieldChoose = '';
-  int fieldChooseint = 0;
+  String locationChoose = '';
+  int locationChooseint = 0;
   List skillsList = [];
   List filteredSkills = [];
-  List<Skill> selectedSkills = [];
+  Set selectedSkills = {};
   Set selectedSkillsId = {};
 
   TextEditingController skillsSearchController = TextEditingController();
@@ -264,44 +294,46 @@ class _AccountDetailsState extends State<AccountDetails> {
     }
   }
 
-  List fieldsList = [];
-  List<Field> fieldsData = [];
-  late Future<List<Field>> fields;
-  Future<List<Field>> getFields() async {
-    String url = "http://$ip/api/getFields";
-    final response = await http.get(Uri.parse(url));
-    var responseData = jsonDecode(response.body);
-    // json.decode(response.body);
-
-    if (response.statusCode == 201) {
-      for (Map field in responseData) {
-        fieldsData.add(Field.fromJson(field));
-      }
-      return fieldsData;
-    } else {
-      return fieldsData;
-    }
-  }
-
   void removeSkill(Skill skill) {
     print(skill);
     print('removed');
     setState(() {
       userSkills.skills.remove(skill);
+      selectedSkills.remove(skill.name);
+      selectedSkillsId.remove(skill.id);
     });
+  }
+
+  List locationsList = [];
+
+  List<Location> locationsData = [];
+  late Future<List<Location>> locations;
+  Future<List<Location>> getLocations() async {
+    String url = "http://$ip/api/getLocations";
+    final response = await http.get(Uri.parse(url));
+    var responseData = jsonDecode(response.body);
+    // json.decode(response.body);
+
+    if (response.statusCode == 201) {
+      for (Map location in responseData) {
+        locationsData.add(Location.fromJson(location));
+      }
+
+      return locationsData;
+    } else {
+      return locationsData;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController =
-        TextEditingController(text: _user.email);
-    TextEditingController phoneController =
-        TextEditingController(text: _user.phone);
+
     TextEditingController fieldController =
-        TextEditingController(text: _user.field);
+        TextEditingController(text: '${_user.field} Student');
     // TextEditingController editSkillsController =
     //     TextEditingController(text: widget.skills);
-
+    // print(_user.id);
+    locationChoose = _user.location;
     return Form(
       key: _formKey,
       child: SafeArea(
@@ -309,64 +341,64 @@ class _AccountDetailsState extends State<AccountDetails> {
           width: double.infinity,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: getProportionateScreenWidth(20)),
+                horizontal: getProportionateScreenWidth(15)),
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   Row(
                     children: [
-                      SizedBox(
-                        height: 115,
-                        width: 115,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          fit: StackFit.expand,
+                      ProfilePic(
+                        user: _user,
+                      ),
+                      const SizedBox(width: 15.0),
+                      Expanded(
+                        child: Column(
                           children: [
-                            image != null
-                                ? CircleAvatar(
-                                    backgroundImage: FileImage(image!),
-                                    radius: 200.0)
-                                : const CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage("assets/images/profile.png"),
-                                  ),
-                            Positioned(
-                              right: -16,
-                              bottom: 0,
-                              child: SizedBox(
-                                height: 46,
-                                width: 46,
-                                child: TextButton(
-                                  child: SvgPicture.asset(
-                                      "assets/icons/Camera Icon.svg"),
-                                  onPressed: () {
-                                    myAlert();
-                                  },
-                                  style: TextButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(50),
-                                      side:
-                                          const BorderSide(color: Colors.white),
-                                    ),
-                                    backgroundColor: Colors.white,
+                            Row(
+                              children: [
+                                Expanded(child: buildFirstNameFormField()),
+                                SizedBox(width: 5.0),
+                                Expanded(child: buildLastNameFormField()),
+                                IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isNameEnabled = true;
+                                        isButtonEnabled = true;
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: tPrimaryColor,
+                                    )),
+                              ],
+                            ),
+                            SizedBox(
+                              height: getProportionateScreenHeight(10),
+                            ),
+                            Row(children: [
+                              Expanded(
+                                child: Text(
+                                  fieldController.text,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ),
-                            )
+                            ]),
                           ],
                         ),
                       ),
-                      // ProfilePic(),
-                      const SizedBox(width: 50.0),
-                      Text(
-                        "${_user.firstName} ${_user.lastName}",
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          color: tPrimaryColor,
-                        ),
-                      ),
+                      // Text(
+                      //   "${_user.firstName} ${_user.lastName}",
+                      //   style: const TextStyle(
+                      //     fontSize: 20,
+                      //     fontFamily: 'Ubuntu',
+                      //     fontWeight: FontWeight.bold,
+                      //     color: tPrimaryColor,
+                      //   ),
+                      // ),
                     ],
                   ),
                   SizedBox(
@@ -415,17 +447,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                     SizedBox(
                       width: getProportionateScreenWidth(20),
                     ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: emailController,
-                        enabled: isEnabled,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                          color: tPrimaryColor,
-                        ),
-                      ),
-                    ),
+                    Expanded(child: buildEmailFormField()),
                   ]),
                   SizedBox(
                     height: getProportionateScreenHeight(10),
@@ -447,17 +469,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                     SizedBox(
                       width: getProportionateScreenWidth(20),
                     ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: phoneController,
-                        enabled: isEnabled,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                          color: tPrimaryColor,
-                        ),
-                      ),
-                    ),
+                    Expanded(child: buildPhoneFormField()),
                   ]),
                   SizedBox(
                     height: getProportionateScreenHeight(10),
@@ -468,7 +480,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                   ),
                   Row(children: [
                     const Text(
-                      'Field',
+                      'Location',
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Ubuntu',
@@ -479,17 +491,47 @@ class _AccountDetailsState extends State<AccountDetails> {
                     SizedBox(
                       width: getProportionateScreenWidth(20),
                     ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: fieldController,
-                        enabled: isEnabled,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                          color: tPrimaryColor,
-                        ),
-                      ),
-                    ),
+                    if (!isEnabled) Expanded(child: buildLocationFormField()),
+                    if (isEnabled)
+                      Expanded(
+                        child: FutureBuilder(
+                            future: getLocations(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                locationsList = snapshot.data!;
+                                return FormBuilder(
+                                  enabled: isEnabled,
+                                  child: FormBuilderDropdown<dynamic>(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Select Your Country',
+                                      labelStyle:
+                                          TextStyle(color: Colors.black),
+                                    ),
+                                    onChanged: (dynamic newLocationId) {
+                                      setState(() {
+                                        locationChooseint = newLocationId.id;
+                                        _user.location_id = locationChooseint;
+                                        print(_user.location_id);
+                                        _user.location = newLocationId.name;
+                                        print(newLocationId.name);
+                                        print(_user.location);
+                                      });
+                                    },
+                                    valueTransformer: (dynamic value) =>
+                                        value.name,
+                                    items: locationsList
+                                        .map((location) => DropdownMenuItem(
+                                            value: location,
+                                            child: Text(location.name)))
+                                        .toList(),
+                                    name: _user.location,
+                                  ),
+                                );
+                              }
+                              print("No locations");
+                              return const CircleAvatar();
+                            }),
+                      )
                   ]),
                   SizedBox(
                     height: getProportionateScreenHeight(10),
@@ -537,8 +579,6 @@ class _AccountDetailsState extends State<AccountDetails> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             skillsList = snapshot.data!;
-                            print("skillslist");
-                            print(skillsList.length);
                             return Column(
                               children: [
                                 TextField(
@@ -578,17 +618,19 @@ class _AccountDetailsState extends State<AccountDetails> {
                                         final skill = filteredSkills[index];
                                         final skillId = skill.id;
                                         final bool isSelected =
-                                            userSkills.skills.contains(skill);
+                                            selectedSkills.contains(skill.name);
                                         return CheckboxListTile(
                                           title: Text(skill.name),
                                           value: isSelected,
                                           onChanged: (value) {
                                             setState(() {
                                               if (isSelected) {
-                                                userSkills.skills
-                                                    .remove(skill.name);
+                                                // selectedSkills.remove(skill.name);
+                                                selectedSkillsId
+                                                    .remove(skill.id);
                                               } else {
                                                 userSkills.skills.add(skill);
+                                                // selectedSkills.add(skill.name);
                                                 selectedSkillsId.add(skillId);
                                                 _user.skills =
                                                     selectedSkillsId.join(',');
@@ -611,14 +653,11 @@ class _AccountDetailsState extends State<AccountDetails> {
                   SizedBox(
                     height: getProportionateScreenHeight(10),
                   ),
-                  SizedBox(
-                    height: getProportionateScreenHeight(20),
-                  ),
                   Column(
                     children: <Widget>[
                       SizedBox(
-                        width: 300,
-                        height: getProportionateScreenHeight(50),
+                        width: 250,
+                        height: getProportionateScreenHeight(45),
                         child: ElevatedButton(
                           style: ButtonStyle(
                               shape: MaterialStateProperty.all<
@@ -653,10 +692,28 @@ class _AccountDetailsState extends State<AccountDetails> {
                         ),
                       ),
                       SizedBox(height: SizeConfig.screenHeight * 0.015),
-                      Button2(
-                        text: "Change password",
-                        press: () {},
-                        child: const Text(''),
+                      SizedBox(
+                        width: 250,
+                        height: getProportionateScreenHeight(45),
+                        child: ElevatedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: tLightColor,
+                            side: const BorderSide(
+                              width: 1.5,
+                              color: tPrimaryColor,
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25)),
+                          ),
+                          onPressed: () {},
+                          child: const Text(
+                            "Change Password",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: tPrimaryColor,
+                                fontFamily: 'Ubuntu'),
+                          ),
+                        ),
                       ),
                       SizedBox(height: SizeConfig.screenHeight * 0.04),
                     ],
@@ -667,6 +724,192 @@ class _AccountDetailsState extends State<AccountDetails> {
           ),
         ),
       ),
+    );
+  }
+
+  TextFormField buildPhoneFormField() {
+    return TextFormField(
+      initialValue: _user.phone,
+      keyboardType: TextInputType.number,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorPhoneImg = 'assets/icons/white.svg';
+            phone = '';
+          });
+        }
+        _user.phone = value;
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          setState(() {
+            errorPhoneImg = "assets/icons/Error.svg";
+            phone = 'Please enter your phone';
+          });
+          return "";
+        } else {
+          setState(() {
+            errorPhoneImg = 'assets/icons/white.svg';
+            phone = phone;
+          });
+        }
+        return null;
+      },
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.normal,
+        color: tPrimaryColor,
+      ),
+    );
+  }
+
+  TextFormField buildEmailFormField() {
+    return TextFormField(
+      initialValue: _user.email,
+      keyboardType: TextInputType.emailAddress,
+      validator: (Email) {
+        if (Email == null || Email.isEmpty) {
+          setState(() {
+            errorImg = "assets/icons/Error.svg";
+            data = 'Please enter your email';
+          });
+          return "";
+        } else if (!EmailValidator.validate(Email, true)) {
+          setState(() {
+            errorImg = "assets/icons/Error.svg";
+            data = "Invalid Email";
+          });
+          return "";
+        } else if (Email.isNotEmpty) {
+          setState(() {
+            errorImg = "assets/icons/white.svg";
+            data = '';
+          });
+        }
+        return null;
+      },
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorImg = 'assets/icons/white.svg';
+            data = '';
+          });
+        }
+        _user.email = value;
+      },
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.normal,
+        color: tPrimaryColor,
+      ),
+    );
+  }
+
+  TextFormField buildLocationFormField() {
+    return TextFormField(
+      initialValue: _user.location,
+      validator: (Location) {
+        if (Location == null || Location.isEmpty) {
+          setState(() {
+            errorLocImg = "assets/icons/Error.svg";
+            locationData = 'Please enter your email';
+          });
+          return "";
+        } else if (Location.isNotEmpty) {
+          setState(() {
+            errorLocImg = "assets/icons/white.svg";
+            locationData = '';
+          });
+        }
+        return null;
+      },
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorLocImg = 'assets/icons/white.svg';
+            locationData = '';
+          });
+        }
+        _user.location = value;
+      },
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.normal,
+        color: tPrimaryColor,
+      ),
+    );
+  }
+
+  TextFormField buildFirstNameFormField() {
+    return TextFormField(
+      initialValue: _user.firstName,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorNameImg = 'assets/icons/white.svg';
+            firstName = '';
+          });
+        }
+        _user.firstName = value;
+      },
+      // onSaved: (savedValue) {
+      //   _user.firstName = savedValue!;
+      // },
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: tPrimaryColor,
+      ),
+      validator: (Name) {
+        if (Name == null || Name.isEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/Error.svg";
+            firstName = 'Fill this field';
+          });
+          return "";
+        } else if (Name.isNotEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/white.svg";
+            firstName = '';
+          });
+        }
+        return null;
+      },
+    );
+  }
+
+  TextFormField buildLastNameFormField() {
+    return TextFormField(
+      initialValue: _user.lastName,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          setState(() {
+            errorNameImg = 'assets/icons/white.svg';
+            lastName = '';
+          });
+        }
+        _user.lastName = value;
+      },
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: tPrimaryColor,
+      ),
+      validator: (Name) {
+        if (Name == null || Name.isEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/Error.svg";
+            lastName = 'Fill this field';
+          });
+          return "";
+        } else if (Name.isNotEmpty) {
+          setState(() {
+            errorNameImg = "assets/icons/white.svg";
+            lastName = '';
+          });
+        }
+        return null;
+      },
     );
   }
 }

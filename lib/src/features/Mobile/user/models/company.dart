@@ -1,16 +1,18 @@
 class Company {
-  late final String name;
-  late final String email;
-  late final String description;
-  late final String photo;
-  late final String password;
-  late final String website;
-  late final String location;
+  late String name;
+  late String email;
+  late String description;
+  late String photo;
+  late String password;
+  late String website;
+  late String location;
+  late int location_id;
+  late String phone;
 
   Company(
       {
       // required this.password,
-      // required this.phone,
+      required this.phone,
       required this.name,
       required this.description,
       required this.email,
@@ -21,22 +23,22 @@ class Company {
   static Company fromJson(json) => Company(
         name: json['cName'],
         // password: json['cPassword'],
-        // phone: json['cPhone'],
+        phone: json['cPhone_number'],
         description: json['cDescription'],
         photo: json['cPhoto'],
         email: json['cEmail'],
         website: json['cWebSite'],
-        location: json['cLocation'],
+        location: json['locationName'],
       );
 
   Map<String, dynamic> toJson() => {
         'name': name,
         'email': email,
         'webSite': website,
-        'location': location,
+        'location_id': location_id,
         // 'password': password,
         'description': description,
-        // 'phone': phone,
+        'phone': phone,
         'photo': photo,
       };
 }

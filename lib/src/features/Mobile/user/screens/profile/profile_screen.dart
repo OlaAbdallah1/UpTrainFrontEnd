@@ -12,9 +12,9 @@ class ProfileScreen extends StatelessWidget {
   static String routeName = "/profile";
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  final List<Skill> skills;
+  late List<Skill> skills;
   
-  const ProfileScreen({super.key, 
+   ProfileScreen({super.key, 
   required this.user,
   required this.student,
   required this.skills,

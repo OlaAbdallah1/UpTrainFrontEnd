@@ -30,7 +30,34 @@ class Body extends StatelessWidget {
                 SizedBox(height: SizeConfig.screenHeight * 0.04),
                 const LoginForm(),
                 SizedBox(height: SizeConfig.screenHeight * 0.02),
-               
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account?",
+                        style: TextStyle(
+                            fontSize: getProportionateScreenHeight(18),
+                            fontFamily: 'Ubuntu',
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Navigator.pushNamed(context, SignUpScreen.routeName);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SignUpScreen()));
+                        },
+                        child: Text(
+                          "Sign Up",
+                          style: TextStyle(
+                              fontSize: getProportionateScreenHeight(20),
+                              fontFamily: 'Ubuntu',
+                              fontWeight: FontWeight.bold,
+                              color: tPrimaryColor),
+                        ),
+                      )
+                    ],
+                  ),
                 // Text(
                 //   "Or Login with ",
                 //   style: bodyTextStyle,

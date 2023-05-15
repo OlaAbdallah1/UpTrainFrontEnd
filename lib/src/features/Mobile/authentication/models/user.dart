@@ -1,39 +1,39 @@
-import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
-import 'package:uptrain/src/features/Mobile/authentication/models/user_skills.dart';
-
-// import 'package:json_annotation/json_annotation.dart';
-
-// part 'user.g.dart';
-
-// @JsonSerializable()
-
 class User {
+  // late int id ;
   late String email;
   late String password;
   late String firstName;
   late String lastName;
+  late String location;
+  late int location_id;
   late String phone;
-  late String picture;
+  late String photo;
   late int field_id;
   late String skills;
   late String field;
 
   User({
+    // required this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
     required this.phone,
-    required this.picture,
+    required this.photo,
+    required this.location,
+    required this.location_id,
     required this.field_id,
     required this.field,
   });
 
   static User fromJson(json) {
     return User(
+      // id: json['id'],
       firstName: json['first_name'],
       lastName: json['last_name'],
       phone: json['sPhone_number'],
-      picture: json['sPhoto'],
+      photo: json['sPhoto'],
+      location: json['locationName'],
+      location_id: json['location_id'],
       field_id: json['field_id'],
       email: json['email'],
       field: json['fName'],
@@ -41,25 +41,29 @@ class User {
   }
 
   Map<String, dynamic> toJson() => {
+        // 'id': id,
         'firstName': firstName,
         'lastName': lastName,
         'email': email,
         'password': password,
         'phone': phone,
-        'picture': picture,
-        'field': field_id,
-        'skills': skills
+        'photo': photo,
+        'field_id': field_id,
+        'location_id': location_id,
       };
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
+      // id: map['id'],
       email: map['email'],
       firstName: map['first_name'],
       lastName: map['last_name'],
       phone: map['sPhone_number'],
-      picture: map['sPhoto'],
+      photo: map['sPhoto'],
       field_id: map['field_id'],
       field: map['fName'],
+      location: map['locationName'],
+      location_id: map['location_id'],
     );
   }
 }

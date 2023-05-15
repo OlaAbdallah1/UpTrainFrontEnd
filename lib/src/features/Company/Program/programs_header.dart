@@ -7,6 +7,7 @@ import 'package:uptrain/src/constants/text.dart';
 import '../../../../../../responsive.dart';
 import '../../../constants/colors.dart';
 import '../../Admin/controllers/MenuAppController.dart';
+import '../../Admin/screens/Admin_Dashboard/components/header.dart';
 
 
 class ProgramHeader extends StatelessWidget {
@@ -43,50 +44,12 @@ class ProgramHeader extends StatelessWidget {
         if (!Responsive.isMobile(context))
           Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
         const Expanded(child: SearchField()),
-        const ProfileCard()
+         ProfileCard()
       ],
     );
   }
 }
 
-class ProfileCard extends StatelessWidget {
-  const ProfileCard({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: defaultPadding),
-      padding: const EdgeInsets.symmetric(
-        horizontal: defaultPadding,
-        vertical: defaultPadding / 2,
-      ),
-      decoration: BoxDecoration(
-        color: tSecondaryColor,
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          Image.asset(
-            "assets/images/profile.png",
-            height: 38,
-          ),
-          if (!Responsive.isMobile(context))
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
-              child: Text(
-                "Ola Abdallah",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          const Icon(Icons.keyboard_arrow_down),
-        ],
-      ),
-    );
-  }
-}
 
 class SearchField extends StatelessWidget {
   const SearchField({

@@ -12,6 +12,13 @@ import '../../../authentication/models/field.dart';
 import '../../../authentication/models/user.dart';
 
 class ProfilePic extends StatefulWidget {
+  final User user;
+
+  const ProfilePic({
+    super.key,
+    required this.user,
+  });
+
   @override
   // ignore: library_private_types_in_public_api
   _ProfilePicFormState createState() => _ProfilePicFormState();
@@ -143,7 +150,7 @@ class _ProfilePicFormState extends State<ProfilePic> {
         children: [
           ClipOval(
             child: ImageFromUrl(
-              imageUrl: '',
+              imageUrl: widget.user.photo,
             ),
           ),
           Positioned(
@@ -168,7 +175,6 @@ class _ProfilePicFormState extends State<ProfilePic> {
               ),
             ),
           ),
-          // Text(user.firstName)
         ],
       ),
     );

@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
   static String routeName = "/home";
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  final List<Skill> skills;
+  late  List<Skill> skills;
 
    HomeScreen({super.key, required this.user, required this.student, required this.skills});
   @override

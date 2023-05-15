@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
-import 'package:uptrain/src/features/Admin/screens/Company/companies_screen.dart';
-import 'package:uptrain/src/features/Admin/screens/Fields_Admins/admins_screen.dart';
 import 'package:uptrain/src/features/Company/Program/programs_screen.dart';
 
 import '../../../../../constants/size_config.dart';
+import '../../Admin_Dashboard/Companies/companies_screen.dart';
+import '../../Admin_Dashboard/Employees/employees_screen.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({
@@ -54,10 +54,10 @@ class SideMenu extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => CompaniesScreen())),
           ),
           DrawerListTile(
-            title: "Admins",
+            title: "Employees",
             svgSrc: "assets/icons/User.svg",
             press: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => AdminsScreen())),
+                MaterialPageRoute(builder: (context) => EmployeesScreen())),
           ),
           DrawerListTile(
             title: "Programs",

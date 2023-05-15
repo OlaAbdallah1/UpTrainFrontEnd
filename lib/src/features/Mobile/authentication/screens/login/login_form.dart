@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/dashboard_screen.dart';
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/connections.dart';
 import '../../../../../constants/size_config.dart';
@@ -12,6 +13,7 @@ import '../../../../../utils/theme/widget_themes/button_theme.dart';
 import '../../../../../../global.dart' as global;
 import 'package:http/http.dart' as http;
 
+import '../../../../Admin/screens/Admin_Dashboard/Employees/employees_screen.dart';
 import '../../../user/screens/Home/home_page_screen.dart';
 import '../../models/skills.dart';
 import '../forgot_password/forgot_password_screen.dart';
@@ -38,42 +40,54 @@ class _LoginFormState extends State<LoginForm> {
             'email': user.email,
             'password': user.password
           });
+      // print(user.id);
       print(user.email);
       print(user.password);
       print(res.statusCode);
       var decoded = json.decode(res.body);
-
+      print(decoded['trainer']);
       if (res.statusCode == 201) {
         // save user data to local storage
-        // final prefs = await SharedPreferences.getInstance();
-        // prefs.setString('email', user.email);
-        // print(user.toJson());
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', user.email);
 
-        Map<String, dynamic> decodedUser = decoded['user'];
-        Map<String, dynamic> decodedStudent = decoded['student'];
-        List<Skill> decodedSkills = (decoded['skills'] as List<dynamic>)
-            .map((skillJson) => Skill.fromJson(skillJson))
-            .toList();
+        // Map<String, dynamic> decodedUser = decoded['user'];
+        // Map<String, dynamic> decodedStudent = decoded['student'];
+        // List<Skill> decodedSkills = (decoded['skills'] as List<dynamic>)
+        //     .map((skillJson) => Skill.fromJson(skillJson))
+        //     .toList();
 
-        // final List<Skill> decodedSkills = decoded['skills'];
-        // List<Skill> skills =
-        //     skillsJson.map((json) => Skill.fromJson(json)).toList();
-        // // Map<String, dynamic> decodedSkills = decoded['skills'];
+        // Map<String, dynamic> decodedTrainer = decoded['trainer'];
+        Map<String, dynamic> decodedEmployee = decoded['employee'];
+        print(decodedEmployee['eRole']);
 
         global.token = decoded['token'];
         print("object");
-        print(decodedStudent);
-        print(decodedUser);
-        print(decodedSkills);
-        // navigate to home page
+        // print(decodedStudent);
+        // print(decodedUser);
+        // print(decodedSkills);
+        // print(decodedTrainer);
+        // // navigate to home page
+        // if (decodedUser.isNotEmpty) {
+        //   Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => HomeScreen(
+        //       user: decodedUser,
+        //       student: decodedStudent,
+        //       skills: decodedSkills,
+        //     ),
+        //   ));
+        // }
+        if (decodedEmployee['eRole'] == 1) {
 
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            user: decodedUser,
-            student: decodedStudent,
-            skills: decodedSkills,
-          ),
-        ));
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => DashboardScreen(),
+          ));
+        } else if (decodedEmployee['eRole'] == 0) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => EmployeesScreen(),
+          ));
+        }
+        // if (decodedTrainer.isNotEmpty) {}
       }
 
       if (res.statusCode == 400) {
@@ -89,52 +103,28 @@ class _LoginFormState extends State<LoginForm> {
         print("token");
         print(global.token);
       }
-
-      // print(decoded);
-      // Map<String, dynamic> decodedUser = decoded['user'];
-      // print(decodedUser['name']);
-
-      // if (decodedUser['user_id'] == user.id) {
-      //   // user
-      //   // ignore: use_build_context_synchronously
-      // Navigator.of(context)
-      //     .push(MaterialPageRoute(builder: (context) => const HomeScreen()));
-      // } else {
-      // setState(() {
-      // errorPassImg = "assets/icons/Error.svg";
-      // passwordError = "email or password is not correct";
-      // });
-      // return;
-      // }
-      // catch (e) {
-      //   if (kDebugMode) {
-      //     print(" hiiii");
-      //     print(e);
-      //   }
-      // }
     } catch (e) {
       print(e);
       // show error message
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Login failed')));
     }
-
-    // print("token");
-    // print(decoded['token']);
   }
 
   String email = "";
   String password = "";
 
   User user = User(
+      // id: 0,
       firstName: '',
       lastName: '',
       email: '',
       field: '',
       phone: '',
       field_id: 0,
-      // skills: '',
-      picture: '');
+      location: '',
+      location_id: 0,
+      photo: '');
   bool _isObscure = true;
   String emailError = '';
   String errorPassImg = "assets/icons/white.svg";
@@ -256,35 +246,6 @@ class _LoginFormState extends State<LoginForm> {
                     },
                   ),
                   SizedBox(height: getProportionateScreenHeight(20)),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account?",
-                        style: TextStyle(
-                            fontSize: getProportionateScreenHeight(18),
-                            fontFamily: 'Ubuntu',
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // Navigator.pushNamed(context, SignUpScreen.routeName);
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SignUpScreen()));
-                        },
-                        child: Text(
-                          "Sign Up",
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(20),
-                              fontFamily: 'Ubuntu',
-                              fontWeight: FontWeight.bold,
-                              color: tPrimaryColor),
-                        ),
-                      )
-                    ],
-                  ),
                 ],
               ),
             ))));
@@ -319,6 +280,9 @@ class _LoginFormState extends State<LoginForm> {
         return null;
       },
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(
+            vertical: getProportionateScreenHeight(26),
+            horizontal: getProportionateScreenWidth(12)),
         prefixIcon: const Icon(
           Icons.lock_open,
           color: tPrimaryColor,
@@ -375,7 +339,10 @@ class _LoginFormState extends State<LoginForm> {
         }
         return null;
       },
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(
+            vertical: getProportionateScreenHeight(26),
+            horizontal: getProportionateScreenWidth(12)),
         prefixIcon: Icon(
           Icons.email,
           color: tPrimaryColor,

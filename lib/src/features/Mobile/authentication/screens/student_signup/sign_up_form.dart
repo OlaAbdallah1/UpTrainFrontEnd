@@ -18,6 +18,7 @@ import 'package:path/path.dart' as path;
 import '../../../../../utils/theme/widget_themes/button_theme.dart';
 
 import '../../models/field.dart';
+import '../../models/location.dart';
 import '../../models/skills.dart';
 import '../../models/user.dart';
 import 'verify_email.dart';
@@ -36,6 +37,7 @@ class _SignUpFormState extends State<SignUpForm> {
   void initState() {
     fields = getFields();
     skills = getSkills();
+    locations = getLocations();
     // skillsController.text = '';
 
     super.initState();
@@ -137,15 +139,14 @@ class _SignUpFormState extends State<SignUpForm> {
 
         setState(() {
           imageUrl = resImage.secureUrl;
-          user.picture = imageUrl;
+          user.photo = imageUrl;
           print(imageUrl);
-          print(user.picture);
+          print(user.photo);
         });
       } else {
         setState(() {
-          user.picture =
-              "https://res.cloudinary.com/dsmn9brrg/image/upload/v1673876307/dngdfphruvhmu7cie95a.jpg"; //set default url
-          print(user.picture);
+          user.photo = "https://ibb.co/8DCYH1P"; //set default url
+          print(user.photo);
 
           // const Image(image: AssetImage("assets/images/profile.png"))
           //     as String;
@@ -161,8 +162,9 @@ class _SignUpFormState extends State<SignUpForm> {
         'email': user.email,
         'password': user.password,
         'phone': user.phone,
-        'picture': user.picture,
-        'field': '1',
+        'photo': user.photo,
+        'location_id': '4',
+        'field_id': '1',
         'skills': selectedSkillsId.join(','),
       });
       print(response.statusCode);
@@ -212,14 +214,16 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   User user = User(
+      // id: 0,
       firstName: '',
       lastName: '',
       email: '',
       field: '',
       phone: '',
+      location: '',
+      location_id: 0,
       field_id: 0,
-    
-      picture: '');
+      photo: '');
   String Name = "";
   String email = "";
   String password = "";
@@ -228,6 +232,8 @@ class _SignUpFormState extends State<SignUpForm> {
   String errorPhoneImg = "assets/icons/white.svg";
   String errorImg = "assets/icons/white.svg";
   String errorNameImg = "assets/icons/white.svg";
+  String errorLocImg = 'assets/icons/white.svg';
+  String locationData = '';
   String pass = '';
   String firstName = '';
   String lastName = '';
@@ -236,6 +242,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String fieldChoose = '';
   int fieldChooseint = 0;
+  String locationChoose = '';
+  int locationChooseint = 0;
   List skillsList = [];
   List filteredSkills = [];
   Set selectedSkills = {};
@@ -287,6 +295,27 @@ class _SignUpFormState extends State<SignUpForm> {
       return fieldsData;
     } else {
       return fieldsData;
+    }
+  }
+
+  List locationsList = [];
+
+  List<Location> locationsData = [];
+  late Future<List<Location>> locations;
+  Future<List<Location>> getLocations() async {
+    String url = "http://$ip/api/getLocations";
+    final response = await http.get(Uri.parse(url));
+    var responseData = jsonDecode(response.body);
+    // json.decode(response.body);
+
+    if (response.statusCode == 201) {
+      for (Map location in responseData) {
+        locationsData.add(Location.fromJson(location));
+      }
+
+      return locationsData;
+    } else {
+      return locationsData;
     }
   }
 
@@ -440,7 +469,47 @@ class _SignUpFormState extends State<SignUpForm> {
                 buildPasswordFormField(),
 
                 FutureBuilder(
-                    future: getFields(),
+                    future: locations,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        locationsList = snapshot.data!;
+
+                        return FormBuilder(
+                          child: FormBuilderDropdown<dynamic>(
+                            decoration: const InputDecoration(
+                              labelText: 'Select Your Country',
+                              labelStyle: TextStyle(color: Colors.black),
+                              prefixIcon: Icon(
+                                Icons.work_outline,
+                                color: tPrimaryColor,
+                              ),
+                            ),
+                            onChanged: (dynamic newLocationId) {
+                              setState(() {
+                                locationChooseint = newLocationId.id;
+                                user.location_id = locationChooseint;
+                                print(newLocationId.name);
+                                print(user.location);
+                              });
+                            },
+                            valueTransformer: (dynamic value) => value.id,
+                            items: locationsList
+                                .map((location) => DropdownMenuItem(
+                                    value: location,
+                                    child: Text(location.name)))
+                                .toList(),
+                            name: '',
+                          ),
+                        );
+                      }
+                      print("No locations");
+                      return const CircleAvatar();
+                    }),
+                SizedBox(
+                  height: getProportionateScreenHeight(10),
+                ),
+                FutureBuilder(
+                    future: fields,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         fieldsList = snapshot.data!;

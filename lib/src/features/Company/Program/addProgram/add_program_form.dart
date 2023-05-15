@@ -185,7 +185,7 @@ class _AddProgramFormState extends State<AddProgramForm> {
       trainer: '');
 
   Company company = Company(
-      // password: '',
+      phone: '',
       name: '',
       description: '',
       email: '',

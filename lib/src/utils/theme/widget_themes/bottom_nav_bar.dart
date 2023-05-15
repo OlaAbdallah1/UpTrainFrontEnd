@@ -13,12 +13,13 @@ class CustomBottomNavBar extends StatelessWidget {
   late User user1;
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  final  List<Skill> skills;
+  late  List<Skill> skills;
   CustomBottomNavBar({
     Key? key,
     required this.selectedMenu,
     required this.user,
-    required this.student, required this.skills
+    required this.student, 
+    required this.skills
   }) : super(key: key);
 
   final MenuState selectedMenu;

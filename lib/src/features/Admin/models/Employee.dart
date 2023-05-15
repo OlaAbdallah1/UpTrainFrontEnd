@@ -1,15 +1,14 @@
 class Employee {
   String email;
-  String password;
+  late String password;
   String first_name;
   String last_name;
-  // String field;
+  late String field;
   String phone;
   String photo;
 
   Employee({
     required this.email,
-    required this.password,
     required this.first_name,
     required this.last_name,
     // required this.field,
@@ -21,10 +20,9 @@ class Employee {
         first_name: json['first_name'],
         last_name: json['last_name'],
         // field: json['field'],
-        phone: json['phone_number'],
-        photo: json['photo'],
+        phone: json['ePhone_number'],
+        photo: json['ePhoto'],
         email: json['email'],
-        password: json['password'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -36,4 +34,14 @@ class Employee {
         'phone_number': phone,
         'photo': photo,
       };
+
+  factory Employee.fromMap(Map<String, dynamic> map) {
+    return Employee(
+      email: map['email'],
+      first_name: map['first_name'],
+      last_name: map['last_name'],
+      phone: map['ePhone_number'],
+      photo: map['ePhoto'],
+    );
+  }
 }

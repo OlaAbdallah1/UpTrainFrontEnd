@@ -1,4 +1,3 @@
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
@@ -70,17 +69,17 @@ class _ApplicationFormState extends State<ApplicationForm> {
   String phone = '';
 
   User user = User(
-      email: '',
-      field: '',
-      firstName: '',
-      lastName: '',
-      phone: '',
-      picture: '',
-      field_id: 0,
-      // skills: '',
-      
-      // sKills: Skill(name: '', id: 0)
-      );
+    // id: 0,
+    email: '',
+    field: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    photo: '',
+    field_id: 0,
+    location: '',
+    location_id: 0
+  );
 
   TextEditingController emailController =
       TextEditingController(text: "user.email");

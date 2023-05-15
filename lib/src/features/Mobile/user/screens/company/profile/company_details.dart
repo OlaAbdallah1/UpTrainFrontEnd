@@ -28,7 +28,8 @@ class _CompanyDetailsState extends State<CompanyDetails> {
       email: '',
       photo: '',
       website: '',
-      location: '');
+      location: '',
+      phone: '');
 
   @override
   void initState() {
