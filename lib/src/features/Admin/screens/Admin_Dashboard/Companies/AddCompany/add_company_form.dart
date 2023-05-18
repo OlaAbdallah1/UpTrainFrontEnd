@@ -5,6 +5,7 @@ import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ import '../../../../../../constants/colors.dart';
 import '../../../../../../constants/connections.dart';
 import '../../../../../../constants/size_config.dart';
 import '../../../../../../utils/theme/widget_themes/button_theme.dart';
+import '../../../../../Mobile/authentication/models/location.dart';
 
 class AddCompanyForm extends StatefulWidget {
   const AddCompanyForm({super.key});
@@ -27,6 +29,14 @@ class AddCompanyForm extends StatefulWidget {
 
 class _AddCompanyFormState extends State<AddCompanyForm> {
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    locations = getLocations();
+
+    super.initState();
+  }
 
   File? image;
   String imageUrl = '';
@@ -221,6 +231,28 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
   bool _isObscure = false;
   String passdata = '';
 
+  int locationChooseint = 0;
+  List locationsList = [];
+
+  List<Location> locationsData = [];
+  late Future<List<Location>> locations;
+  Future<List<Location>> getLocations() async {
+    String url = "http://$ip/api/getLocations";
+    final response = await http.get(Uri.parse(url));
+    var responseData = jsonDecode(response.body);
+    // json.decode(response.body);
+
+    if (response.statusCode == 201) {
+      for (Map field in responseData) {
+        locationsData.add(Location.fromJson(field));
+      }
+      print(locationsData);
+      return locationsData;
+    } else {
+      return locationsData;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -251,12 +283,11 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                   fit: StackFit.expand,
                   children: [
                     image != null
-                        ? CircleAvatar(
-                            backgroundImage: NetworkImage(imageUrl),
-                            radius: 200.0)
-                        : const CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/images/profile.png"),
+                        ? ClipOval(
+                            child: Image.network(image!.path),
+                          )
+                        : ClipOval(
+                            child: Image.network(company.photo),
                           ),
                     Positioned(
                       right: -16,
@@ -326,6 +357,48 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                   SizedBox(
                     width: SizeConfig.screenWidth * 0.25,
                     child: buildPhoneFormField(),
+                  ),
+                  SizedBox(
+                    width: SizeConfig.screenWidth * 0.25,
+                    child: FutureBuilder(
+                        future: locations,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            locationsList = snapshot.data!;
+                            return FormBuilder(
+                              child: FormBuilderDropdown<dynamic>(
+                                decoration: const InputDecoration(
+                                  labelText: 'Select company country',
+                                  labelStyle: TextStyle(color: Colors.black),
+                                  prefixIcon: Icon(
+                                    Icons.location_city,
+                                    color: tPrimaryColor,
+                                  ),
+                                ),
+                                onChanged: (dynamic newLocation) {
+                                  setState(() {
+                                    locationChooseint = (newLocation.id);
+                                    company.location_id =
+                                        int.parse(newLocation.id);
+                                    print(company.location_id);
+                                  });
+                                },
+                                // valueTransformer: (dynamic value) => value.id,
+                                items: locationsList
+                                    .map((location) => DropdownMenuItem(
+                                        value: location,
+                                        child: Text(location.name)))
+                                    .toList(),
+                                name: '',
+                              ),
+                            );
+                          }
+                          print("No locations");
+                          return const CircleAvatar();
+                        }),
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
                   ),
                   Row(
                     children: [

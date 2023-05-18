@@ -4,15 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../constants/colors.dart';
 
 class StorageInfoCard extends StatelessWidget {
-  const StorageInfoCard({
-    Key? key,
-    required this.title,
-    required this.svgSrc,
-    // required this.numOfFiles,
-  }) : super(key: key);
+  const StorageInfoCard(
+      {Key? key,
+      required this.title,
+      required this.svgSrc,
+    })
+      : super(key: key);
 
   final String title, svgSrc;
-  // final int numOfFiles;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +41,12 @@ class StorageInfoCard extends StatelessWidget {
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.black,fontFamily: 'Ubuntu',fontSize:20 ),
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Ubuntu',
+                        fontSize: 20),
                   ),
-                 
+                
                 ],
               ),
             ),

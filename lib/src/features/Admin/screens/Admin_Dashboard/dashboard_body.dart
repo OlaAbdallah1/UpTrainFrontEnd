@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
-import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/admin_sidemenu.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
 import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/header.dart';
 import '../../../../../responsive.dart';
 import 'components/statistics.dart';

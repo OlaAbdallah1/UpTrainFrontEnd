@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrain/src/constants/colors.dart';
-import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/admin_sidemenu.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
 import '../../../../../../responsive.dart';
 
 import '../../../../../constants/size_config.dart';
@@ -65,7 +65,7 @@ class Body extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => AddEmployeeScreen())),
                               child: const Text(
-                                "Add Admin",
+                                "Add Employee",
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,

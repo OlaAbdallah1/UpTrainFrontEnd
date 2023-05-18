@@ -30,7 +30,7 @@ class AddCompanyScreen extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  CompanyHeader(),
+                  // CompanyHeader(),
                   SizedBox(
                     height: defaultPadding,
                   ),

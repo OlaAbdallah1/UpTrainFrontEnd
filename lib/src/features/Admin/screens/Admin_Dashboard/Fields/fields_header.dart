@@ -1,18 +1,16 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrain/src/constants/size_config.dart';
-import 'package:uptrain/src/constants/text.dart';
 
 import '../../../../../../responsive.dart';
 import '../../../../../constants/colors.dart';
-import '../../../../../utils/theme/widget_themes/button_theme.dart';
-import '../../../../Company/Program/programs_header.dart';
 import '../../../controllers/MenuAppController.dart';
 import '../components/header.dart';
 
-class CompanyHeader extends StatelessWidget {
-  const CompanyHeader({
+class FieldHeader extends StatelessWidget {
+  const FieldHeader({
     Key? key,
   }) : super(key: key);
 
@@ -29,7 +27,7 @@ class CompanyHeader extends StatelessWidget {
           Column(
             children: [
               const Text(
-                "Companies",
+                "Fields",
                 style: TextStyle(
                     fontFamily: 'Ubuntu',
                     fontSize: 40,
@@ -39,16 +37,17 @@ class CompanyHeader extends StatelessWidget {
               SizedBox(
                 height: getProportionateScreenHeight(20),
               ),
+             
             ],
           ),
         if (!Responsive.isMobile(context))
           Spacer(flex: Responsive.isDesktop(context) ? 2 : 1),
-        ProfileCard()
+        const Expanded(child: SearchField()),
+         ProfileCard()
       ],
     );
   }
 }
-
 class SearchField extends StatelessWidget {
   const SearchField({
     Key? key,

@@ -136,7 +136,6 @@ class _StatisticsState extends State<Statistics> {
                     svgSrc: "assets/icons/menu_store.svg",
                     title:
                         "We have partnerships with ${companiesList.length} Company",
-                    // numOfFiles: companiesList.length,
                   );
                 }
                 print("No companies");
@@ -152,7 +151,6 @@ class _StatisticsState extends State<Statistics> {
                     svgSrc: "assets/icons/User.svg",
                     title:
                         "We have ${employeesList.length} Employees to supervise on students",
-                    // numOfFiles: employeesList.length,
                   );
                 }
                 print("No employees");
@@ -168,7 +166,6 @@ class _StatisticsState extends State<Statistics> {
                     svgSrc: "assets/icons/menu_task.svg",
                     title:
                         "We help to find training programs within ${fieldsList.length} Fields",
-                    // numOfFiles: fieldsList.length,
                   );
                 }
                 print("No fields");
@@ -184,7 +181,6 @@ class _StatisticsState extends State<Statistics> {
                     svgSrc: "assets/icons/User Icon.svg",
                     title:
                         "We help up to ${studentsList.length} Students to find their perfect chances",
-                    // numOfFiles: studentsList.length,
                   );
                 }
                 print("No students");

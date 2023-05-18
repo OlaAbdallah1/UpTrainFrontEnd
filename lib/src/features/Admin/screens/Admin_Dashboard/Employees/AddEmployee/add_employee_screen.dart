@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
 
 import '../../../../../../../responsive.dart';
 import '../../../../../../constants/colors.dart';
@@ -14,7 +15,7 @@ class AddEmployeeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer: const SideMenu(),
+      drawer: AdminSideMenu(),
       body: SafeArea(
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // We want this side menu only for large screen
@@ -22,7 +23,7 @@ class AddEmployeeScreen extends StatelessWidget {
           Expanded(
             // default flex = 1
             // and it takes 1/6 part of the screen
-            child: SideMenu(),
+            child: AdminSideMenu(),
           ),
         Expanded(
           // It takes 5/6 part of the screen
@@ -33,7 +34,7 @@ class AddEmployeeScreen extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  EmployeeHeader(),
+                  // EmployeeHeader(),
                   SizedBox(
                     height: defaultPadding,
                   ),

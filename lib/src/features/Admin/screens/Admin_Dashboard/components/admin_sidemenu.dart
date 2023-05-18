@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/Fields/fields_screen.dart';
 import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/dashboard_screen.dart';
 
-import '../../../../constants/size_config.dart';
-import 'Companies/companies_screen.dart';
-import 'Employees/employees_screen.dart';
+import '../../../../../constants/size_config.dart';
+import '../AdminProfile/profile_screen.dart';
+import '../Companies/companies_screen.dart';
+import '../Employees/employees_screen.dart';
 
 
 
@@ -61,6 +63,12 @@ class AdminSideMenu extends StatelessWidget {
             press: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => EmployeesScreen())),
           ),
+          DrawerListTile(
+            title: "Fields",
+            svgSrc: "assets/icons/field.svg",
+            press: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => FieldsScreen())),
+          ),
         
           DrawerListTile(
             title: "Notification",
@@ -70,7 +78,8 @@ class AdminSideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/menu_profile.svg",
-            press: () {},
+            press: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => AdminProfilePage())),
           ),
           DrawerListTile(
             title: "Settings",

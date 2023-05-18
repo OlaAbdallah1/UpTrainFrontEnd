@@ -1,9 +1,11 @@
 class Field {
   late String name;
-  late int id;
-  Field({required this.name, required this.id});
+  String collage;
+   int id;
+  Field({required this.name, required this.id, required this.collage});
 
-  static Field fromJson(json) => Field(name: json['fName'], id: json['id']);
+  static Field fromJson(json) =>
+      Field(name: json['fName'], id: json['id'], collage: json['collegeName']);
 
   @override
   toString() => 'Field: $name, $id';
