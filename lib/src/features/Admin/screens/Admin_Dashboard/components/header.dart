@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/constants/text.dart';
 import 'package:uptrain/src/features/Admin/models/Employee.dart';
+import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 import 'package:http/http.dart' as http;
+import '../../../../../../global.dart' as global;
 
 import '../../../../../../responsive.dart';
 import '../../../../../constants/colors.dart';
@@ -61,8 +63,14 @@ class _ProfileCardState extends State<ProfileCard> {
     super.initState();
   }
 
-  static Employee _admin =
-      Employee(email: '', first_name: '', last_name: '', phone: '', photo: '',field: '');
+  static Employee _admin = Employee(
+      email: '',
+      first_name: '',
+      last_name: '',
+      phone: '',
+      photo: '',
+      field: '',
+      location: '');
 
   Future<List<Employee>> getAdmin() async {
     final response = await http.get(Uri.parse('http://$ip/api/getAdmin'));
@@ -78,6 +86,23 @@ class _ProfileCardState extends State<ProfileCard> {
         _admin = admin.first;
       });
     } catch (e) {
+      print(e);
+    }
+  }
+
+  void logout() async {
+    try {
+      var res = await http.post(
+        Uri.parse("http://$ip/api/logout"),
+        headers: <String, String>{
+          'Context-Type': 'application/json;charSet=UTF-8',
+          'Authorization': global.token
+        },
+      );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    } catch (e) {
+      print("hiiii");
       print(e);
     }
   }
@@ -111,7 +136,60 @@ class _ProfileCardState extends State<ProfileCard> {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-          const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+          PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'logout') {
+                  logout();
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    PopupMenuItem<String>(
+                      value: 'logout',
+                      child: ListTile(
+                        leading: const Icon(Icons.exit_to_app),
+                        title: const Text('Logout'),
+                      ),
+                    ),
+                  ],
+              child: IconButton(
+                  icon: const Icon(Icons.keyboard_arrow_down,
+                      color: Colors.white),
+                  onPressed: () {
+                    // Show the dropdown menu
+                    final RenderBox button =
+                        context.findRenderObject() as RenderBox;
+                    final RenderBox overlay = Overlay.of(context)
+                        .context
+                        .findRenderObject() as RenderBox;
+                    final RelativeRect position = RelativeRect.fromRect(
+                      Rect.fromPoints(
+                        button.localToGlobal(Offset.zero, ancestor: overlay),
+                        button.localToGlobal(
+                            button.size.bottomRight(Offset.zero),
+                            ancestor: overlay),
+                      ),
+                      Offset.zero & overlay.size,
+                    );
+                    showMenu<String>(
+                      context: context,
+                      position: RelativeRect.fromLTRB(
+                        position.left,
+                        position.top + 50,
+                        position.right,
+                        position.bottom 
+                             // Adjust the value to change the menu's vertical position
+                      ),
+                      items: <PopupMenuEntry<String>>[
+                        PopupMenuItem<String>(
+                          value: 'logout',
+                          child: ListTile(
+                            leading: const Icon(Icons.exit_to_app),
+                            title: const Text('Logout'),
+                          ),
+                        ),
+                      ],
+                    );
+                  }))
         ],
       ),
     );

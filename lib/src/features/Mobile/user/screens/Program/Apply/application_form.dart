@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
@@ -9,10 +11,23 @@ import '../../../../../../constants/size_config.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../../../utils/theme/widget_themes/button_theme.dart';
+import '../../../../authentication/models/user_skills.dart';
 
 class ApplicationForm extends StatefulWidget {
-  const ApplicationForm({super.key});
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO;
 
+  final int programId;
+  final int userId;
+
+  const ApplicationForm(
+      {super.key,
+      required this.programId,
+      required this.userId,
+      required this.user,
+      required this.student,
+      required this.skillsO});
   @override
   _ApplicationFormState createState() => _ApplicationFormState();
 }
@@ -20,15 +35,95 @@ class ApplicationForm extends StatefulWidget {
 class _ApplicationFormState extends State<ApplicationForm> {
   final _formKey = GlobalKey<FormState>();
 
+  late Map<String, dynamic> combined = {};
+
+  List skillsList = [];
+  List filteredSkills = [];
+  Set selectedSkills = {};
+  Set selectedSkillsId = {};
+
+  UserSkills userSkills = UserSkills(
+      user: User(
+          email: '',
+          firstName: '',
+          lastName: '',
+          phone: '',
+          location: '',
+          location_id: 0,
+          field: '',
+          photo: '',
+          field_id: 0),
+      skills: []);
+
+  late User _user = User(
+      // id: 0,
+      email: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      field: '',
+      photo: '',
+      location: '',
+      field_id: 0,
+      location_id: 0);
+
+    
+  void combineData() {
+    combined.addAll(widget.user);
+    combined.addAll(widget.student);
+    print(combined);
+    _user = User.fromMap(combined);
+  }
+
+  void fetchData() {
+    userSkills = UserSkills(user: _user, skills: widget.skillsO);
+    for (Skill skill in userSkills.skills) {
+      selectedSkills.add(skill.name);
+      selectedSkillsId.add(skill.id);
+    }
+    print(selectedSkills);
+        print(widget.programId);
+
+    print(userSkills.skills);
+  }
+
+  @override
+  void initState() {
+    skills = getSkills();
+    combineData();
+    fetchData();
+
+    super.initState();
+  }
+
+  List<Skill> skillsData = [];
+  late Future<List<Skill>> skills = getSkills();
+  Future<List<Skill>> getSkills() async {
+    String url = "http://$ip/api/getSkills";
+    final response = await http.get(Uri.parse(url));
+    var responseData = jsonDecode(response.body);
+
+    if (response.statusCode == 201) {
+      for (Map skill in responseData) {
+        skillsData.add(Skill.fromJson(skill));
+      }
+      return skillsData;
+    } else {
+      return skillsData;
+    }
+  }
+
   void save() async {
     try {
       var res = await http.post(Uri.parse("http://$ip:3000/apply"),
           headers: <String, String>{
             'Context-Type': 'application/json;charSet=UTF-8'
           },
-          body: <String, String>{
-            'cv': "kfjk",
-            'details': "fkvd"
+          body: {
+            'cv': '',
+            'user_id': widget.userId,
+            'program_id': widget.programId
+
           });
       if (res.statusCode == 400) {
         setState(() {
@@ -50,6 +145,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
     );
 
     if (result != null) {
+      
       //  File file = File(result.files.single.path);
     } else {
       // User canceled the picker
@@ -68,30 +164,19 @@ class _ApplicationFormState extends State<ApplicationForm> {
   String lastName = '';
   String phone = '';
 
-  User user = User(
-    // id: 0,
-    email: '',
-    field: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    photo: '',
-    field_id: 0,
-    location: '',
-    location_id: 0
-  );
-
-  TextEditingController emailController =
-      TextEditingController(text: "user.email");
-  TextEditingController firstNameController =
-      TextEditingController(text: "user.firstName");
-  TextEditingController lastNameController =
-      TextEditingController(text: "user.lastName");
-  TextEditingController phoneController =
-      TextEditingController(text: "user.phone");
-
   @override
   Widget build(BuildContext context) {
+    TextEditingController emailController =
+        TextEditingController(text: _user.email);
+    TextEditingController firstNameController =
+        TextEditingController(text: _user.firstName);
+    TextEditingController lastNameController =
+        TextEditingController(text: _user.lastName);
+    TextEditingController phoneController =
+        TextEditingController(text: _user.phone);
+    TextEditingController locationController =
+        TextEditingController(text: _user.location);
+
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         // physics: const AlwaysScrollableScrollPhysics(),
@@ -201,7 +286,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
                   ),
                   Row(children: [
                     const Text(
-                      'Skills',
+                      'Location',
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Ubuntu',
@@ -214,13 +299,47 @@ class _ApplicationFormState extends State<ApplicationForm> {
                     ),
                     Expanded(
                       child: TextFormField(
-                        controller: emailController,
+                        controller: locationController,
                         enabled: false,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.normal,
                           color: tPrimaryColor,
                         ),
+                      ),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Skills',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.normal,
+                        color: tPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(20),
+                    ),
+                    SizedBox(
+                      width: getProportionateScreenWidth(200),
+                      child: Wrap(
+                        spacing: 4,
+                        children: userSkills.skills
+                            .map((skill) => Chip(
+                                label: Text(skill.name),
+                                backgroundColor: Colors.grey[300],
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20),
+                                deleteIconColor: tPrimaryColor,
+                                onDeleted: () => {}
+                                // removeSkill(skill),
+                                ))
+                            .toList(),
                       ),
                     ),
                   ]),
@@ -276,43 +395,6 @@ class _ApplicationFormState extends State<ApplicationForm> {
                     ],
                   ),
                   // FormError(errors: errors),
-                  SizedBox(height: getProportionateScreenHeight(20)),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "More Details..",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: tPrimaryColor,
-                            fontFamily: 'Ubuntu'),
-                      ),
-                      SizedBox(
-                        height: getProportionateScreenHeight(8),
-                      ),
-                      Row(children: [
-                        SizedBox(
-                          width: getProportionateScreenWidth(320),
-                          child: const TextField(
-                            textAlignVertical: TextAlignVertical.top,
-                            maxLines: 5,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.details_outlined,
-                                color: tPrimaryColor,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ],
-                  ),
-
                   SizedBox(height: getProportionateScreenHeight(20)),
 
                   DefaultButton(
@@ -370,7 +452,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-        labelText: user.firstName,
+        labelText: _user.firstName,
         labelStyle: const TextStyle(color: Colors.black),
       ),
     );
@@ -413,7 +495,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-        labelText: user.lastName,
+        labelText: _user.lastName,
         labelStyle: const TextStyle(color: Colors.black),
       ),
     );

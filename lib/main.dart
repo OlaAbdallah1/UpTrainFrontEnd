@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/features/Admin/controllers/MenuAppController.dart';
-import 'package:uptrain/src/features/Admin/screens/main/main_screen.dart';
-import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/welcome_screen/welcome_screen.dart';
-import 'package:uptrain/src/features/Mobile/user/screens/Home/home_page_screen.dart';
-import 'package:uptrain/src/features/Mobile/user/screens/profile/profile_screen.dart';
 
 import 'package:provider/provider.dart';
 

@@ -176,6 +176,7 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
       last_name: '',
       phone: '',
       photo: '',
+      location: '',
       field: '');
 
   String name = '';

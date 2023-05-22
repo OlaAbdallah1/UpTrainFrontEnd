@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/size_config.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
 import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../company/profile/company_profile_screen.dart';
@@ -26,6 +27,12 @@ class Body extends StatelessWidget {
   late final String endDate;
   String trainer;
 
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO;
+
+
+
   Body(
       {required this.title,
       required this.image,
@@ -33,7 +40,11 @@ class Body extends StatelessWidget {
       required this.company,
       required this.startDate,
       required this.endDate,
-      required this.trainer});
+      required this.trainer,
+      required this.user,
+      required this.student,
+      required this.skillsO
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +66,7 @@ class Body extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => CompanyAccount(
                                 companyName: company,
-                                
+                                user: user, student: student, skillsO: skillsO,
                               )));
                 },
                 child: Text(
@@ -125,6 +136,9 @@ class Body extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => TrainerAccount(
                                     trainer: trainer,
+                                    user:user ,
+                                    student: student ,
+                                    skillsO: skillsO,
                                   )));
                     },
                     child: Text(

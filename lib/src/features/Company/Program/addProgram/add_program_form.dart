@@ -175,6 +175,8 @@ class _AddProgramFormState extends State<AddProgramForm> {
   }
 
   Program program = Program(
+    id: 0,
+    user_id: 0,
       title: '',
       image: '',
       company:'',

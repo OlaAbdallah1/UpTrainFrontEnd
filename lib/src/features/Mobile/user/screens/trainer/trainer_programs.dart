@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 
 import 'package:http/http.dart' as http;
+import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
 
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/connections.dart';
 import '../../../../../constants/size_config.dart';
+import '../../../authentication/models/skills.dart';
 import '../../models/program.dart';
 import '../Program/Apply/application_screen.dart';
 import '../Program/Program_Details/program_screen.dart';
@@ -15,8 +17,10 @@ import '../Program/Program_Details/program_screen.dart';
 
 class TrainerPrograms extends StatefulWidget {
   final String trainerName;
-
-  const TrainerPrograms({super.key, required this.trainerName});
+final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO; 
+  const TrainerPrograms({super.key, required this.trainerName, required this.user, required this.student, required this.skillsO});
 
   @override
   State<TrainerPrograms> createState() => _TrainerProgramsState();
@@ -157,6 +161,9 @@ class _TrainerProgramsState extends State<TrainerPrograms> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ProgramDetailsScreen(
+                                                        programId: snapshot
+                                                          .data![index].id,
+                                                          userId: snapshot.data![index].user_id,
                                                         company: snapshot.data![index].company,
                                                         title: snapshot
                                                             .data![index].title,
@@ -174,7 +181,9 @@ class _TrainerProgramsState extends State<TrainerPrograms> {
                                                         endDate: snapshot
                                                             .data![index]
                                                             .end_date,
-                                                       
+                                                       user: widget.user,
+                                                       student: widget.student,
+                                                       skillsO: widget.skillsO,
                                                       ))),
                                           child: Text(
                                             "Show Details ",
@@ -189,9 +198,12 @@ class _TrainerProgramsState extends State<TrainerPrograms> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ApplicationScreen(
+                                                      userId: snapshot.data![index].user_id,
+                                                      programId: snapshot
+                                                          .data![index].id,
                                                         title: snapshot
                                                             .data![index]
-                                                            .title))),
+                                                            .title, user: widget.user, student: widget.student,skillsO: widget.skillsO,))),
                                         style: OutlinedButton.styleFrom(
                                           backgroundColor: tPrimaryColor,
                                           side: const BorderSide(

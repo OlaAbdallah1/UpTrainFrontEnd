@@ -62,7 +62,7 @@ class _ProfileCardState extends State<ProfileCard> {
   }
 
   static Employee _admin =
-      Employee(email: '', first_name: '', last_name: '', phone: '', photo: '',field: '');
+      Employee(email: '', first_name: '', last_name: '', phone: '', photo: '',field: '',location: '');
 
   Future<List<Employee>> getAdmin() async {
     final response = await http.get(Uri.parse('http://$ip/api/getAdmin'));

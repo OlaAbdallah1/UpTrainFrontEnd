@@ -26,8 +26,15 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
     super.initState();
   }
 
-  static Employee _admin =
-      Employee(email: '', first_name: '', last_name: '', phone: '', photo: '',field: '');
+  static Employee _admin = Employee(
+      email: '',
+      first_name: '',
+      last_name: '',
+      phone: '',
+      photo: '',
+      field: '',
+      location: '');
+
 
   Future<List<Employee>> getAdmin() async {
     final response = await http.get(Uri.parse('http://$ip/api/getAdmin'));
@@ -73,7 +80,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ProfileHeader(),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Row(
                         children: [
                           CircleAvatar(
@@ -83,10 +90,10 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                               'assets/images/download.png',
                             ),
                           ),
-                          SizedBox(width: 16.0),
+                          const SizedBox(width: 16.0),
                           Text(
                             "${_admin.first_name} ${_admin.last_name}",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
                                 color: tPrimaryColor),
@@ -94,7 +101,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Card(
                         elevation: 4.0,
                         child: Padding(
@@ -102,29 +109,34 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text(
+                              const Text(
                                 'Personal Information',
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 16.0),
+                              const SizedBox(height: 16.0),
                               ListTile(
-                                leading: Icon(Icons.email),
-                                title: Text('Email'),
+                                leading: const Icon(Icons.email),
+                                title: const Text('Email'),
                                 subtitle: Text(_admin.email),
                               ),
                               ListTile(
-                                leading: Icon(Icons.phone),
-                                title: Text('Phone'),
+                                leading: const Icon(Icons.phone),
+                                title: const Text('Phone'),
                                 subtitle: Text(_admin.phone),
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.location_city),
+                                title: const Text('Location'),
+                                subtitle: Text(_admin.location),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Card(
                         elevation: 4.0,
                         child: Padding(
@@ -132,25 +144,33 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Text(
+                              const Text(
                                 'Account Information',
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 16.0),
+                              const SizedBox(height: 16.0),
                               ListTile(
-                                leading: Icon(Icons.person),
-                                title: Text('Username'),
+                                leading: const Icon(Icons.person),
+                                title: const Text('Username'),
                                 subtitle: Text(
                                     '${_admin.first_name} ${_admin.last_name}'),
                               ),
-                              ListTile(
+                              const ListTile(
                                 leading: Icon(Icons.lock),
                                 title: Text('Password'),
-                                subtitle: Text('********'),
+                                subtitle: Text('*********'),
                               ),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    'Change Password',
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: tSecondaryColor),
+                                  ))
                             ],
                           ),
                         ),

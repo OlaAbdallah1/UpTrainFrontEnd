@@ -45,7 +45,7 @@ class _LoginFormState extends State<LoginForm> {
       print(user.password);
       print(res.statusCode);
       var decoded = json.decode(res.body);
-      print(decoded['trainer']);
+
       if (res.statusCode == 201) {
         // save user data to local storage
         final prefs = await SharedPreferences.getInstance();
@@ -59,7 +59,7 @@ class _LoginFormState extends State<LoginForm> {
 
         // Map<String, dynamic> decodedTrainer = decoded['trainer'];
         Map<String, dynamic> decodedEmployee = decoded['employee'];
-        print(decodedEmployee['eRole']);
+        // print(decodedEmployee['eRole']);
 
         global.token = decoded['token'];
         print("object");
@@ -77,8 +77,16 @@ class _LoginFormState extends State<LoginForm> {
         //     ),
         //   ));
         // }
+        // if (decodedEmployee['eRole'] == 1) {
+        //   Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => DashboardScreen(),
+        //   ));
+        // } else if (decodedEmployee['eRole'] == 0) {
+        //   Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => EmployeesScreen(),
+        //   ));
+        // }
         if (decodedEmployee['eRole'] == 1) {
-
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => DashboardScreen(),
           ));
@@ -206,16 +214,6 @@ class _LoginFormState extends State<LoginForm> {
                   SizedBox(height: getProportionateScreenHeight(30)),
                   Row(
                     children: [
-                      Checkbox(
-                        value: remember,
-                        activeColor: tPrimaryColor,
-                        onChanged: (value) {
-                          setState(() {
-                            remember = value;
-                          });
-                        },
-                      ),
-                      const Text("Remember me"),
                       const Spacer(),
                       GestureDetector(
                         onTap: () => Navigator.of(context).push(

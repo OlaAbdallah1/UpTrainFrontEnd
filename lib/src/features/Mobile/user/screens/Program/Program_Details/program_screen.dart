@@ -7,6 +7,7 @@ import '../../../../../../constants/size_config.dart';
 import '../../../../../../utils/theme/widget_themes/appbar.dart';
 import '../../../../../../utils/theme/widget_themes/bottom_nav_bar.dart';
 import '../../../../../../utils/theme/widget_themes/button_theme.dart';
+import '../../../../authentication/models/skills.dart';
 import 'body.dart';
 
 class ProgramDetailsScreen extends StatelessWidget {
@@ -19,15 +20,27 @@ class ProgramDetailsScreen extends StatelessWidget {
   final String startDate;
   final String endDate;
   final String trainer;
+  final int programId;
+  final int userId;
+
+final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO; 
 
   ProgramDetailsScreen(
-      {required this.title,
+      {required this.programId,
+      required this.userId,
+        required this.title,
       required this.image,
       required this.details,
       required this.company,
       required this.startDate,
       required this.endDate,
-      required this.trainer});
+      required this.trainer,
+      required this.user,
+      required this.skillsO,
+      required this.student
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +55,9 @@ class ProgramDetailsScreen extends StatelessWidget {
         startDate: startDate,
         endDate: endDate,
         trainer: trainer,
+        user: user,
+        student: student,
+        skillsO: skillsO,
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +68,7 @@ class ProgramDetailsScreen extends StatelessWidget {
             press: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ApplicationScreen(title: title))),
+                    builder: (context) => ApplicationScreen(title: title,user: user, student: student, skillsO: skillsO,programId: programId,userId:userId))),
           ),
           SizedBox(
             height: getProportionateScreenHeight(20),

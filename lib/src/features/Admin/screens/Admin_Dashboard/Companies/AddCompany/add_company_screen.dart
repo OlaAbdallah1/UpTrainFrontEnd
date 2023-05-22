@@ -7,8 +7,7 @@ import '../../../main/components/side_menu.dart';
 import 'add_company_form.dart';
 
 class AddCompanyScreen extends StatelessWidget {
-  const AddCompanyScreen({super.key});
-
+   AddCompanyScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +28,7 @@ class AddCompanyScreen extends StatelessWidget {
             padding: const EdgeInsets.all(defaultPadding),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children:  [
                   // CompanyHeader(),
                   SizedBox(
                     height: defaultPadding,

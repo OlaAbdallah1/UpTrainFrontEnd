@@ -12,6 +12,7 @@ import '../../../../../constants/colors.dart';
 import '../../../../../constants/size_config.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../authentication/models/skills.dart';
 import '../Program/Program_Details/program_screen.dart';
 // Our Category List need StateFullWidget
 // I can use Provider on it, Then we dont need StatefulWidget
@@ -19,7 +20,13 @@ import '../Program/Program_Details/program_screen.dart';
 class Programs extends StatefulWidget {
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  const Programs({super.key, required this.user, required this.student});
+  late List<Skill> skills;
+
+  Programs(
+      {super.key,
+      required this.user,
+      required this.student,
+      required this.skills});
   @override
   // ignore: library_private_types_in_public_api
   _ProgramsState createState() => _ProgramsState();
@@ -389,6 +396,8 @@ class _ProgramsState extends State<Programs> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ProgramDetailsScreen(
+                                                          userId: snapshot.data![index].user_id,
+                                                        programId: snapshot.data![index].id,
                                                         title: snapshot
                                                             .data![index].title,
                                                         details: snapshot
@@ -408,6 +417,9 @@ class _ProgramsState extends State<Programs> {
                                                         trainer: snapshot
                                                             .data![index]
                                                             .trainer,
+                                                        user: widget.user,
+                                                        student: widget.student,
+                                                        skillsO:widget.skills,
                                                       ))),
                                           child: Text(
                                             "Show Details ",
@@ -425,9 +437,14 @@ class _ProgramsState extends State<Programs> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ApplicationScreen(
-                                                        title: snapshot
-                                                            .data![index]
-                                                            .title))),
+                                                        userId: snapshot.data![index].user_id,
+                                                      title: snapshot
+                                                          .data![index].title,
+                                                      programId : snapshot.data![index].id,
+                                                      user: widget.user,
+                                                      student: widget.student,
+                                                      skillsO: widget.skills,
+                                                    ))),
                                         style: OutlinedButton.styleFrom(
                                           backgroundColor: tPrimaryColor,
                                           side: const BorderSide(

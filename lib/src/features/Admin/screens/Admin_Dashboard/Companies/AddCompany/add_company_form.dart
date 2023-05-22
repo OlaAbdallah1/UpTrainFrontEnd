@@ -21,8 +21,7 @@ import '../../../../../../utils/theme/widget_themes/button_theme.dart';
 import '../../../../../Mobile/authentication/models/location.dart';
 
 class AddCompanyForm extends StatefulWidget {
-  const AddCompanyForm({super.key});
-
+   AddCompanyForm({super.key});
   @override
   State<AddCompanyForm> createState() => _AddCompanyFormState();
 }
@@ -178,8 +177,9 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const CompaniesScreen())),
+                          builder: (BuildContext context) => CompaniesScreen(
+                                
+                              ))),
 
                   // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(

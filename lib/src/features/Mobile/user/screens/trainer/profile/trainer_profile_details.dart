@@ -11,6 +11,7 @@ import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../../../../../constants/colors.dart';
 import '../../../../../../constants/size_config.dart';
+import '../../../../authentication/models/skills.dart';
 import '../../../models/trainer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,7 +19,11 @@ import '../../company/profile/company_profile_screen.dart';
 
 class TrainerDetails extends StatefulWidget {
   final String trainer;
-  const TrainerDetails({super.key, required this.trainer});
+   final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO; 
+  const TrainerDetails({super.key, required this.trainer, required this.user, required this.student, required this.skillsO
+  });
 
   @override
   State<TrainerDetails> createState() => _TrainerDetailsState();
@@ -148,6 +153,7 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                         MaterialPageRoute(
                             builder: (context) => CompanyAccount(
                                   companyName: _trainer.company,
+                                  user: widget.user, student: widget.student, skillsO: widget.skillsO,
                                 )));
                   },
                   child: Text(

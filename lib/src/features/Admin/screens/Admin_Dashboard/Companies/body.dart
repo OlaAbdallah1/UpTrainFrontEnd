@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
-import 'package:uptrain/src/utils/theme/widget_themes/button_theme.dart';
 import '../../../../../../responsive.dart';
+
 import '../../../../../constants/size_config.dart';
-import '../../../controllers/MenuAppController.dart';
-import '../../main/components/side_menu.dart';
 import 'AddCompany/add_company_screen.dart';
 import 'companies.dart';
 import 'companies_header.dart';
 
+
 class Body extends StatelessWidget {
+  
   Body({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer: AdminSideMenu(),
+      drawer:  AdminSideMenu(),
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // We want this side menu only for large screen
             if (Responsive.isDesktop(context))
-              Expanded(
+               Expanded(
                 // default flex = 1
                 // and it takes 1/6 part of the screen
                 child: AdminSideMenu(),
@@ -41,12 +40,7 @@ class Body extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          const Expanded(child: SearchField()),
-                          CompanyHeader(),
-                        ],
-                      ),
+                       CompanyHeader(),
                       const SizedBox(
                         height: defaultPadding,
                       ),
@@ -69,8 +63,7 @@ class Body extends StatelessWidget {
                               onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddCompanyScreen())),
+                                      builder: (context) => AddCompanyScreen())),
                               child: const Text(
                                 "Add Company",
                                 style: TextStyle(
@@ -85,8 +78,8 @@ class Body extends StatelessWidget {
                       SizedBox(
                         height: defaultPadding,
                       ),
-                      const SizedBox(
-                        width: 1200,
+                       SizedBox(
+                        width: 1100,
                         child: CompanyPage(),
                       ),
                     ],
@@ -96,5 +89,54 @@ class Body extends StatelessWidget {
         ),
       ),
     );
+    // return SafeArea(
+    //   child: SizedBox(
+    //     width: double.infinity,
+    //     child: Padding(
+    //       padding:
+    //           EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(10)),
+    //       child: SingleChildScrollView(
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.start,
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             SizedBox(height: getProportionateScreenHeight(20)),
+    //             const CompanyHeader(),
+    //             SizedBox(
+    //               height: getProportionateScreenHeight(20),
+    //             ),
+    //             Expanded(child: Row(
+    //               children: [
+
+    //             ],)
+    //           ),
+    //             Column(
+    //               mainAxisAlignment: MainAxisAlignment.start,
+    //               children: [
+    //                 Row(
+    //                   children: [
+    //                     SizedBox(
+    //                       width: getProportionateScreenWidth(12),
+    //                     ),
+    //                     Text(
+    //                       "All Companies ",
+    //                       style: TextStyle(
+    //                           // decoration: TextDecoration.underline,
+    //                           fontSize: getProportionateScreenHeight(18),
+    //                           color: tPrimaryColor,
+    //                           fontFamily: 'Ubuntu',
+    //                           fontWeight: FontWeight.w500),
+    //                     ),
+    //                   ],
+    //                 ),
+    //                 CompanyPage(),
+    //               ],
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }

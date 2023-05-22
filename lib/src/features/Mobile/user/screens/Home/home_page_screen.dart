@@ -26,6 +26,7 @@ class HomeScreen extends StatelessWidget {
       body: Body(
         user: user,
         student: student,
+        skills : skills
       ),
       bottomNavigationBar: CustomBottomNavBar(
         selectedMenu: MenuState.home,

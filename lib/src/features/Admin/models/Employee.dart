@@ -1,22 +1,23 @@
 class Employee {
   String email;
-  late String password;
+ late String password;
   String first_name;
   String last_name;
   String field;
   late int field_id;
   late int location_id;
+  String location;
   String phone;
   String photo;
 
-  Employee({
-    required this.email,
-    required this.first_name,
-    required this.last_name,
-    required this.field,
-    required this.phone,
-    required this.photo,
-  });
+  Employee(
+      {required this.email,
+      required this.first_name,
+      required this.last_name,
+      required this.field,
+      required this.phone,
+      required this.photo,
+      required this.location});
 
   static Employee fromJson(json) => Employee(
         first_name: json['first_name'],
@@ -25,6 +26,7 @@ class Employee {
         phone: json['ePhone_number'],
         photo: json['ePhoto'],
         email: json['email'],
+        location: json['locationName'],
       );
 
   Map<String, dynamic> toJson() => {

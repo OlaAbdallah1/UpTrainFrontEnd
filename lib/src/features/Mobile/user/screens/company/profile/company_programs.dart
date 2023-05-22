@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
 
 import '../../../../../../constants/colors.dart';
 import '../../../../../../constants/connections.dart';
@@ -14,7 +15,15 @@ import '../../Program/Program_Details/program_screen.dart';
 class CompanyPrograms extends StatefulWidget {
   final String companyName;
 
-  const CompanyPrograms({super.key, required this.companyName});
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO;
+  const CompanyPrograms(
+      {super.key,
+      required this.companyName,
+      required this.user,
+      required this.student,
+      required this.skillsO});
 
   @override
   State<CompanyPrograms> createState() => _CompanyProgramsState();
@@ -115,28 +124,34 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                                           FontWeight.bold),
                                                 ),
                                                 subtitle: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                  Text(snapshot
-                                                      .data![index].branch),
-                                                  SizedBox(
-                                                    height:
-                                                        getProportionateScreenHeight(
-                                                            10),
-                                                  ),
-                                                  Text(
-                                                    " ${snapshot.data![index].start_date} \t-\t ${snapshot.data![index].end_date}",
-                                                    style: TextStyle(
-                                                        fontSize:
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(snapshot
+                                                          .data![index].branch),
+                                                      SizedBox(
+                                                        height:
                                                             getProportionateScreenHeight(
-                                                                13),
-                                                        color: Colors.black87,
-                                                        fontFamily: 'Ubuntu',
-                                                        fontWeight:
-                                                            FontWeight.normal),
-                                                  ),
-                                                ])),
+                                                                10),
+                                                      ),
+                                                      Text(
+                                                        " ${snapshot.data![index].start_date} \t-\t ${snapshot.data![index].end_date}",
+                                                        style: TextStyle(
+                                                            fontSize:
+                                                                getProportionateScreenHeight(
+                                                                    13),
+                                                            color:
+                                                                Colors.black87,
+                                                            fontFamily:
+                                                                'Ubuntu',
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal),
+                                                      ),
+                                                    ])),
                                           ],
                                         ),
                                       ),
@@ -155,6 +170,8 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ProgramDetailsScreen(
+                                                        programId: snapshot.data![index].id,
+                                                          userId: snapshot.data![index].user_id,
                                                         title: snapshot
                                                             .data![index].title,
                                                         details: snapshot
@@ -174,6 +191,9 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                                         trainer: snapshot
                                                             .data![index]
                                                             .trainer,
+                                                        student: widget.student,
+                                                        user: widget.user,
+                                                        skillsO: widget.skillsO,
                                                       ))),
                                           child: Text(
                                             "Show Details ",
@@ -188,9 +208,15 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ApplicationScreen(
-                                                        title: snapshot
-                                                            .data![index]
-                                                            .title))),
+                                                        userId: snapshot.data![index].user_id,
+                                                      programId: snapshot
+                                                          .data![index].id,
+                                                      title: snapshot
+                                                          .data![index].title,
+                                                      student: widget.student,
+                                                      user: widget.user,
+                                                      skillsO: widget.skillsO,
+                                                    ))),
                                         style: OutlinedButton.styleFrom(
                                           backgroundColor: tPrimaryColor,
                                           side: const BorderSide(

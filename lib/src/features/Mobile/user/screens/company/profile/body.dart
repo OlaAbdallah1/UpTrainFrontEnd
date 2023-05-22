@@ -3,14 +3,21 @@ import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/size_config.dart';
 import 'package:uptrain/src/constants/text.dart';
 
+import '../../../../authentication/models/skills.dart';
 import 'company_details.dart';
 import 'company_programs.dart';
 
 class Body extends StatelessWidget {
   final String companyName;
-  Body({
-    required this.companyName,
-  });
+  final Map<String, dynamic> user;
+  final Map<String, dynamic> student;
+  final List<Skill> skillsO;
+
+  Body(
+      {required this.companyName,
+      required this.user,
+      required this.student,
+      required this.skillsO});
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -31,7 +38,7 @@ class Body extends StatelessWidget {
                 color: tPrimaryColor),
           ),
           SizedBox(height: getProportionateScreenHeight(10)),
-          CompanyPrograms(companyName: companyName)
+          CompanyPrograms(companyName: companyName,user: user, student: student, skillsO: skillsO,)
         ],
       ),
     );
