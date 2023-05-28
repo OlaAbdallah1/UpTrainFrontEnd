@@ -9,9 +9,7 @@ import 'AddCompany/add_company_screen.dart';
 import 'companies.dart';
 import 'companies_header.dart';
 
-
 class Body extends StatelessWidget {
-  
   Body({
     super.key,
   });
@@ -19,14 +17,14 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer:  AdminSideMenu(),
+      drawer: AdminSideMenu(),
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // We want this side menu only for large screen
             if (Responsive.isDesktop(context))
-               Expanded(
+              Expanded(
                 // default flex = 1
                 // and it takes 1/6 part of the screen
                 child: AdminSideMenu(),
@@ -40,46 +38,12 @@ class Body extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       CompanyHeader(),
-                      const SizedBox(
-                        height: defaultPadding,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            height: getProportionateScreenHeight(45),
-                            width: getProportionateScreenWidth(50),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                // shape: RoundedRectangleBorder(
-                                // borderRadius: BorderRadius.circular(15)),
-                                backgroundColor: tPrimaryColor,
-                                side: const BorderSide(
-                                  width: 1.5,
-                                  color: tLightColor,
-                                ),
-                              ),
-                              onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddCompanyScreen())),
-                              child: const Text(
-                                "Add Company",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Ubuntu'),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                      CompanyHeader(),
                       SizedBox(
                         height: defaultPadding,
                       ),
-                       SizedBox(
-                        width: 1100,
+                      SizedBox(
+                        width: 1500,
                         child: CompanyPage(),
                       ),
                     ],

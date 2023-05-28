@@ -4,19 +4,18 @@ import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/Home/programs.dart';
 
 import '../../../authentication/models/skills.dart';
-import 'home_header.dart';
+import 'search_field.dart';
 
 class Body extends StatelessWidget {
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  late  List<Skill> skills;
+  late List<Skill> skills;
 
   Body(
       {super.key,
       required this.user,
       required this.student,
-      required this.skills
-      });
+      required this.skills});
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +31,7 @@ class Body extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: getProportionateScreenHeight(20)),
-                const HomeHeader(),
-                //  Text(user.email),
-                SizedBox(height: getProportionateScreenHeight(10)),
-
-                Programs(
-                  student: student,
-                  user: user,
-                  skills : skills
-                ),
+                Programs(student: student, user: user, skills: skills),
               ],
             ),
           ),

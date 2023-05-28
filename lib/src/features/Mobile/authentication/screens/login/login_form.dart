@@ -14,6 +14,7 @@ import '../../../../../../global.dart' as global;
 import 'package:http/http.dart' as http;
 
 import '../../../../Admin/screens/Admin_Dashboard/Employees/employees_screen.dart';
+import '../../../../Employee/employee_dashboard.dart';
 import '../../../user/screens/Home/home_page_screen.dart';
 import '../../models/skills.dart';
 import '../forgot_password/forgot_password_screen.dart';
@@ -51,50 +52,46 @@ class _LoginFormState extends State<LoginForm> {
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('email', user.email);
 
-        // Map<String, dynamic> decodedUser = decoded['user'];
-        // Map<String, dynamic> decodedStudent = decoded['student'];
-        // List<Skill> decodedSkills = (decoded['skills'] as List<dynamic>)
-        //     .map((skillJson) => Skill.fromJson(skillJson))
-        //     .toList();
+        Map<String, dynamic> decodedUser = decoded['user'];
+        Map<String, dynamic> decodedStudent = decoded['student'];
 
+        // // List<Skill> decodedSkills = (decoded['skills'] as List<dynamic>)
+        // //     .map((skillJson) => Skill.fromJson(skillJson))
+        // //     .toList();
+
+        List<Skill> skills = [];
+
+        for (var skillJson in decoded['skills']) {
+          Skill skill = Skill.fromJson(skillJson);
+          skills.add(skill);
+        }
         // Map<String, dynamic> decodedTrainer = decoded['trainer'];
-        Map<String, dynamic> decodedEmployee = decoded['employee'];
+        // Map<String, dynamic> decodedEmployee = decoded['employee'];
         // print(decodedEmployee['eRole']);
 
         global.token = decoded['token'];
-        print("object");
-        // print(decodedStudent);
-        // print(decodedUser);
-        // print(decodedSkills);
+  
         // print(decodedTrainer);
-        // // navigate to home page
-        // if (decodedUser.isNotEmpty) {
-        //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => HomeScreen(
-        //       user: decodedUser,
-        //       student: decodedStudent,
-        //       skills: decodedSkills,
-        //     ),
-        //   ));
-        // }
+        // navigate to home page
+        if (decodedUser.isNotEmpty) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              user: decodedUser,
+              student: decodedStudent,
+              skills: skills,
+            ),
+          ));
+        }
         // if (decodedEmployee['eRole'] == 1) {
         //   Navigator.of(context).push(MaterialPageRoute(
         //     builder: (context) => DashboardScreen(),
         //   ));
         // } else if (decodedEmployee['eRole'] == 0) {
         //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => EmployeesScreen(),
+        //     builder: (context) => EmployeeDashboardScreen(employee: decodedEmployee, user: decodedUser,),
         //   ));
         // }
-        if (decodedEmployee['eRole'] == 1) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => DashboardScreen(),
-          ));
-        } else if (decodedEmployee['eRole'] == 0) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => EmployeesScreen(),
-          ));
-        }
+
         // if (decodedTrainer.isNotEmpty) {}
       }
 
@@ -123,7 +120,7 @@ class _LoginFormState extends State<LoginForm> {
   String password = "";
 
   User user = User(
-      // id: 0,
+      id: 0,
       firstName: '',
       lastName: '',
       email: '',

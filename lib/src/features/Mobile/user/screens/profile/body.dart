@@ -26,7 +26,7 @@ class _BodyFormState extends State<Body> {
   late Map<String, dynamic> combined = {};
 
   late User _user = User(
-    // id: 0,
+    id: 0,
     location: '',
     email: '',
     firstName: '',
@@ -41,7 +41,7 @@ class _BodyFormState extends State<Body> {
     combined.addAll(widget.user);
     combined.addAll(widget.student);
     print(combined);
-    _user = User.fromMap(combined);
+    _user = User.fromJson(combined);
     // print(_user);
   }
 
@@ -56,14 +56,14 @@ class _BodyFormState extends State<Body> {
   Widget build(BuildContext context) {
     print(_user.photo);
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: EdgeInsets.symmetric(vertical: 5),
       child: Column(
         children: [
           Text(
             "Your Profile",
             style: headingStyle,
           ),
-          SizedBox(height: getProportionateScreenHeight(20)),
+          // SizedBox(height: getProportionateScreenHeight(20)),
           ClipOval(
             child: ImageFromUrl(
               imageUrl: _user.photo,
@@ -103,7 +103,7 @@ class _BodyFormState extends State<Body> {
           ),
           ProfileMenu(
             text: "Applications",
-            icon: "assets/icons/apply.svg",
+            icon: "assets/icons/apply-svgrepo-com.svg",
             press: () {},
           ),
           ProfileMenu(

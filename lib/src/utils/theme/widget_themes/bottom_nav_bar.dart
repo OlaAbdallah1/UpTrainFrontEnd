@@ -7,20 +7,21 @@ import 'package:uptrain/src/features/Mobile/user/screens/profile/profile_screen.
 import '../../../constants/colors.dart';
 import '../../../features/Mobile/authentication/models/user.dart';
 import '../../../features/Mobile/user/screens/Home/home_page_screen.dart';
+import '../../../features/Mobile/user/screens/Home/icon_btn.dart';
 import '/enums.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   late User user1;
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  late  List<Skill> skills;
-  CustomBottomNavBar({
-    Key? key,
-    required this.selectedMenu,
-    required this.user,
-    required this.student, 
-    required this.skills
-  }) : super(key: key);
+  late List<Skill> skills;
+  CustomBottomNavBar(
+      {Key? key,
+      required this.selectedMenu,
+      required this.user,
+      required this.student,
+      required this.skills})
+      : super(key: key);
 
   final MenuState selectedMenu;
 
@@ -76,25 +77,21 @@ class CustomBottomNavBar extends StatelessWidget {
                 // icon: SvgPicture.asset("assets/icons/Task Icon.svg"),
                 onPressed: () {},
               ),
-              IconButton(
-                icon: SvgPicture.asset(
-                  "assets/icons/Chat bubble Icon.svg",
-                  width: 25,
-                  color: MenuState.message == selectedMenu
+              IconBtnWithCounter(
+                svgSrc: "assets/icons/Chat bubble Icon.svg",
+                numOfitem: 1,
+                press: () {},
+                color: MenuState.tasks == selectedMenu
                       ? tPrimaryColor
                       : inActiveIconColor,
-                ),
-                onPressed: () {},
               ),
-              IconButton(
-                icon: SvgPicture.asset(
-                  "assets/icons/Bell.svg",
-                  width: 22,
-                  color: MenuState.notifications == selectedMenu
+              IconBtnWithCounter(
+                svgSrc: "assets/icons/Bell.svg",
+                numOfitem: 3,
+                press: () {},
+                color: MenuState.tasks == selectedMenu
                       ? tPrimaryColor
                       : inActiveIconColor,
-                ),
-                onPressed: () {},
               ),
               IconButton(
                 icon: SvgPicture.asset(
@@ -104,8 +101,14 @@ class CustomBottomNavBar extends StatelessWidget {
                       ? tPrimaryColor
                       : inActiveIconColor,
                 ),
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen(user: user, student: student,skills: skills,))),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfileScreen(
+                              user: user,
+                              student: student,
+                              skills: skills,
+                            ))),
               ),
             ],
           )),

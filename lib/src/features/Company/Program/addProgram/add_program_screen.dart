@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
 
 import '../../../../../../responsive.dart';
 
 import '../../../../constants/colors.dart';
-import '../../../Admin/screens/main/components/side_menu.dart';
 import '../programs_header.dart';
 import 'add_program_form.dart';
 
@@ -14,7 +14,7 @@ class AddProgramScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer: const SideMenu(),
+      drawer:  AdminSideMenu(),
       body: SafeArea(
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // We want this side menu only for large screen
@@ -22,7 +22,7 @@ class AddProgramScreen extends StatelessWidget {
           Expanded(
             // default flex = 1
             // and it takes 1/6 part of the screen
-            child: SideMenu(),
+            child: AdminSideMenu(),
           ),
         Expanded(
           // It takes 5/6 part of the screen

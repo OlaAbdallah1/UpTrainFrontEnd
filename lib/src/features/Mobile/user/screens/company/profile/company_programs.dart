@@ -170,8 +170,8 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ProgramDetailsScreen(
-                                                        programId: snapshot.data![index].id,
-                                                          userId: snapshot.data![index].user_id,
+                                                        programId: snapshot
+                                                            .data![index].id,
                                                         title: snapshot
                                                             .data![index].title,
                                                         details: snapshot
@@ -191,6 +191,7 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                                         trainer: snapshot
                                                             .data![index]
                                                             .trainer,
+                                                        programSkills: [],
                                                         student: widget.student,
                                                         user: widget.user,
                                                         skillsO: widget.skillsO,
@@ -208,7 +209,6 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ApplicationScreen(
-                                                        userId: snapshot.data![index].user_id,
                                                       programId: snapshot
                                                           .data![index].id,
                                                       title: snapshot

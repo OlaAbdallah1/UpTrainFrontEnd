@@ -42,6 +42,7 @@ class _CompanyDetailsState extends State<CompanyDetails> {
         .get(Uri.parse('http://$ip/api/getProgramCompany/$companyName'));
 
     final List<dynamic> data = json.decode(response.body);
+    print(data);
     return data.map((json) => Company.fromJson(json)).toList();
   }
 
@@ -67,18 +68,21 @@ class _CompanyDetailsState extends State<CompanyDetails> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [ImageFromUrl(imageUrl: _company.photo)],
+                  children: [
+                    SizedBox(width: getProportionateScreenWidth(120),
+                      child: ImageFromUrl(imageUrl: _company.photo),
+),
+                    Expanded(child: Text(
+                      _company.name,
+                      style: const TextStyle(
+                          color: tPrimaryColor,
+                          fontFamily: 'Ubuntu',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30),
+                    ),)
+                  ],
                 ),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    _company.name,
-                    style: const TextStyle(
-                        color: tPrimaryColor,
-                        fontFamily: 'Ubuntu',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30),
-                  ),
-                ]),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: []),
                 SizedBox(height: getProportionateScreenHeight(20)),
                 Text(
                   "About:",

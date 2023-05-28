@@ -1,5 +1,5 @@
 class User {
-  // late int id ;
+  late int id;
   late String email;
   late String password;
   late String firstName;
@@ -13,7 +13,7 @@ class User {
   late String field;
 
   User({
-    // required this.id,
+    required this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
@@ -27,7 +27,7 @@ class User {
 
   static User fromJson(json) {
     return User(
-      // id: json['id'],
+      id: json['id'].toInt(),
       firstName: json['first_name'],
       lastName: json['last_name'],
       phone: json['sPhone_number'],
@@ -41,7 +41,7 @@ class User {
   }
 
   Map<String, dynamic> toJson() => {
-        // 'id': id,
+        'id': id,
         'firstName': firstName,
         'lastName': lastName,
         'email': email,
@@ -51,19 +51,4 @@ class User {
         'field_id': field_id,
         'location_id': location_id,
       };
-
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
-      // id: map['id'],
-      email: map['email'],
-      firstName: map['first_name'],
-      lastName: map['last_name'],
-      phone: map['sPhone_number'],
-      photo: map['sPhoto'],
-      field_id: map['field_id'],
-      field: map['fName'],
-      location: map['locationName'],
-      location_id: map['location_id'],
-    );
-  }
 }

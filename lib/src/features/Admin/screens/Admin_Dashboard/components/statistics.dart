@@ -81,7 +81,7 @@ class _StatisticsState extends State<Statistics> {
   List<User> studentsData = [];
   late Future<List<User>> students;
   Future<List<User>> getStudents() async {
-    String url = "http://$ip/api/getStudents";
+    String url = "http://$ip/api/getAllStudents";
     final response = await http.get(Uri.parse(url));
     var responseData = jsonDecode(response.body);
     // json.decode(response.body);
@@ -163,7 +163,7 @@ class _StatisticsState extends State<Statistics> {
                   fieldsList = snapshot.data!;
                   print(fieldsList.length);
                   return StorageInfoCard(
-                    svgSrc: "assets/icons/menu_task.svg",
+                    svgSrc: "assets/icons/field.svg",
                     title:
                         "We help to find training programs within ${fieldsList.length} Fields",
                   );

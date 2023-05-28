@@ -163,8 +163,8 @@ class _SignUpFormState extends State<SignUpForm> {
         'password': user.password,
         'phone': user.phone,
         'photo': user.photo,
-        'location_id': '4',
-        'field_id': '1',
+        'location_id': locationChooseint.toString(),
+        'field_id': fieldChooseint.toString(),
         'skills': selectedSkillsId.join(','),
       });
       print(response.statusCode);
@@ -198,7 +198,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
         );
       } else {
-        print("final error : jaym " + response.body);
+        print("final error " + response.body);
       }
       if (kDebugMode) {
         print(json.encode(user.toJson()));
@@ -211,10 +211,36 @@ class _SignUpFormState extends State<SignUpForm> {
         print("error : $error");
       }
     }
+     // ignore: use_build_context_synchronously
+     showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Welcome'),
+            content: const Text("Your have to verify your email"),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: tPrimaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                ),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => VerifyEmailScreen(user: user))),
+                child: Text('Verify',
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(14),
+                      color: Colors.white,
+                    )),
+              ),
+            ],
+          ),
+        );
   }
 
   User user = User(
-      // id: 0,
+      id: 0,
       firstName: '',
       lastName: '',
       email: '',
@@ -477,10 +503,10 @@ class _SignUpFormState extends State<SignUpForm> {
                         return FormBuilder(
                           child: FormBuilderDropdown<dynamic>(
                             decoration: const InputDecoration(
-                              labelText: 'Select Your Country',
+                              labelText: 'Select Your City',
                               labelStyle: TextStyle(color: Colors.black),
                               prefixIcon: Icon(
-                                Icons.work_outline,
+                                Icons.location_city,
                                 color: tPrimaryColor,
                               ),
                             ),
@@ -489,6 +515,8 @@ class _SignUpFormState extends State<SignUpForm> {
                                 locationChooseint = newLocationId.id;
                                 user.location_id = locationChooseint;
                                 print(newLocationId.name);
+                                print(newLocationId.id);
+
                                 print(user.location);
                               });
                             },

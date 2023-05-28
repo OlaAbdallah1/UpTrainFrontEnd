@@ -33,7 +33,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
       phone: '',
       photo: '',
       field: '',
-      location: '');
+      location: '',field_id: 0);
 
 
   Future<List<Employee>> getAdmin() async {

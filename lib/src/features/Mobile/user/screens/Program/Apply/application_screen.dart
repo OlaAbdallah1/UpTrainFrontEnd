@@ -10,7 +10,6 @@ class ApplicationScreen extends StatelessWidget {
   static String routeName = "/apply";
   final String title;
   final int programId;
-  final int userId;
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
   final List<Skill> skillsO;
@@ -18,7 +17,6 @@ class ApplicationScreen extends StatelessWidget {
    ApplicationScreen(
       {super.key,
       required this.programId,
-      required this.userId,
       required this.title,
       required this.skillsO,
       required this.user,
@@ -32,7 +30,6 @@ class ApplicationScreen extends StatelessWidget {
       body: Body(
         title: title,
         programId: programId,
-        userId: userId,
         user: user,
         student: student,
         skillsO: skillsO,

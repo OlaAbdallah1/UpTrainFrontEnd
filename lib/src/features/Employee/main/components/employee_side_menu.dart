@@ -3,13 +3,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
 import 'package:uptrain/src/features/Company/Program/programs_screen.dart';
+import 'package:uptrain/src/features/Employee/Students/students_screen.dart';
 
-import '../../../../../constants/size_config.dart';
-import '../../Admin_Dashboard/Companies/companies_screen.dart';
-import '../../Admin_Dashboard/Employees/employees_screen.dart';
+import '../../../../constants/size_config.dart';
+import '../../../Admin/models/Employee.dart';
 
-class SideMenu extends StatelessWidget {
-  const SideMenu({
+class EmployeeSideMenu extends StatelessWidget {
+  Employee employee;
+   EmployeeSideMenu({
+    required this.employee,
     Key? key,
   }) : super(key: key);
 
@@ -42,28 +44,11 @@ class SideMenu extends StatelessWidget {
             svgSrc: "assets/icons/menu_dashbord.svg",
             press: () {},
           ),
-          // DrawerListTile(
-          //   title: "Documents",
-          //   svgSrc: "assets/icons/menu_doc.svg",
-          //   press: () {},
-          // ),
           DrawerListTile(
-            title: "Companies",
-            svgSrc: "assets/icons/menu_store.svg",
-            press: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CompaniesScreen())),
-          ),
-          DrawerListTile(
-            title: "Employees",
+            title: "Students",
             svgSrc: "assets/icons/User.svg",
-            press: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => EmployeesScreen())),
-          ),
-          DrawerListTile(
-            title: "Programs",
-            svgSrc: "assets/icons/User.svg",
-            press: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ProgramsScreen())),
+            press: ()  => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => StudentsScreen(employee: employee,))),
           ),
           DrawerListTile(
             title: "Notification",

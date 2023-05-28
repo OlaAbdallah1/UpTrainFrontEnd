@@ -8,14 +8,12 @@ import 'application_form.dart';
 class Body extends StatelessWidget {
    final String title;
      final int programId;
-     final int userId;
 
 final Map<String, dynamic> user;
   final Map<String, dynamic> student;
   final List<Skill> skillsO;
   const Body({
     required this.programId,
-    required this.userId,
     required this.title,
     required this.user,
     required this.student,
@@ -39,7 +37,7 @@ final Map<String, dynamic> user;
                   style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: tPrimaryColor,fontFamily: 'Ubuntu'),
                 ),
                 SizedBox(height: SizeConfig.screenHeight * 0.04),
-                 ApplicationForm(skillsO: skillsO , user: user, student: student, programId : programId,userId: userId),
+                 ApplicationForm(skillsO: skillsO , user: user, student: student, programId : programId),
                 SizedBox(height: SizeConfig.screenHeight * 0.02),
               ],
             ),

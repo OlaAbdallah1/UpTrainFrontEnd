@@ -10,10 +10,13 @@ import '../../../../../constants/colors.dart';
 import '../../../../../constants/connections.dart';
 import '../../../../../constants/size_config.dart';
 import '../../../../Mobile/user/models/company.dart';
+import 'AddCompany/add_company_screen.dart';
 
 class CompanyPage extends StatefulWidget {
-  CompanyPage({super.key,});
-  
+  CompanyPage({
+    super.key,
+  });
+
   @override
   State<CompanyPage> createState() => _CompanyPageState();
 }
@@ -35,8 +38,9 @@ class _CompanyPageState extends State<CompanyPage> {
     } else {
       return data
           .map((json) => Company.fromJson(json))
-          .where((element) => element.name.contains(search.toLowerCase())||element.location.contains(search.toLowerCase()))
-       
+          .where((element) =>
+              element.name.contains(search.toLowerCase()) ||
+              element.location.contains(search.toLowerCase()))
           .toList();
     }
   }
@@ -68,7 +72,44 @@ class _CompanyPageState extends State<CompanyPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(alignment:AlignmentDirectional.centerStart, width: 250, child: companiesSearchField()),
+          Row(
+            children: [
+              Container(
+                  alignment: AlignmentDirectional.centerStart,
+                  width: 250,
+                  child: companiesSearchField()),
+              SizedBox(
+                width: getProportionateScreenWidth(10),
+              ),
+              SizedBox(
+                height: getProportionateScreenHeight(45),
+                width: getProportionateScreenWidth(50),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    // shape: RoundedRectangleBorder(
+                    // borderRadius: BorderRadius.circular(15)),
+                    backgroundColor: tPrimaryColor,
+                    side: const BorderSide(
+                      width: 1.5,
+                      color: tLightColor,
+                    ),
+                  ),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddCompanyScreen())),
+                  child: const Text(
+                    "Add Company",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontFamily: 'Ubuntu'),
+                  ),
+                ),
+              )
+            ],
+          ),
           DataTable(
             columns: const [
               DataColumn(
@@ -188,9 +229,7 @@ class _CompanyPageState extends State<CompanyPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            CompaniesScreen(
-                                             
-                                            )));
+                                            CompaniesScreen()));
 
                                 // ignore: use_build_context_synchronously
                                 ScaffoldMessenger.of(context).showSnackBar(

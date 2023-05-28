@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
+import 'package:uptrain/src/features/Mobile/user/models/application.dart';
 
 import '../../../../../../constants/connections.dart';
 import '../../../../../../constants/size_config.dart';
@@ -19,12 +21,10 @@ class ApplicationForm extends StatefulWidget {
   final List<Skill> skillsO;
 
   final int programId;
-  final int userId;
 
   const ApplicationForm(
       {super.key,
       required this.programId,
-      required this.userId,
       required this.user,
       required this.student,
       required this.skillsO});
@@ -44,6 +44,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
 
   UserSkills userSkills = UserSkills(
       user: User(
+          id: 0,
           email: '',
           firstName: '',
           lastName: '',
@@ -56,7 +57,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
       skills: []);
 
   late User _user = User(
-      // id: 0,
+      id: 0,
       email: '',
       firstName: '',
       lastName: '',
@@ -67,31 +68,29 @@ class _ApplicationFormState extends State<ApplicationForm> {
       field_id: 0,
       location_id: 0);
 
-    
   void combineData() {
     combined.addAll(widget.user);
     combined.addAll(widget.student);
     print(combined);
-    _user = User.fromMap(combined);
+
+    _user = User.fromJson(combined);
   }
 
   void fetchData() {
     userSkills = UserSkills(user: _user, skills: widget.skillsO);
     for (Skill skill in userSkills.skills) {
       selectedSkills.add(skill.name);
-      selectedSkillsId.add(skill.id);
+      // selectedSkillsId.add(skill.id);
     }
-    print(selectedSkills);
-        print(widget.programId);
-
-    print(userSkills.skills);
   }
 
+  late Application application;
   @override
   void initState() {
     skills = getSkills();
     combineData();
     fetchData();
+    application = Application(cv: File(''));
 
     super.initState();
   }
@@ -115,16 +114,21 @@ class _ApplicationFormState extends State<ApplicationForm> {
 
   void save() async {
     try {
-      var res = await http.post(Uri.parse("http://$ip:3000/apply"),
-          headers: <String, String>{
-            'Context-Type': 'application/json;charSet=UTF-8'
-          },
-          body: {
-            'cv': '',
-            'user_id': widget.userId,
-            'program_id': widget.programId
+      var res = await http
+          .post(Uri.parse("http://$ip/apply"), headers: <String, String>{
+        'Context-Type': 'application/json;charSet=UTF-8'
+      }, body: {
+        'cv': application.cv,
+        // 'user_id': _user.id,
+        // 'program_id': widget.programId
+      });
 
-          });
+      if (res.statusCode == 201) {
+        setState(() {
+          cvError = "Applied successfully";
+        });
+        return;
+      }
       if (res.statusCode == 400) {
         setState(() {
           cvError = "Choose valid file ";
@@ -136,21 +140,113 @@ class _ApplicationFormState extends State<ApplicationForm> {
     }
   }
 
+  // Future<void> _submitForm() async {
+  //   if (cvFile == null) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: const Text('Error'),
+  //           content: const Text('Please attach your CV file.'),
+  //           actions: <Widget>[
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: const Text('OK'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //     return;
+  //   }
+
+  //   // Create multipart request for the API endpoint
+  //   var request = http.MultipartRequest(
+  //     'POST',
+  //     Uri.parse('http://$ip/apply'),
+  //   );
+
+  //   // Attach the CV file to the request
+  //   request.files.add(
+  //     await http.MultipartFile.fromPath('cv', cvFile!.path),
+  //   );
+  //   request.fields['user_id'] = widget.userId as String;
+  //   request.fields['program_id'] = widget.programId as String;
+
+  //   // Send the request and get the response
+  //   var response = await request.send();
+
+  //   if (response.statusCode == 201) {
+  //     // Success! Handle the response here.
+  //     // ignore: use_build_context_synchronously
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: const Text('Success'),
+  //           content: const Text('Application submitted successfully.'),
+  //           actions: <Widget>[
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: const Text('OK'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   } else {
+  //     // Error occurred. Handle the error here.
+  //     // ignore: use_build_context_synchronously
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           // ignore: prefer_const_constructors
+  //           title: Text('Error'),
+  //           content: const Text('An error occurred. Please try again.'),
+  //           actions: <Widget>[
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: const Text('OK'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
+
   String cvError = '';
-
-  attachFile(context) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc'],
-    );
-
-    if (result != null) {
-      
-      //  File file = File(result.files.single.path);
-    } else {
-      // User canceled the picker
-    }
+ void removeSkill(Skill skill) {
+    print(skill);
+    print('removed');
+    setState(() {
+      userSkills.skills.remove(skill);
+      selectedSkills.remove(skill.name);
+      selectedSkillsId.remove(skill.id);
+    });
   }
+  // File? cvFile;
+
+  // Future<void> _selectCVFile() async {
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //     type: FileType.custom,
+  //     allowedExtensions: ['pdf', 'doc', 'docx'],
+  //   );
+
+  //   if (result != null) {
+  //     setState(() {
+  //       cvFile = File(result.files.single.path!);
+  //       application.cv = cvFile!;
+  //     });
+  //   }
+  // }
 
   String email = "";
   String password = "";
@@ -176,7 +272,8 @@ class _ApplicationFormState extends State<ApplicationForm> {
         TextEditingController(text: _user.phone);
     TextEditingController locationController =
         TextEditingController(text: _user.location);
-
+    print(_user.id);
+    print(widget.programId);
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         // physics: const AlwaysScrollableScrollPhysics(),
@@ -336,8 +433,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 20),
                                 deleteIconColor: tPrimaryColor,
-                                onDeleted: () => {}
-                                // removeSkill(skill),
+                                onDeleted: () => removeSkill(skill),
                                 ))
                             .toList(),
                       ),
@@ -373,7 +469,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
                           ),
                           OutlinedButton(
                             onPressed: () {
-                              attachFile(context);
+                              // _selectCVFile();
                             },
                             style: OutlinedButton.styleFrom(
                               side: const BorderSide(
@@ -505,29 +601,21 @@ class _ApplicationFormState extends State<ApplicationForm> {
     return TextFormField(
       onChanged: (value) {
         if (value.isNotEmpty) {
-          setState(() {});
+          setState(() {
+            // value = cvFile!.path.toString();
+          });
         }
-        // user.firstName = value;
       },
-      validator: (Name) {
-        if (Name == null || Name.isEmpty) {
-          setState(() {});
-          return "";
-        } else if (Name.isNotEmpty) {
-          setState(() {});
-        }
-        return null;
-      },
-      decoration: const InputDecoration(
-        prefixIcon: Icon(
+      decoration: InputDecoration(
+        prefixIcon: const Icon(
           Icons.upload_file,
           color: tPrimaryColor,
         ),
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-        labelText: 'Attach Resume',
-        labelStyle: TextStyle(color: Colors.black, fontSize: 14),
+        // labelText: cvFile!.path.toString(),
+        labelStyle: const TextStyle(color: Colors.black, fontSize: 14),
       ),
     );
   }

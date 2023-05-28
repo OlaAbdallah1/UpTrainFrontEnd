@@ -177,7 +177,7 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
       phone: '',
       photo: '',
       location: '',
-      field: '');
+      field: '',field_id: 0);
 
   String name = '';
   String errorImg = '';

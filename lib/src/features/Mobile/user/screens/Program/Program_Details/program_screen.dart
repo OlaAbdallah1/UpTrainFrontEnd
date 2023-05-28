@@ -21,15 +21,14 @@ class ProgramDetailsScreen extends StatelessWidget {
   final String endDate;
   final String trainer;
   final int programId;
-  final int userId;
 
 final Map<String, dynamic> user;
   final Map<String, dynamic> student;
   final List<Skill> skillsO; 
+  final List<Skill> programSkills; 
 
   ProgramDetailsScreen(
       {required this.programId,
-      required this.userId,
         required this.title,
       required this.image,
       required this.details,
@@ -37,6 +36,7 @@ final Map<String, dynamic> user;
       required this.startDate,
       required this.endDate,
       required this.trainer,
+      required this.programSkills,
       required this.user,
       required this.skillsO,
       required this.student
@@ -56,6 +56,7 @@ final Map<String, dynamic> user;
         endDate: endDate,
         trainer: trainer,
         user: user,
+        programSkills: programSkills,
         student: student,
         skillsO: skillsO,
       ),
@@ -68,7 +69,7 @@ final Map<String, dynamic> user;
             press: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ApplicationScreen(title: title,user: user, student: student, skillsO: skillsO,programId: programId,userId:userId))),
+                    builder: (context) => ApplicationScreen(title: title,user: user, student: student, skillsO: skillsO,programId: programId,))),
           ),
           SizedBox(
             height: getProportionateScreenHeight(20),

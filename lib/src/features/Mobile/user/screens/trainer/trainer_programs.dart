@@ -163,7 +163,6 @@ class _TrainerProgramsState extends State<TrainerPrograms> {
                                                       ProgramDetailsScreen(
                                                         programId: snapshot
                                                           .data![index].id,
-                                                          userId: snapshot.data![index].user_id,
                                                         company: snapshot.data![index].company,
                                                         title: snapshot
                                                             .data![index].title,
@@ -181,6 +180,7 @@ class _TrainerProgramsState extends State<TrainerPrograms> {
                                                         endDate: snapshot
                                                             .data![index]
                                                             .end_date,
+                                                            programSkills: [],
                                                        user: widget.user,
                                                        student: widget.student,
                                                        skillsO: widget.skillsO,
@@ -198,7 +198,6 @@ class _TrainerProgramsState extends State<TrainerPrograms> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ApplicationScreen(
-                                                      userId: snapshot.data![index].user_id,
                                                       programId: snapshot
                                                           .data![index].id,
                                                         title: snapshot

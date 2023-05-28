@@ -49,15 +49,12 @@ class ResetPassForm extends StatefulWidget {
 class _ResetPassFormState extends State<ResetPassForm> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
-  
 
   @override
   void dispose() {
     emailController.dispose();
     super.dispose();
   }
-
-
 
   String email = '';
   String data = '';
@@ -107,36 +104,40 @@ class _ResetPassFormState extends State<ResetPassForm> {
               Text(data),
             ],
           ),
-          SizedBox(height: getProportionateScreenHeight(30)),
-          TextButton(onPressed: (){}, child: Text("Resend Code"),),
-          
+        
+        SizedBox(height: getProportionateScreenHeight(30)),
+
           DefaultButton(
-            text: "Confirm",
-            press: () {
-            // async {
-              // if (_formKey.currentState!.validate()) {
+              text: "Confirm",
+              press: () async {
+                if (_formKey.currentState!.validate()) {
+                  var res = await http.post(
+                    Uri.parse("http://$ip/verifyResetPassword"),
+                    headers: <String, String>{
+                      'Context-Type': 'application/json;charSet=UTF-8'
+                    },
+                  );
+                  if (res.statusCode == 400) {
+                    setState(() {
+                      codeError = "Your code does not match the right one";
+                    });
 
-              //   var res = await http.post(
-              //     Uri.parse("http://$ip:3000/users/resetpassword"),
-              //     headers: <String, String>{
-              //       'Context-Type': 'application/json;charSet=UTF-8'
-              //     },
-              //   );
-              //   if (res.statusCode == 400) {
-              //     setState(() {
-              //       codeError = "Your code does not match the right one";
-              //     });
-
-              //     return;
-              //   } else {
-                   Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ChangePasswordScreen()));
-                
-              
-            },
+                    return;
+                  } else {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ChangePasswordScreen()));
+                  }
+                }
+              }),
+        SizedBox(height: getProportionateScreenHeight(30)),
+          TextButton(
+            onPressed: () {},
+            child: const Text(
+              "Resend Code",
+              style:
+                  TextStyle(fontSize: 18, decoration: TextDecoration.underline),
+            ),
           ),
-          SizedBox(height: SizeConfig.screenHeight * 0.1),
-          // NoAccountText(),
         ],
       ),
     );

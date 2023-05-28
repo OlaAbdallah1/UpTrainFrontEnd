@@ -11,15 +11,14 @@ import 'trainer_profile_details.dart';
 
 class Body extends StatelessWidget {
   final String trainer;
-final Map<String, dynamic> user;
+  final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  final List<Skill> skillsO; 
-  Body({
-    required this.trainer,
-    required this.user,
-    required this.student,
-    required this.skillsO
-  });
+  final List<Skill> skillsO;
+  Body(
+      {required this.trainer,
+      required this.user,
+      required this.student,
+      required this.skillsO});
   @override
   Widget build(BuildContext context) {
     int index = trainer.indexOf(' ');
@@ -31,22 +30,21 @@ final Map<String, dynamic> user;
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: getProportionateScreenHeight(20)),
-          TrainerDetails(trainer: trainerFirstName,user: user, student: student, skillsO: skillsO,),
-         Row(        mainAxisAlignment: MainAxisAlignment.start,
-
-          children:[
- Text("Programs",style: TextStyle(
-                fontSize: getProportionateScreenHeight(22),
-                decoration: TextDecoration.underline,
-                fontFamily: 'Ubuntu',
-                color: tPrimaryColor),),
-         ]),
+          TrainerDetails(
+            trainer: trainerFirstName,
+            user: user,
+            student: student,
+            skillsO: skillsO,
+          ),
          
-          TrainerPrograms(trainerName: trainerFirstName,user: user, student: student, skillsO: skillsO,)
+          // TrainerPrograms(
+          //   trainerName: trainerFirstName,
+          //   user: user,
+          //   student: student,
+          //   skillsO: skillsO,
+          // )
         ],
       ),
     );
   }
- 
-
 }

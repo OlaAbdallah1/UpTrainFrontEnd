@@ -6,7 +6,7 @@ class Company {
   late String password;
   late String website;
   late String location;
-  late int location_id;
+  late int location_id=0;
   late String phone;
 
   Company(
@@ -22,7 +22,6 @@ class Company {
 
   static Company fromJson(json) => Company(
         name: json['cName'],
-        // password: json['cPassword'],
         phone: json['cPhone_number'],
         description: json['cDescription'],
         photo: json['cPhoto'],

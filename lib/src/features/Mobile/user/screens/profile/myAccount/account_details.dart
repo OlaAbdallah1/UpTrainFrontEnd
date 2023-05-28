@@ -48,7 +48,7 @@ class _AccountDetailsState extends State<AccountDetails> {
 
   UserSkills userSkills = UserSkills(
       user: User(
-          // id: 0,
+          id: 0,
           email: '',
           firstName: '',
           lastName: '',
@@ -61,7 +61,7 @@ class _AccountDetailsState extends State<AccountDetails> {
       skills: []);
 
   late User _user = User(
-      // id: 0,
+      id: 0,
       email: '',
       firstName: '',
       lastName: '',
@@ -71,11 +71,13 @@ class _AccountDetailsState extends State<AccountDetails> {
       location: '',
       field_id: 0,
       location_id: 0);
+      
   void combineData() {
     combined.addAll(widget.user);
     combined.addAll(widget.student);
     print(combined);
-    _user = User.fromMap(combined);
+    _user = User.fromJson(combined);
+    print(_user.id);
   }
 
   void fetchData() {
@@ -91,6 +93,7 @@ class _AccountDetailsState extends State<AccountDetails> {
   @override
   void initState() {
     skills = getSkills();
+    locations = getLocations();
     combineData();
     fetchData();
 
@@ -288,6 +291,7 @@ class _AccountDetailsState extends State<AccountDetails> {
       for (Map skill in responseData) {
         skillsData.add(Skill.fromJson(skill));
       }
+      
       return skillsData;
     } else {
       return skillsData;
@@ -495,7 +499,7 @@ class _AccountDetailsState extends State<AccountDetails> {
                     if (isEnabled)
                       Expanded(
                         child: FutureBuilder(
-                            future: getLocations(),
+                            future: locations,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 locationsList = snapshot.data!;

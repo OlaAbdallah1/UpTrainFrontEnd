@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
+import 'package:uptrain/src/features/Admin/models/Employee.dart';
 import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
-import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/header.dart';
+import 'package:uptrain/src/features/Employee/main/components/header.dart';
 import '../../../../../responsive.dart';
+import 'main/components/employee_side_menu.dart';
 
 class Body extends StatelessWidget {
-    // Map<String, dynamic> admin;
+  Employee employee;
 
-  Body({
-    super.key,
-    // required this.admin
-  });
+  Body({super.key, required this.employee});
 
   @override
   Widget build(BuildContext context) {
+    print(employee.email);
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer:  AdminSideMenu(),
+      drawer: EmployeeSideMenu(employee : employee),
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +25,7 @@ class Body extends StatelessWidget {
             if (Responsive.isDesktop(context))
                Expanded(
                 // default flex = 1
-                child: AdminSideMenu(),
+                child: EmployeeSideMenu(employee : employee),
               ),
             Expanded(
               flex: 5,
@@ -35,11 +35,11 @@ class Body extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Header(),
+                      EHeader(employee: employee),
                       const SizedBox(
                         height: defaultPadding,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: defaultPadding,
                       ),
                       const SizedBox(

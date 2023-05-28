@@ -13,6 +13,7 @@ import 'package:path/path.dart' as path;
 import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/Companies/AddCompany/add_company_screen.dart';
 import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/Companies/companies_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
+import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../../../../../constants/colors.dart';
 import '../../../../../../constants/connections.dart';
@@ -21,7 +22,7 @@ import '../../../../../../utils/theme/widget_themes/button_theme.dart';
 import '../../../../../Mobile/authentication/models/location.dart';
 
 class AddCompanyForm extends StatefulWidget {
-   AddCompanyForm({super.key});
+  AddCompanyForm({super.key});
   @override
   State<AddCompanyForm> createState() => _AddCompanyFormState();
 }
@@ -155,7 +156,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
             'phone': company.phone,
             'photo': company.photo,
             'description': company.description,
-            'location_id': '5',
+            'location_id': company.location_id,
             'webSite': company.website,
           });
 
@@ -177,9 +178,8 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => CompaniesScreen(
-                                
-                              ))),
+                          builder: (BuildContext context) =>
+                              CompaniesScreen())),
 
                   // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -287,7 +287,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                             child: Image.network(image!.path),
                           )
                         : ClipOval(
-                            child: Image.network(company.photo),
+                            child: ImageFromUrl(imageUrl: company.photo),
                           ),
                     Positioned(
                       right: -16,
@@ -458,7 +458,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
 
   TextFormField buildEmailFormField() {
     return TextFormField(
-      keyboardType: TextInputType.emailAddress,
+      // keyboardType: TextInputType.emailAddress,
       validator: (Email) {
         if (Email == null || Email.isEmpty) {
           setState(() {

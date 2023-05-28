@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrain/src/constants/colors.dart';
-import 'package:uptrain/src/features/Company/Program/addProgram/add_program_screen.dart';
-import '../../../../../responsive.dart';
-import '../../../constants/size_config.dart';
-import '../../Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
-import 'programs.dart';
-import 'programs_header.dart';
+import 'package:uptrain/src/features/Admin/models/Employee.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
+import 'package:uptrain/src/features/Employee/Students/students.dart';
+import 'package:uptrain/src/features/Employee/Students/students_header.dart';
+import 'package:uptrain/src/features/Employee/main/components/employee_side_menu.dart';
+import '../../../../../../responsive.dart';
 
 class Body extends StatelessWidget {
+  Employee employee;
   Body({
+    required this.employee,
     super.key,
   });
 
@@ -17,17 +19,17 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer:  AdminSideMenu(),
+      drawer: EmployeeSideMenu(employee: employee,),
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // We want this side menu only for large screen
             if (Responsive.isDesktop(context))
-               Expanded(
+              Expanded(
                 // default flex = 1
                 // and it takes 1/6 part of the screen
-                child: AdminSideMenu(),
+                child: EmployeeSideMenu(employee: employee,),
               ),
             Expanded(
               // It takes 5/6 part of the screen
@@ -38,47 +40,18 @@ class Body extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const ProgramHeader(),
-                      const SizedBox(
-                        height: defaultPadding,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            height: getProportionateScreenHeight(45),
-                            width: getProportionateScreenWidth(50),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                // shape: RoundedRectangleBorder(
-                                // borderRadius: BorderRadius.circular(15)),
-                                backgroundColor: tPrimaryColor,
-                                side: const BorderSide(
-                                  width: 1.5,
-                                  color: tLightColor,
-                                ),
-                              ),
-                              onPressed: ()  => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddProgramScreen())),
-                              child: const Text(
-                                "Add Program",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Ubuntu'),
-                              ),
-                            ),
-                          )
-                        ],
+                      StudentHeader(
+                        employee: employee,
                       ),
                       const SizedBox(
                         height: defaultPadding,
                       ),
-                      const SizedBox(
-                        // width: 1300,
-                        child: ProgramPage(),
+                      SizedBox(
+                        height: defaultPadding,
+                      ),
+                      SizedBox(
+                        width: 1100,
+                        child: StudentsPage(employee: employee),
                       ),
                     ],
                   )),
@@ -99,7 +72,7 @@ class Body extends StatelessWidget {
     //           crossAxisAlignment: CrossAxisAlignment.start,
     //           children: [
     //             SizedBox(height: getProportionateScreenHeight(20)),
-    //             const ProgramHeader(),
+    //             const CompanyHeader(),
     //             SizedBox(
     //               height: getProportionateScreenHeight(20),
     //             ),
@@ -127,7 +100,7 @@ class Body extends StatelessWidget {
     //                     ),
     //                   ],
     //                 ),
-    //                 ProgramPage(),
+    //                 CompanyPage(),
     //               ],
     //             ),
     //           ],

@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
-import 'package:uptrain/src/features/Company/Program/programs_screen.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/Fields/fields_screen.dart';
+import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/dashboard_screen.dart';
 
-import '../../../../constants/size_config.dart';
+import '../../../constants/size_config.dart';
 
+class CompanySideMenu extends StatelessWidget {
+  // Map<String, dynamic> admin;
 
-
-class SideMenu extends StatelessWidget {
-  const SideMenu({
+  CompanySideMenu({
     Key? key,
+// required this.admin
   }) : super(key: key);
 
   @override
@@ -37,41 +39,34 @@ class SideMenu extends StatelessWidget {
               ],
             ),
           ),
-          DrawerListTile(
-            title: "Dashboard",
-            svgSrc: "assets/icons/menu_dashbord.svg",
-            press: () {},
-          ),
           // DrawerListTile(
-          //   title: "Documents",
-          //   svgSrc: "assets/icons/menu_doc.svg",
-          //   press: () {},
+          //   title: "Dashboard",
+          //   svgSrc: "assets/icons/menu_dashbord.svg",
+          //   press: () => Navigator.push(context,
+          //       MaterialPageRoute(builder: (context) => CompanyDashboardScreen())),
           // ),
           DrawerListTile(
-            title: "Companies",
-            svgSrc: "assets/icons/menu_store.svg",
-            press: () {},
-          ),
-          DrawerListTile(
-            title: "Employees",
-            svgSrc: "assets/icons/User.svg",
-            press: () {},
-          ),
-          DrawerListTile(
             title: "Programs",
-            svgSrc: "assets/icons/User.svg",
-            press: (){}
+            svgSrc: "assets/icons/menu_store.svg",
+            press: () => {},
           ),
+          DrawerListTile(
+              title: "Trainers",
+              svgSrc: "assets/icons/User.svg",
+              press: () => {}),
+
           DrawerListTile(
             title: "Notification",
             svgSrc: "assets/icons/menu_notification.svg",
             press: () {},
           ),
           DrawerListTile(
-            title: "Profile",
-            svgSrc: "assets/icons/menu_profile.svg",
-            press: () {},
-          ),
+              title: "Profile",
+              svgSrc: "assets/icons/menu_profile.svg",
+              press: () => {}
+              // Navigator.push(context,
+              // MaterialPageRoute(builder: (context) => CompanyProfilePage())),
+              ),
           DrawerListTile(
             title: "Settings",
             svgSrc: "assets/icons/menu_setting.svg",

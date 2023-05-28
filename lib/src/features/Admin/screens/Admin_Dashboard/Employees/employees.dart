@@ -22,6 +22,7 @@ List<Employee> employees = [];
 final controller = TextEditingController();
 
 class _EmployeePageState extends State<EmployeePage> {
+  
   Future<List<Employee>> fetchEmployees(String search) async {
     final response = await http.get(Uri.parse('http://$ip/api/getEmployees'));
     final List<dynamic> data = json.decode(response.body);

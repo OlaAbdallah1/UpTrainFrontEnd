@@ -81,11 +81,7 @@ class AdminSideMenu extends StatelessWidget {
             press: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => AdminProfilePage())),
           ),
-          DrawerListTile(
-            title: "Settings",
-            svgSrc: "assets/icons/menu_setting.svg",
-            press: () {},
-          ),
+         
         ],
       ),
     );

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
 import 'package:uptrain/src/features/Mobile/user/models/program.dart';
+import 'package:uptrain/src/features/Mobile/user/models/program_skills.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/Program/Apply/application_screen.dart';
 
 import '../../../../../constants/colors.dart';
@@ -14,6 +15,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../authentication/models/skills.dart';
 import '../Program/Program_Details/program_screen.dart';
+import 'search_field.dart';
 // Our Category List need StateFullWidget
 // I can use Provider on it, Then we dont need StatefulWidget
 
@@ -40,6 +42,20 @@ class _ProgramsState extends State<Programs> {
     super.initState();
   }
 
+  ProgramSkills programSkills = ProgramSkills(
+      program: Program(
+          id: 0,
+          // user_id: 0,
+          title: '',
+          image: '',
+          company: '',
+          start_date: '',
+          end_date: '',
+          branch: '',
+          details: '',
+          trainer: ''),
+      skills: []);
+
   String _selectedBranch = 'All';
 
   Future<List<Branch>> fetchBranches() async {
@@ -63,17 +79,28 @@ class _ProgramsState extends State<Programs> {
     }
   }
 
-  List<Program> programsData = [];
+  List<ProgramSkills> programsData = [];
 
-  Future<List<Program>> fetchPrograms() async {
+  List skills = [];
+  Future<List<ProgramSkills>> fetchPrograms() async {
     if (_selectedBranch == 'All') {
       final response = await http.get(Uri.parse(
           'http://$ip/api/getPrograms/${widget.student['field_id']}'));
 
-      var responseData = jsonDecode(response.body);
+      var responseData = json.decode(response.body);
+      // programSkills.skills = responseData['skill'];
+
       if (response.statusCode == 201) {
         for (Map program in responseData) {
-          programsData.add(Program.fromJson(program));
+          print(program);
+          programSkills = ProgramSkills(
+              program: Program.fromJson(program),
+              skills: (program['skill'] as List<dynamic>)
+                  .map((skillJson) => Skill.fromJson(skillJson))
+                  .toList());
+          // programSkills.skills =
+          // print(programSkills.skills);
+          programsData.add(programSkills);
         }
         return programsData;
       } else {
@@ -86,13 +113,15 @@ class _ProgramsState extends State<Programs> {
       print(responseData);
 
       if (response.statusCode == 201) {
-        final List<dynamic> data = json.decode(response.body);
+        // final List<dynamic> data = json.decode(response.body);
         print("testttt");
-        print(data);
-        return data
-            .map((json) => Program.fromJson(json))
-            .where((item) => item.branch == _selectedBranch)
+        // print(data);
+        return programsData
+            .where((element) => element.program.branch == _selectedBranch)
             .toList();
+        // .map((json) => Program.fromJson(json))
+        // .where((item) => item.branch == _selectedBranch)
+        // .toList();
       }
     }
     throw Exception('Failed to fetch items');
@@ -102,9 +131,12 @@ class _ProgramsState extends State<Programs> {
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+    return SafeArea(
+        child: Column(
       children: [
+        SearchField(),
+        SizedBox(height: getProportionateScreenHeight(10)),
+
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: FutureBuilder(
@@ -160,6 +192,7 @@ class _ProgramsState extends State<Programs> {
                 return const CircleAvatar();
               }),
         ),
+
         SizedBox(
           height: getProportionateScreenHeight(20),
         ),
@@ -183,9 +216,9 @@ class _ProgramsState extends State<Programs> {
         //   ],
         // ),
         // const Recommended(),
-        SizedBox(
-          height: getProportionateScreenHeight(20),
-        ),
+        // SizedBox(
+        //   height: getProportionateScreenHeight(10),
+        // ),
         Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           Row(
             children: [
@@ -308,7 +341,7 @@ class _ProgramsState extends State<Programs> {
                               horizontal: getProportionateScreenWidth(2),
                               vertical: getProportionateScreenHeight(2)),
                           child: Container(
-                            height: getProportionateScreenHeight(192),
+                            height: getProportionateScreenHeight(206),
                             child: Card(
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -339,7 +372,7 @@ class _ProgramsState extends State<Programs> {
                                           children: [
                                             ListTile(
                                                 title: Text(
-                                                  "${snapshot.data![index].title}",
+                                                  "${snapshot.data![index].program.title}",
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: TextStyle(
@@ -352,10 +385,12 @@ class _ProgramsState extends State<Programs> {
                                                           FontWeight.bold),
                                                 ),
                                                 subtitle: Text(snapshot
-                                                    .data![index].branch)),
+                                                    .data![index]
+                                                    .program
+                                                    .branch)),
                                             ListTile(
                                               title: Text(
-                                                "By ${snapshot.data![index].company}",
+                                                "By ${snapshot.data![index].program.company}",
                                                 // overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                     fontSize:
@@ -367,7 +402,7 @@ class _ProgramsState extends State<Programs> {
                                                         FontWeight.normal),
                                               ),
                                               subtitle: Text(
-                                                " ${snapshot.data![index].start_date} \t-\t ${snapshot.data![index].end_date}",
+                                                " ${snapshot.data![index].program.start_date} \t-\t ${snapshot.data![index].program.end_date}",
                                                 style: TextStyle(
                                                     fontSize:
                                                         getProportionateScreenHeight(
@@ -396,30 +431,44 @@ class _ProgramsState extends State<Programs> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       ProgramDetailsScreen(
-                                                          userId: snapshot.data![index].user_id,
-                                                        programId: snapshot.data![index].id,
+                                                        programId: snapshot
+                                                            .data![index]
+                                                            .program
+                                                            .id,
                                                         title: snapshot
-                                                            .data![index].title,
+                                                            .data![index]
+                                                            .program
+                                                            .title,
                                                         details: snapshot
                                                             .data![index]
+                                                            .program
                                                             .details,
                                                         image: snapshot
-                                                            .data![index].image,
+                                                            .data![index]
+                                                            .program
+                                                            .image,
                                                         company: snapshot
                                                             .data![index]
+                                                            .program
                                                             .company,
                                                         startDate: snapshot
                                                             .data![index]
+                                                            .program
                                                             .start_date,
                                                         endDate: snapshot
                                                             .data![index]
+                                                            .program
                                                             .end_date,
                                                         trainer: snapshot
                                                             .data![index]
+                                                            .program
                                                             .trainer,
+                                                        programSkills: snapshot
+                                                            .data![index]
+                                                            .skills,
                                                         user: widget.user,
                                                         student: widget.student,
-                                                        skillsO:widget.skills,
+                                                        skillsO: widget.skills,
                                                       ))),
                                           child: Text(
                                             "Show Details ",
@@ -437,10 +486,14 @@ class _ProgramsState extends State<Programs> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ApplicationScreen(
-                                                        userId: snapshot.data![index].user_id,
                                                       title: snapshot
-                                                          .data![index].title,
-                                                      programId : snapshot.data![index].id,
+                                                          .data![index]
+                                                          .program
+                                                          .title,
+                                                      programId: snapshot
+                                                          .data![index]
+                                                          .program
+                                                          .id,
                                                       user: widget.user,
                                                       student: widget.student,
                                                       skillsO: widget.skills,
@@ -486,6 +539,6 @@ class _ProgramsState extends State<Programs> {
           ),
         )
       ],
-    );
+    ));
   }
 }

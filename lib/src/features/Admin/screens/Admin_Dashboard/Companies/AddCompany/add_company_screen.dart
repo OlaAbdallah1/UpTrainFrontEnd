@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../../responsive.dart';
 import '../../../../../../constants/colors.dart';
+import '../../components/admin_sidemenu.dart';
 import '../companies_header.dart';
-import '../../../main/components/side_menu.dart';
 import 'add_company_form.dart';
 
 class AddCompanyScreen extends StatelessWidget {
@@ -12,13 +12,13 @@ class AddCompanyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer: const SideMenu(),
+      drawer:  AdminSideMenu(),
       body: SafeArea(
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // We want this side menu only for large screen
         if (Responsive.isDesktop(context))
-          const Expanded(
-            child: SideMenu(),
+           Expanded(
+            child: AdminSideMenu(),
           ),
         Expanded(
           // It takes 5/6 part of the screen

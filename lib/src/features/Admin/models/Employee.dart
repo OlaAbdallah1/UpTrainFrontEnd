@@ -15,6 +15,7 @@ class Employee {
       required this.first_name,
       required this.last_name,
       required this.field,
+      required this.field_id,
       required this.phone,
       required this.photo,
       required this.location});
@@ -23,6 +24,7 @@ class Employee {
         first_name: json['first_name'],
         last_name: json['last_name'],
         field: json['fName'],
+        field_id: json['field_id'],
         phone: json['ePhone_number'],
         photo: json['ePhoto'],
         email: json['email'],
@@ -33,6 +35,7 @@ class Employee {
         'first_name': first_name,
         'last_name': last_name,
         'field': field,
+        'field_id': field_id,
         'email': email,
         'password': password,
         'phone_number': phone,

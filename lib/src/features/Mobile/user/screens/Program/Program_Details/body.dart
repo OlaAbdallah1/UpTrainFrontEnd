@@ -30,8 +30,7 @@ class Body extends StatelessWidget {
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
   final List<Skill> skillsO;
-
-
+  final List<Skill> programSkills;
 
   Body(
       {required this.title,
@@ -43,8 +42,8 @@ class Body extends StatelessWidget {
       required this.trainer,
       required this.user,
       required this.student,
-      required this.skillsO
-      });
+      required this.skillsO,
+      required this.programSkills});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +65,9 @@ class Body extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => CompanyAccount(
                                 companyName: company,
-                                user: user, student: student, skillsO: skillsO,
+                                user: user,
+                                student: student,
+                                skillsO: skillsO,
                               )));
                 },
                 child: Text(
@@ -119,6 +120,29 @@ class Body extends StatelessWidget {
                 ),
               ),
               SizedBox(height: getProportionateScreenHeight(16)),
+              const Text("Requirments Skills",
+                  style: TextStyle(
+                      color: tPrimaryColor,
+                      fontSize: 20,
+                      fontFamily: 'Ubuntu',
+                      decoration: TextDecoration.underline)),
+              SizedBox(height: getProportionateScreenHeight(10)),
+              SizedBox(
+                width: getProportionateScreenWidth(200),
+                child: Wrap(
+                  spacing: 4,
+                  children: programSkills
+                      .map((skill) => Text(
+                            skill.name,
+                            style: TextStyle(
+                                backgroundColor: Colors.grey[300],
+                                color: Colors.black,
+                                fontSize: 20),
+                          ))
+                      .toList(),
+                ),
+              ),
+              SizedBox(height: getProportionateScreenHeight(16)),
               const Text("Trainer",
                   style: TextStyle(
                       color: tPrimaryColor,
@@ -136,8 +160,8 @@ class Body extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => TrainerAccount(
                                     trainer: trainer,
-                                    user:user ,
-                                    student: student ,
+                                    user: user,
+                                    student: student,
                                     skillsO: skillsO,
                                   )));
                     },

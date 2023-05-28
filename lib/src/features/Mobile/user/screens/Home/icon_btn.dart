@@ -4,18 +4,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/size_config.dart';
 
-
 class IconBtnWithCounter extends StatelessWidget {
-  const IconBtnWithCounter({
-    Key? key,
-    required this.svgSrc,
-    this.numOfitem = 0,
-    required this.press,
-  }) : super(key: key);
+  const IconBtnWithCounter(
+      {Key? key,
+      required this.svgSrc,
+      this.numOfitem = 0,
+      required this.press,
+      required this.color})
+      : super(key: key);
 
   final String svgSrc;
   final int numOfitem;
   final GestureTapCallback press;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +30,9 @@ class IconBtnWithCounter extends StatelessWidget {
             padding: EdgeInsets.all(getProportionateScreenWidth(12)),
             height: getProportionateScreenWidth(46),
             width: getProportionateScreenWidth(46),
-            decoration: BoxDecoration(
-              color: tSecondaryColor.withOpacity(0.1),
-              shape: BoxShape.circle,
+            child: SvgPicture.asset(
+              svgSrc,
             ),
-            child: SvgPicture.asset(svgSrc,color: tPrimaryColor,),
           ),
           if (numOfitem != 0)
             Positioned(
