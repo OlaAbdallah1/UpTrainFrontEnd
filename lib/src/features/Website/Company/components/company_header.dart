@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 import '../../../../../../global.dart' as global;
 
 import '../../../../../../responsive.dart';
 import '../../../../constants/colors.dart';
 import '../../Admin/controllers/MenuAppController.dart';
 import '../../../Mobile/user/models/company.dart';
-
 
 class CHeader extends StatelessWidget {
   Company company;
@@ -107,11 +107,9 @@ class _ProfileCardState extends State<ProfileCard> {
       ),
       child: Row(
         children: [
-          ClipOval(
-            child: Image.asset(
-              'assets/images/download.png',
-              scale: 10,
-            ),
+          CircleAvatar(
+            radius: 20,
+            child: Image.asset('assets/images/${widget.company.photo}'),
           ),
           if (!Responsive.isMobile(context))
             Padding(

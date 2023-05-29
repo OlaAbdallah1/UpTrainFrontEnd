@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:uptrain/src/features/Admin/models/Employee.dart';
+import 'package:uptrain/src/features/Website/Admin/models/Employee.dart';
 
-import '../../constants/size_config.dart';
+import '../../../constants/size_config.dart';
 import 'employee_dashboard_body.dart';
 
 class EmployeeDashboardScreen extends StatefulWidget {

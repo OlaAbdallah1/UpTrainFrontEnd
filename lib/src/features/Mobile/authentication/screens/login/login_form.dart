@@ -52,10 +52,10 @@ class _LoginFormState extends State<LoginForm> {
         // save user data to local storage
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('email', user.email);
-        global.token = decoded['token'];
+        // global.token = decoded['token'];
 
         //Students
-        Map<String, dynamic> decodedUser = decoded['user'];
+        // Map<String, dynamic> decodedUser = decoded['user'];
         // Map<String, dynamic> decodedStudent = decoded['student'];
 
         List<Skill> skills = [];

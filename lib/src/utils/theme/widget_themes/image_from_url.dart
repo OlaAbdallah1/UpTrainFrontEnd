@@ -8,7 +8,7 @@ import 'package:uptrain/src/constants/size_config.dart';
 class ImageFromUrl extends StatefulWidget {
   final String imageUrl;
 
-  ImageFromUrl({required this.imageUrl});
+  ImageFromUrl( {required this.imageUrl});
 
   @override
   _ImageFromUrlState createState() => _ImageFromUrlState();

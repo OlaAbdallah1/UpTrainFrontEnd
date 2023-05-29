@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
-import 'package:uptrain/src/features/Website/Company/Program/programs_screen.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/Program/Apply/application_screen.dart';
+import 'package:uptrain/src/features/Website/Company/Applications/applications_screen.dart';
+import 'package:uptrain/src/features/Website/Company/Programs/programs_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
 
 import '../../../../constants/size_config.dart';
-import '../Trainer/trainers_screen.dart';
+import '../../../../utils/theme/widget_themes/image_from_url.dart';
+import '../Trainers/trainers_screen.dart';
 
 class CompanySideMenu extends StatelessWidget {
   Company company;
-  CompanySideMenu({
-    Key? key,
-required this.company
-  }) : super(key: key);
+  CompanySideMenu({Key? key, required this.company}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +24,14 @@ required this.company
           DrawerHeader(
             child: Column(
               children: [
-                Image.asset(
-                  "assets/images/download.png",
-                  color: tPrimaryColor,
+                CircleAvatar(
+                  radius: 40,
+                  child: Image.asset('assets/images/${company.photo}'),
                 ),
-                const Text(
-                  tAppName,
+                 Text(
+                  company.name,
                   style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 20,
                       fontFamily: 'Ubuntu',
                       fontWeight: FontWeight.bold,
                       color: tPrimaryColor),
@@ -43,7 +43,9 @@ required this.company
             title: "Programs",
             svgSrc: "assets/icons/menu_store.svg",
             press: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const ProgramsScreen(),
+              builder: (context) => ProgramsScreen(
+                company: company,
+              ),
             )),
           ),
           DrawerListTile(
@@ -51,6 +53,13 @@ required this.company
             svgSrc: "assets/icons/User.svg",
             press: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => TrainersScreen(company: company),
+            )),
+          ),
+          DrawerListTile(
+            title: "Applications",
+            svgSrc: "assets/icons/User.svg",
+            press: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ApplicationsScreen(company: company),
             )),
           ),
           DrawerListTile(

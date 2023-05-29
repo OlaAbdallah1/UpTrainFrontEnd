@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
-import 'package:uptrain/src/features/Website/Company/Program/programs_screen.dart';
+import 'package:uptrain/src/features/Website/Company/Programs/programs_screen.dart';
 import 'package:uptrain/src/features/Website/Employee/Students/students_screen.dart';
 
 import '../../../../../constants/size_config.dart';
