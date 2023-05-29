@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uptrain/src/features/Admin/screens/Admin_Dashboard/dashboard_screen.dart';
+import 'package:uptrain/src/features/Website/Admin/screens/Admin_Dashboard/dashboard_screen.dart';
+import 'package:uptrain/src/features/Website/Company/company_dashboard.dart';
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/connections.dart';
 import '../../../../../constants/size_config.dart';
@@ -13,8 +14,8 @@ import '../../../../../utils/theme/widget_themes/button_theme.dart';
 import '../../../../../../global.dart' as global;
 import 'package:http/http.dart' as http;
 
-import '../../../../Admin/screens/Admin_Dashboard/Employees/employees_screen.dart';
-import '../../../../Employee/employee_dashboard.dart';
+import '../../../../Website/Admin/screens/Admin_Dashboard/Employees/employees_screen.dart';
+import '../../../../Website/Employee/employee_dashboard.dart';
 import '../../../user/screens/Home/home_page_screen.dart';
 import '../../models/skills.dart';
 import '../forgot_password/forgot_password_screen.dart';
@@ -51,48 +52,54 @@ class _LoginFormState extends State<LoginForm> {
         // save user data to local storage
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('email', user.email);
+        global.token = decoded['token'];
 
+        //Students
         Map<String, dynamic> decodedUser = decoded['user'];
-        Map<String, dynamic> decodedStudent = decoded['student'];
-
-        // // List<Skill> decodedSkills = (decoded['skills'] as List<dynamic>)
-        // //     .map((skillJson) => Skill.fromJson(skillJson))
-        // //     .toList();
+        // Map<String, dynamic> decodedStudent = decoded['student'];
 
         List<Skill> skills = [];
 
-        for (var skillJson in decoded['skills']) {
-          Skill skill = Skill.fromJson(skillJson);
-          skills.add(skill);
-        }
-        // Map<String, dynamic> decodedTrainer = decoded['trainer'];
-        // Map<String, dynamic> decodedEmployee = decoded['employee'];
-        // print(decodedEmployee['eRole']);
+        // for (var skillJson in decoded['skills']) {
+        //   Skill skill = Skill.fromJson(skillJson);
+        //   skills.add(skill);
+        // }
 
-        global.token = decoded['token'];
-  
-        // print(decodedTrainer);
-        // navigate to home page
-        if (decodedUser.isNotEmpty) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              user: decodedUser,
-              student: decodedStudent,
-              skills: skills,
-            ),
-          ));
-        }
-        // if (decodedEmployee['eRole'] == 1) {
+        // if (decodedUser.isNotEmpty) {
         //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => DashboardScreen(),
-        //   ));
-        // } else if (decodedEmployee['eRole'] == 0) {
-        //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => EmployeeDashboardScreen(employee: decodedEmployee, user: decodedUser,),
+        //     builder: (context) => HomeScreen(
+        //       user: decodedUser,
+        //       student: decodedStudent,
+        //       skills: skills,
+        //     ),
         //   ));
         // }
 
-        // if (decodedTrainer.isNotEmpty) {}
+        //   //Admin & Employees
+        //   Map<String, dynamic> decodedEmployee = decoded['employee'];
+        // // Admin
+        //   if (decodedEmployee['eRole'] == 1) {
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //       builder: (context) => DashboardScreen(),
+        //     ));
+        //   //Employees
+        //   } else if (decodedEmployee['eRole'] == 0) {
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //       builder: (context) => EmployeeDashboardScreen(employee: decodedEmployee, user: decodedUser,),
+        //     ));
+        //   }
+        // Map<String, dynamic> decodedTrainer = decoded['trainer'];
+
+        // if (decodedTrainer.isNotEmpty) {
+
+        // }
+
+        Map<String, dynamic> decodedCompany = decoded['company'];
+        if (decodedCompany.isNotEmpty) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => CompanyDashboardScreen(company: decodedCompany),
+            ));
+        }
       }
 
       if (res.statusCode == 400) {

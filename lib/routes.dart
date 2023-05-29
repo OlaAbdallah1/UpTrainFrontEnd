@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:uptrain/src/features/Admin/models/Employee.dart';
-import 'package:uptrain/src/features/Employee/Students/students_screen.dart';
+import 'package:uptrain/src/features/Website/Admin/models/Employee.dart';
+import 'package:uptrain/src/features/Website/Employee/Students/students_screen.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/forgot_password/forgot_password_screen.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/splash/splash_screen.dart';

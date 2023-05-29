@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uptrain/src/features/Admin/controllers/MenuAppController.dart';
+import 'package:uptrain/src/features/Website/Admin/controllers/MenuAppController.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/welcome_screen/welcome_screen.dart';
 
