@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../authentication/models/skills.dart';
 import '../Program/Program_Details/program_screen.dart';
+import 'recommended.dart';
 import 'search_field.dart';
 // Our Category List need StateFullWidget
 // I can use Provider on it, Then we dont need StatefulWidget
@@ -92,14 +93,13 @@ class _ProgramsState extends State<Programs> {
 
       if (response.statusCode == 201) {
         for (Map program in responseData) {
-          print(program);
+          // print(program);
           programSkills = ProgramSkills(
               program: Program.fromJson(program),
               skills: (program['skill'] as List<dynamic>)
                   .map((skillJson) => Skill.fromJson(skillJson))
                   .toList());
-          // programSkills.skills =
-          // print(programSkills.skills);
+        
           programsData.add(programSkills);
         }
         return programsData;
@@ -110,11 +110,10 @@ class _ProgramsState extends State<Programs> {
       final response = await http.get(Uri.parse(
           'http://$ip/api/getPrograms/${widget.student['field_id']}'));
       var responseData = jsonDecode(response.body);
-      print(responseData);
+      // print(responseData);
 
       if (response.statusCode == 201) {
         // final List<dynamic> data = json.decode(response.body);
-        print("testttt");
         // print(data);
         return programsData
             .where((element) => element.program.branch == _selectedBranch)
@@ -196,29 +195,31 @@ class _ProgramsState extends State<Programs> {
         SizedBox(
           height: getProportionateScreenHeight(20),
         ),
-        // Row(
-        //   children: [
-        //     SizedBox(
-        //       width: getProportionateScreenWidth(12),
-        //     ),
-        //     Text(
-        //       "Recommended for you ",
-        //       style: TextStyle(
-        //           decoration: TextDecoration.underline,
-        //           fontSize: getProportionateScreenHeight(18),
-        //           color: tPrimaryColor,
-        //           fontFamily: 'Ubuntu',
-        //           fontWeight: FontWeight.bold),
-        //     ),
-        //     SizedBox(
-        //       height: getProportionateScreenHeight(10),
-        //     )
-        //   ],
-        // ),
-        // const Recommended(),
-        // SizedBox(
-        //   height: getProportionateScreenHeight(10),
-        // ),
+        Row(
+          children: [
+            SizedBox(
+              width: getProportionateScreenWidth(12),
+            ),
+            Text(
+              "Recommended for you ",
+              style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: getProportionateScreenHeight(18),
+                  color: tPrimaryColor,
+                  fontFamily: 'Ubuntu',
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(10),
+            )
+          ],
+        ),
+         SizedBox(
+              height: getProportionateScreenHeight(240),
+       child:  Recommended(user: widget.user, student: widget.student,skillsO: widget.skills,)),
+        SizedBox(
+          height: getProportionateScreenHeight(10),
+        ),
         Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           Row(
             children: [

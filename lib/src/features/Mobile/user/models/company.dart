@@ -6,7 +6,7 @@ class Company {
   late String password;
   late String website;
   late String location;
-  late int location_id=0;
+  late int location_id = 0;
   late String phone;
 
   Company(

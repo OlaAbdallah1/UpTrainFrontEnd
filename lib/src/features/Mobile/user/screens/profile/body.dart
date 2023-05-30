@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/size_config.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Mobile/user/models/application.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/profile/MyApplications/applications_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/profile/myAccount/my_account.dart';
 import '../../../../../constants/colors.dart';
 import '../../../../../utils/theme/widget_themes/image_from_url.dart';
@@ -26,17 +28,16 @@ class _BodyFormState extends State<Body> {
   late Map<String, dynamic> combined = {};
 
   late User _user = User(
-    id: 0,
-    location: '',
-    email: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    field: '',
-    photo: '',
-    field_id: 0,
-    location_id: 0
-  );
+      id: 0,
+      location: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      field: '',
+      photo: '',
+      field_id: 0,
+      location_id: 0);
   void combineData() {
     combined.addAll(widget.user);
     combined.addAll(widget.student);
@@ -104,7 +105,13 @@ class _BodyFormState extends State<Body> {
           ProfileMenu(
             text: "Applications",
             icon: "assets/icons/apply-svgrepo-com.svg",
-            press: () {},
+            press: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MyApplications(
+                        user: widget.user,
+                        student: widget.student,
+                      )));
+            },
           ),
           ProfileMenu(
             text: "Settings",

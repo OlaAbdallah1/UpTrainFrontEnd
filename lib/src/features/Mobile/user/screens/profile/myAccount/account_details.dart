@@ -71,13 +71,13 @@ class _AccountDetailsState extends State<AccountDetails> {
       location: '',
       field_id: 0,
       location_id: 0);
-      
+
   void combineData() {
     combined.addAll(widget.user);
     combined.addAll(widget.student);
     print(combined);
     _user = User.fromJson(combined);
-    print(_user.id);
+ 
   }
 
   void fetchData() {
@@ -291,7 +291,7 @@ class _AccountDetailsState extends State<AccountDetails> {
       for (Map skill in responseData) {
         skillsData.add(Skill.fromJson(skill));
       }
-      
+
       return skillsData;
     } else {
       return skillsData;
@@ -331,12 +331,13 @@ class _AccountDetailsState extends State<AccountDetails> {
 
   @override
   Widget build(BuildContext context) {
-
     TextEditingController fieldController =
         TextEditingController(text: '${_user.field} Student');
     // TextEditingController editSkillsController =
     //     TextEditingController(text: widget.skills);
     // print(_user.id);
+       print('id');
+    print(_user.id);
     locationChoose = _user.location;
     return Form(
       key: _formKey,

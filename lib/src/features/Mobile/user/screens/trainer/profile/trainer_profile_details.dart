@@ -63,7 +63,7 @@ class _TrainerDetailsState extends State<TrainerDetails> {
   void _loadTrainer() async {
     try {
       print(widget.trainer);
-      final trainer = await getTrainer(widget.trainer);
+      final trainer = await getTrainer(_trainer.email);
       setState(() {
         _trainer = trainer.first;
       });
