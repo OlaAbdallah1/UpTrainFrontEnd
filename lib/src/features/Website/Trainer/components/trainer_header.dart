@@ -33,7 +33,7 @@ class THeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${trainer.first_name} ',
+                '${trainer.first_name} ${trainer.last_name} ',
                 style: const TextStyle(
                     fontFamily: 'Ubuntu',
                     fontSize: 40,
@@ -110,13 +110,14 @@ class _ProfileCardState extends State<ProfileCard> {
         children: [
           CircleAvatar(
             radius: 20,
-            child: Image.asset('assets/images/${widget.trainer.photo}'),
+            child: Image.network(
+                "https://res.cloudinary.com/dsmn9brrg/image/upload/v1673876307/dngdfphruvhmu7cie95a.jpg"),
           ),
           if (!Responsive.isMobile(context))
             Padding(
               padding: EdgeInsets.symmetric(horizontal: defaultPadding / 2),
               child: Text(
-                '${widget.trainer.first_name}',
+                '${widget.trainer.first_name} ${widget.trainer.last_name} ',
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),

@@ -3,23 +3,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
+import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 import 'package:uptrain/src/features/Website/Company/components/company_header.dart';
 import 'package:uptrain/src/features/Website/Company/components/company_side_menu.dart';
+import 'package:uptrain/src/features/Website/Trainer/components/trainer_header.dart';
+import 'package:uptrain/src/features/Website/Trainer/components/trainer_sideMaenu.dart';
 import '../../../../../../../responsive.dart';
 
-
-class CompanyProfilePage extends StatelessWidget {
-  Company company;
-  CompanyProfilePage({
-    Key? key,
-    required this.company
-  });
+class TrainerProfilePage extends StatelessWidget {
+  Trainer trainer;
+  TrainerProfilePage({Key? key, required this.trainer});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
-      drawer: CompanySideMenu(company: company,),
+      drawer: TrainerSideMenu(
+        trainer: trainer,
+      ),
       body: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +30,9 @@ class CompanyProfilePage extends StatelessWidget {
               Expanded(
                 // default flex = 1
                 // and it takes 1/6 part of the screen
-                child: CompanySideMenu(company: company,),
+                child: TrainerSideMenu(
+                  trainer: trainer,
+                ),
               ),
             Expanded(
               // It takes 5/6 part of the screen
@@ -40,20 +43,20 @@ class CompanyProfilePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      CHeader(company: company,),
+                      THeader(
+                        trainer: trainer,
+                      ),
                       const SizedBox(height: 16.0),
                       Row(
                         children: [
                           CircleAvatar(
                             radius: 46,
-                            backgroundColor: tPrimaryColor,
-                            child: Image.asset(
-                              'assets/images/${company.photo}',
-                            ),
+                            child: Image.network(
+                                "https://res.cloudinary.com/dsmn9brrg/image/upload/v1673876307/dngdfphruvhmu7cie95a.jpg"),
                           ),
                           const SizedBox(width: 16.0),
                           Text(
-                            "${company.name}",
+                            "${trainer.first_name} ${trainer.last_name}",
                             style: const TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
@@ -81,17 +84,17 @@ class CompanyProfilePage extends StatelessWidget {
                               ListTile(
                                 leading: const Icon(Icons.email),
                                 title: const Text('Email'),
-                                subtitle: Text(company.email),
+                                subtitle: Text(trainer.email),
                               ),
                               ListTile(
                                 leading: const Icon(Icons.phone),
                                 title: const Text('Phone'),
-                                subtitle: Text(company.phone),
+                                subtitle: Text(trainer.phone),
                               ),
                               ListTile(
                                 leading: const Icon(Icons.location_city),
                                 title: const Text('Location'),
-                                subtitle: Text(company.location),
+                                // subtitle: Text(trainer),
                               ),
                             ],
                           ),
@@ -115,9 +118,9 @@ class CompanyProfilePage extends StatelessWidget {
                               const SizedBox(height: 16.0),
                               ListTile(
                                 leading: const Icon(Icons.person),
-                                title: const Text('Company Name'),
+                                title: const Text('Trainer Name'),
                                 subtitle: Text(
-                                    '${company.name}'),
+                                    '${trainer.first_name} ${trainer.last_name}'),
                               ),
                               const ListTile(
                                 leading: Icon(Icons.lock),

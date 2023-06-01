@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:uptrain/src/features/Website/Trainer/Profile/profile_screen.dart';
 
 import '../../../constants/size_config.dart';
-import '../../Mobile/user/models/company.dart';
 import '../../Mobile/user/models/trainer.dart';
-import 'body.dart';
 
 class TrainerDashboardScreen extends StatefulWidget {
   Map<String, dynamic> trainer;
+  Map<String, dynamic> user;
 
   TrainerDashboardScreen({
     required this.trainer,
+    required this.user,
     super.key,
   });
 
@@ -27,9 +28,18 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
       photo: '',
       company: '');
 
+  late Map<String, dynamic> combined = {};
+
+  void combineData() {
+    combined.addAll(widget.user);
+    combined.addAll(widget.trainer);
+    print(combined);
+    _trainer = Trainer.fromJson(combined);
+  }
+
   @override
   void initState() {
-    _trainer = Trainer.fromJson(widget.trainer);
+    combineData();
     super.initState();
   }
 
@@ -39,9 +49,8 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
     SizeConfig().init(context);
 
     return Scaffold(
-      body: Body(
-        trainer: _trainer,
-      ),
-    );
+        body: TrainerProfilePage(
+      trainer: _trainer,
+    ));
   }
 }

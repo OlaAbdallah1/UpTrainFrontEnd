@@ -7,6 +7,7 @@ import 'package:uptrain/src/features/Mobile/user/screens/Program/Apply/applicati
 import 'package:uptrain/src/features/Website/Company/Applications/applications_screen.dart';
 import 'package:uptrain/src/features/Website/Company/Programs/programs_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
+import 'package:uptrain/src/features/Website/Trainer/Programs/programs_screen.dart';
 
 import '../../../../constants/size_config.dart';
 import '../../../../utils/theme/widget_themes/image_from_url.dart';
@@ -25,8 +26,9 @@ class TrainerSideMenu extends StatelessWidget {
             child: Column(
               children: [
                 CircleAvatar(
-                  radius: 40,
-                  child: Image.asset('assets/images/${trainer.photo}'),
+                  radius: 55,
+                  child: Image.network(
+                      "https://res.cloudinary.com/dsmn9brrg/image/upload/v1673876307/dngdfphruvhmu7cie95a.jpg"),
                 ),
                 Text(
                   '${trainer.first_name} ${trainer.last_name}',
@@ -42,10 +44,13 @@ class TrainerSideMenu extends StatelessWidget {
           DrawerListTile(
               title: "Programs",
               svgSrc: "assets/icons/menu_store.svg",
-              press: () => {}),
+              press: () =>  Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => TrainerProgramsScreen(trainer: trainer),
+            )),
+            ),
           DrawerListTile(
               title: "Students",
-              svgSrc: "assets/icons/menu_store.svg",
+            svgSrc: "assets/icons/User.svg",
               press: () => {}),
           DrawerListTile(
             title: "Notification",

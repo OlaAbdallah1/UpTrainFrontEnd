@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
+import 'package:uptrain/src/features/Website/Trainer/Programs/PrpgramStudents/program_students.dart';
 import 'package:uptrain/src/features/Website/Trainer/components/trainer_header.dart';
 import 'package:uptrain/src/features/Website/Trainer/components/trainer_sideMaenu.dart';
 
@@ -9,7 +10,7 @@ import '../../../../constants/size_config.dart';
 import '../../../../utils/theme/widget_themes/image_from_url.dart';
 import '../../../Mobile/authentication/models/skills.dart';
 import '../../../Mobile/user/models/trainer.dart';
-
+import 'Tasks/AddTask/add_task_screen.dart';
 
 class ProgramDetails extends StatelessWidget {
   final String title;
@@ -62,7 +63,7 @@ class ProgramDetails extends StatelessWidget {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                       THeader(trainer: trainerr),
+                        THeader(trainer: trainerr),
                         const SizedBox(
                           height: defaultPadding,
                         ),
@@ -86,30 +87,6 @@ class ProgramDetails extends StatelessWidget {
                                         fontFamily: 'Ubuntu',
                                         color: tPrimaryColor),
                                   ),
-                                  SizedBox(
-                                    width: 100,
-                                  ),
-                                  TextButton(
-                                      onPressed: () {},
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.edit),
-                                            color: tPrimaryColor,
-                                            onPressed: () => {},
-                                          ),
-                                          Text(
-                                            'Edit Program',
-                                            style: TextStyle(
-                                                color: tSecondaryColor,
-                                                fontSize:
-                                                    getProportionateScreenHeight(
-                                                        16),
-                                                decoration:
-                                                    TextDecoration.underline),
-                                          )
-                                        ],
-                                      )),
                                 ],
                               ),
                               SizedBox(
@@ -174,37 +151,52 @@ class ProgramDetails extends StatelessWidget {
                               ),
                               SizedBox(
                                   height: getProportionateScreenHeight(16)),
-                              const Text("Trainer",
+                              const Text("Students",
                                   style: TextStyle(
                                       color: tPrimaryColor,
                                       fontSize: 20,
                                       fontFamily: 'Ubuntu',
                                       decoration: TextDecoration.underline)),
+                              SizedBox(
+                                  height: getProportionateScreenHeight(16)),
+                              ProgramStudents(
+                                  trainer: trainerr, programId: programId),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => TrainerAccount(
-                                      //               trainer: trainer,
-
-                                      //             )));
-                                    },
-                                    child: Text(
-                                      trainer,
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          fontSize:
-                                              getProportionateScreenHeight(18),
-                                          fontFamily: 'Ubuntu',
-                                          color: Colors.black),
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(45),
+                                    width: getProportionateScreenWidth(50),
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        // shape: RoundedRectangleBorder(
+                                        // borderRadius: BorderRadius.circular(15)),
+                                        backgroundColor: tPrimaryColor,
+                                        side: const BorderSide(
+                                          width: 1.5,
+                                          color: tLightColor,
+                                        ),
+                                      ),
+                                      onPressed: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddTaskScreen(
+                                                    programId: programId, trainer: trainerr,
+                                                  ))),
+                                      child: const Text(
+                                        "Add Task",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                            fontFamily: 'Ubuntu'),
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ],
+                              ),
+                              const SizedBox(
+                                height: defaultPadding,
                               ),
                             ],
                           ),

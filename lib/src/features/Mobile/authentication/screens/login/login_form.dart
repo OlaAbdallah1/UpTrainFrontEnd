@@ -7,6 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uptrain/src/features/Website/Admin/screens/Admin_Dashboard/dashboard_screen.dart';
 import 'package:uptrain/src/features/Website/Company/company_dashboard.dart';
+import 'package:uptrain/src/features/Website/Trainer/trainer_dashboard.dart';
+
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/connections.dart';
 import '../../../../../constants/size_config.dart';
@@ -52,10 +54,10 @@ class _LoginFormState extends State<LoginForm> {
         // save user data to local storage
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('email', user.email);
-        // global.token = decoded['token'];
+        global.token = decoded['token'];
 
         // //Students
-        // Map<String, dynamic> decodedUser = decoded['user'];
+        Map<String, dynamic> decodedUser = decoded['user'];
         // Map<String, dynamic> decodedStudent = decoded['student'];
 
         // List<Skill> skills = [];
@@ -88,20 +90,25 @@ class _LoginFormState extends State<LoginForm> {
         //       builder: (context) => EmployeeDashboardScreen(employee: decodedEmployee, user: decodedUser,),
         //     ));
         //   }
-        // Map<String, dynamic> decodedTrainer = decoded['trainer'];
+        Map<String, dynamic> decodedTrainer = decoded['trainer'];
 
-        // if (decodedTrainer.isNotEmpty) {
-
-        // }
-        print(decoded['company']);
-
-        Map<String, dynamic> decodedCompany = decoded['company'];
-        if (decodedCompany.isNotEmpty) {
+        if (decodedTrainer.isNotEmpty) {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                CompanyDashboardScreen(company: decodedCompany),
+            builder: (context) => TrainerDashboardScreen(
+              trainer: decodedTrainer,
+              user: decodedUser,
+            ),
           ));
         }
+        //   print(decoded['company']);
+
+        //   Map<String, dynamic> decodedCompany = decoded['company'];
+        //   if (decodedCompany.isNotEmpty) {
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //       builder: (context) =>
+        //           CompanyDashboardScreen(company: decodedCompany),
+        //     ));
+        //   }
       }
 
       if (res.statusCode == 400) {

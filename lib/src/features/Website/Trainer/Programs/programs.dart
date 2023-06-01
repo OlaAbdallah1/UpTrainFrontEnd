@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/connections.dart';
-import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
 import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
-import 'package:uptrain/src/features/Mobile/user/models/company.dart';
 import 'package:uptrain/src/features/Mobile/user/models/program_skills.dart';
 import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 
@@ -13,7 +11,6 @@ import '../../../../constants/colors.dart';
 import '../../../../constants/size_config.dart';
 import '../../../Mobile/authentication/models/skills.dart';
 import '../../../Mobile/user/models/program.dart';
-import '../../../Mobile/user/screens/Program/Program_Details/program_screen.dart';
 import 'program_details.dart';
 
 class ProgramsPage extends StatefulWidget {
@@ -58,7 +55,6 @@ class _ProgramsPageState extends State<ProgramsPage> {
 
     if (response.statusCode == 201) {
       for (Map program in responseData) {
-        print(program);
         programSkills = ProgramSkills(
           program: Program.fromJson(program),
           skills: (program['skill'] as List<dynamic>)
@@ -91,17 +87,19 @@ class _ProgramsPageState extends State<ProgramsPage> {
             future: _futurePrograms,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return ListView.builder(
+                return GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
+                    crossAxisCount: 2,
+                    childAspectRatio: (MediaQuery.of(context).size.width / 2) /
+                        getProportionateScreenHeight(450),
+                    children: List.generate(snapshot.data!.length, (index) {
                       return Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: getProportionateScreenWidth(2),
                             vertical: getProportionateScreenHeight(2)),
                         child: Container(
-                          height: getProportionateScreenHeight(212),
+                          // height: getProportionateScreenHeight(150),
                           child: Card(
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
@@ -151,18 +149,6 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                     .name)),
                                             ListTile(
                                               title: Text(
-                                                "By ${snapshot.data![index].program.company}",
-                                                // overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        getProportionateScreenHeight(
-                                                            16),
-                                                    color: tPrimaryColor,
-                                                    // fontFamily: 'Ubuntu',
-                                                    fontWeight:
-                                                        FontWeight.normal),
-                                              ),
-                                              subtitle: Text(
                                                 " ${snapshot.data![index].program.start_date} \t-\t ${snapshot.data![index].program.end_date}",
                                                 style: TextStyle(
                                                     fontSize:
@@ -179,9 +165,6 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                       ),
                                     ],
                                   ),
-                                  // const SizedBox(
-                                  //   height: 10,
-                                  // ),
                                   Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
@@ -208,7 +191,8 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                               .data![index]
                                                               .program
                                                               .image,
-                                                          trainerr:widget.trainer,
+                                                          trainerr:
+                                                              widget.trainer,
                                                           startDate: snapshot
                                                               .data![index]
                                                               .program
@@ -234,34 +218,12 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                   decoration:
                                                       TextDecoration.underline),
                                             )),
-                                        TextButton(
-                                            onPressed: () {},
-                                            child: Row(
-                                              children: [
-                                                IconButton(
-                                                  icon:
-                                                      const Icon(Icons.delete),
-                                                  color: tPrimaryColor,
-                                                  onPressed: () => {},
-                                                ),
-                                                Text(
-                                                  'Delete Program',
-                                                  style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize:
-                                                          getProportionateScreenHeight(
-                                                              16),
-                                                      decoration: TextDecoration
-                                                          .underline),
-                                                )
-                                              ],
-                                            )),
                                       ]),
                                 ]),
                           ),
                         ),
                       );
-                    });
+                    }));
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }

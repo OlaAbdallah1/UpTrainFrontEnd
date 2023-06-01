@@ -6,15 +6,10 @@ import 'program.dart';
 class ProgramSkills {
   late final Program program;
   late List<Skill> skills;
-    // late final Trainer trainer;
+  // late final Trainer trainer;
 
-
-  ProgramSkills({required this.program, required this.skills,});
-
-  // factory ProgramSkills.fromJson(json) {
-    
-  //   return ProgramSkills(program: Program.fromJson(json),
-  //   skills: Skill.fromJson(json) 
-  //   );
-  // }
+  ProgramSkills({
+    required this.program,
+    required this.skills,
+  });
 }

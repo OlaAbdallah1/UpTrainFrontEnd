@@ -1,5 +1,5 @@
 class User {
-  late int id;
+   int id;
   late String email;
   late String password;
   late String firstName;
@@ -33,8 +33,8 @@ class User {
       phone: json['sPhone_number'],
       photo: json['sPhoto'],
       location: json['locationName'],
-      location_id: json['location_id'],
-      field_id: json['field_id'],
+      location_id: json['location_id'].toInt(),
+      field_id: json['field_id'].toInt(),
       email: json['email'],
       field: json['fName'],
     );

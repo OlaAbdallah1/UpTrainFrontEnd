@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uptrain/src/features/Website/Company/Profile/profile_screen.dart';
 
 import '../../../constants/size_config.dart';
 import '../../Mobile/user/models/company.dart';
-import 'body.dart';
 
 class CompanyDashboardScreen extends StatefulWidget {
   Map<String, dynamic> company;
@@ -40,7 +40,7 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
     SizeConfig().init(context);
 
     return Scaffold(
-      body: Body(
+      body: CompanyProfilePage(
         company: _company,
       ),
     );

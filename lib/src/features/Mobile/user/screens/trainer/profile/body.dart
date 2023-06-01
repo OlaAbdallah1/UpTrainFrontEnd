@@ -21,7 +21,6 @@ class Body extends StatelessWidget {
       required this.skillsO});
   @override
   Widget build(BuildContext context) {
-   
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Column(
@@ -35,7 +34,7 @@ class Body extends StatelessWidget {
             student: student,
             skillsO: skillsO,
           ),
-         
+
           // TrainerPrograms(
           //   trainerName: trainerFirstName,
           //   user: user,

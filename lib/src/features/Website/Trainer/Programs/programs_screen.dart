@@ -5,9 +5,9 @@ import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 import '../../../../constants/size_config.dart';
 import 'body.dart';
 
-class ProgramsScreen extends StatelessWidget {
-  Trainer company;
-   ProgramsScreen({super.key,required this.company});
+class TrainerProgramsScreen extends StatelessWidget {
+  Trainer trainer;
+   TrainerProgramsScreen({super.key,required this.trainer});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class ProgramsScreen extends StatelessWidget {
 
     return Scaffold(
       body: Body(
-        trainer: company,
+        trainer: trainer,
       ),
     );
   }

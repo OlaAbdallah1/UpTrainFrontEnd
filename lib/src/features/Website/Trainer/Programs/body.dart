@@ -59,7 +59,7 @@ class Body extends StatelessWidget {
                         height: defaultPadding,
                       ),
                        SizedBox(
-                        width: 550,
+                        width: 600,
                         child: ProgramsPage(trainer: trainer,),
                       ),
                     ],
