@@ -10,7 +10,7 @@ import '../../../../authentication/models/skills.dart';
 import 'trainer_profile_details.dart';
 
 class Body extends StatelessWidget {
-  final String trainer;
+  final Trainer trainer;
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
   final List<Skill> skillsO;
@@ -21,8 +21,7 @@ class Body extends StatelessWidget {
       required this.skillsO});
   @override
   Widget build(BuildContext context) {
-    int index = trainer.indexOf(' ');
-    String trainerFirstName = trainer.substring(0, index);
+   
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Column(
@@ -31,7 +30,7 @@ class Body extends StatelessWidget {
         children: [
           SizedBox(height: getProportionateScreenHeight(20)),
           TrainerDetails(
-            trainer: trainerFirstName,
+            trainer: trainer,
             user: user,
             student: student,
             skillsO: skillsO,

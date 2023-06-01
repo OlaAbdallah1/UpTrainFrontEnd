@@ -71,7 +71,7 @@ class Body extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          AddProgramScreen())),
+                                          AddProgramScreen(company: company,))),
                               child: const Text(
                                 "Add Program",
                                 style: TextStyle(

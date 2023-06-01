@@ -23,6 +23,7 @@ class CompanyDetails extends StatefulWidget {
 
 class _CompanyDetailsState extends State<CompanyDetails> {
   late Company _company = Company(
+    id: 0,
       name: '',
       description: '',
       email: '',
@@ -69,17 +70,20 @@ class _CompanyDetailsState extends State<CompanyDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: getProportionateScreenWidth(120),
-                      child: ImageFromUrl(imageUrl: _company.photo),
-),
-                    Expanded(child: Text(
-                      _company.name,
-                      style: const TextStyle(
-                          color: tPrimaryColor,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30),
-                    ),)
+                    SizedBox(
+                      width: getProportionateScreenWidth(120),
+                      child: Image.asset("assets/images/${_company.photo}"),
+                    ),
+                    Expanded(
+                      child: Text(
+                        _company.name,
+                        style: const TextStyle(
+                            color: tPrimaryColor,
+                            fontFamily: 'Ubuntu',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30),
+                      ),
+                    )
                   ],
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: []),

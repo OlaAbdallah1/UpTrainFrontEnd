@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
+import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
 import 'package:uptrain/src/features/Mobile/user/models/program_skills.dart';
+import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 
 import '../../../../constants/colors.dart';
 import '../../../../constants/size_config.dart';
@@ -24,18 +26,26 @@ class ProgramsPage extends StatefulWidget {
 
 class _ProgramsPageState extends State<ProgramsPage> {
   ProgramSkills programSkills = ProgramSkills(
-      program: Program(
-          id: 0,
-          // user_id: 0,
-          title: '',
-          image: '',
-          company: '',
-          start_date: '',
-          end_date: '',
-          branch: '',
-          details: '',
-          trainer: ''),
-      skills: []);
+    program: Program(
+        id: 0,
+        // user_id: 0,
+        title: '',
+        image: '',
+        company: '',
+        start_date: '',
+        end_date: '',
+        branch: Branch(id: 0, name: ''),
+        details: '',
+        trainer: Trainer(
+            id: 0,
+            email: '',
+            first_name: '',
+            last_name: '',
+            phone: '',
+            photo: '',
+            company: '')),
+    skills: [],
+  );
   List<ProgramSkills> programsData = [];
 
   List skills = [];
@@ -50,10 +60,11 @@ class _ProgramsPageState extends State<ProgramsPage> {
       for (Map program in responseData) {
         print(program);
         programSkills = ProgramSkills(
-            program: Program.fromJson(program),
-            skills: (program['skill'] as List<dynamic>)
-                .map((skillJson) => Skill.fromJson(skillJson))
-                .toList());
+          program: Program.fromJson(program),
+          skills: (program['skill'] as List<dynamic>)
+              .map((skillJson) => Skill.fromJson(skillJson))
+              .toList(),
+        );
 
         programsData.add(programSkills);
       }
@@ -61,16 +72,6 @@ class _ProgramsPageState extends State<ProgramsPage> {
     }
     return programsData;
   }
-
-  // Future<List<Program>> fetchPrograms() async {
-  //   final response = await http
-  //       .get(Uri.parse('http://$ip/api/getCompanyPrograms/${widget.company.name}'));
-  //   final List<dynamic> data = json.decode(response.body);
-  //   return data
-  //       .map((json) => Program.fromJson(json))
-  //       // .where((item) => item.branch == _selectedBranch)
-  //       .toList();
-  // }
 
   late Future<List<ProgramSkills>> _futurePrograms = fetchPrograms();
 
@@ -146,7 +147,8 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                 subtitle: Text(snapshot
                                                     .data![index]
                                                     .program
-                                                    .branch)),
+                                                    .branch
+                                                    .name)),
                                             ListTile(
                                               title: Text(
                                                 "By ${snapshot.data![index].program.company}",
@@ -216,10 +218,8 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                               .data![index]
                                                               .program
                                                               .end_date,
-                                                          trainer: snapshot
-                                                              .data![index]
-                                                              .program
-                                                              .trainer,
+                                                          trainer:
+                                                              '${snapshot.data![index].program.trainer.first_name} ${snapshot.data![index].program.trainer.last_name}',
                                                           programSkills:
                                                               snapshot
                                                                   .data![index]
@@ -236,7 +236,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                       TextDecoration.underline),
                                             )),
                                         TextButton(
-                                            onPressed: (){},
+                                            onPressed: () {},
                                             child: Row(
                                               children: [
                                                 IconButton(
@@ -245,15 +245,18 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                   color: tPrimaryColor,
                                                   onPressed: () => {},
                                                 ),
-                                                Text('Delete Program',style: TextStyle(color: Colors.red, fontSize:
-                                                      getProportionateScreenHeight(
-                                                          16),
-                                                  decoration:
-                                                      TextDecoration.underline),)
+                                                Text(
+                                                  'Delete Program',
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize:
+                                                          getProportionateScreenHeight(
+                                                              16),
+                                                      decoration: TextDecoration
+                                                          .underline),
+                                                )
                                               ],
                                             )),
-                                      
-                                       
                                       ]),
                                 ]),
                           ),

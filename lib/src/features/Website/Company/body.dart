@@ -12,7 +12,6 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(company.email);
     return Scaffold(
       // key: context.read<MenuAppController>().scaffoldKey,
       // drawer: EmployeeSideMenu(employee : employee),
@@ -23,6 +22,7 @@ class Body extends StatelessWidget {
             // We want this side menu only for large screen
             if (Responsive.isDesktop(context))
                Expanded(
+                
                 // default flex = 1
                 child: CompanySideMenu(company : company),
               ),

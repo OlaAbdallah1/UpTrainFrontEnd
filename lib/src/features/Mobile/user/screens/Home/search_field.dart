@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
 import 'package:uptrain/src/features/Mobile/user/models/program.dart';
 import 'package:http/http.dart' as http;
+import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/connections.dart';
@@ -20,18 +22,26 @@ class SearchField extends StatefulWidget {
 class _SearchFieldState extends State<SearchField> {
   List<Program> filteredPrograms = [];
   ProgramSkills programSkills = ProgramSkills(
-      program: Program(
-          id: 0,
-          // user_id: 0,
-          title: '',
-          image: '',
-          company: '',
-          start_date: '',
-          end_date: '',
-          branch: '',
-          details: '',
-          trainer: ''),
-      skills: []);
+    program: Program(
+        id: 0,
+        // user_id: 0,
+        title: '',
+        image: '',
+        company: '',
+        start_date: '',
+        end_date: '',
+        branch: Branch(id: 0,name: ''),
+        details: '',
+        trainer: Trainer(
+          id:0,
+            email: '',
+            first_name: '',
+            last_name: '',
+            phone: '',
+            photo: '',
+            company: '')),
+    skills: [],
+  );
 
   List<ProgramSkills> programsData = [];
   List skills = [];
@@ -42,10 +52,12 @@ class _SearchFieldState extends State<SearchField> {
       for (Map program in data) {
         //     print(program);
         programSkills = ProgramSkills(
-            program: Program.fromJson(program),
-            skills: (program['skill'] as List<dynamic>)
-                .map((skillJson) => Skill.fromJson(skillJson))
-                .toList());
+          program: Program.fromJson(program),
+          skills: (program['skill'] as List<dynamic>)
+              .map((skillJson) => Skill.fromJson(skillJson))
+              .toList(),
+        );
+
         programsData.add(programSkills);
       }
     });

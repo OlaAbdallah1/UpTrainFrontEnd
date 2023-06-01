@@ -8,7 +8,7 @@ import 'body.dart';
 
 class TrainerAccount extends StatelessWidget {
   static String routeName = "/";
-  final String trainer;
+  final Trainer trainer;
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
   final List<Skill> skillsO; 

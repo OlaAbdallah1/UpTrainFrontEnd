@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "978436407454",
+    "project_id": "notifications-bb3bf",
+    "storage_bucket": "notifications-bb3bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978436407454:android:69d4b2bb8ca0c6a0a4bb8f",
+        "android_client_info": {
+          "package_name": "com.example.uptrain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUUAON59bQRmXzALDJIJRJZAJ96pHr8mY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

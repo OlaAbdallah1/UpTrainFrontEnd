@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:uptrain/global.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/Program/Program_Details/program_screen.dart';
 
 import '../../../../../constants/colors.dart';
@@ -13,6 +14,7 @@ import '../../../authentication/models/skills.dart';
 import '../../../authentication/models/user.dart';
 import '../../models/program.dart';
 import '../../models/program_skills.dart';
+import '../../models/trainer.dart';
 import 'programs.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,18 +35,26 @@ class Recommended extends StatefulWidget {
 
 class _RecommendedState extends State<Recommended> {
   ProgramSkills programSkills = ProgramSkills(
-      program: Program(
-          id: 0,
-          // user_id: 0,
-          title: '',
-          image: '',
-          company: '',
-          start_date: '',
-          end_date: '',
-          branch: '',
-          details: '',
-          trainer: ''),
-      skills: []);
+    program: Program(
+        id: 0,
+        // user_id: 0,
+        title: '',
+        image: '',
+        company: '',
+        start_date: '',
+        end_date: '',
+        branch: Branch(id: 0, name: ''),
+        details: '',
+        trainer: Trainer(
+          id:0,
+            email: '',
+            first_name: '',
+            last_name: '',
+            phone: '',
+            photo: '',
+            company: '')),
+    skills: [],
+  );
 
   late Map<String, dynamic> combined = {};
 
@@ -86,7 +96,9 @@ class _RecommendedState extends State<Recommended> {
             program: Program.fromJson(program),
             skills: (program['skill'] as List<dynamic>)
                 .map((skillJson) => Skill.fromJson(skillJson))
-                .toList());
+                .toList(),
+           );
+
         // programSkills.skills =
         // print(programSkills.skills);
         programsData.add(programSkills);
@@ -182,28 +194,10 @@ class _RecommendedState extends State<Recommended> {
                                     Expanded(
                                       child: Column(
                                         children: [
-                                         ListTile(
-                                                title: Text(
-                                                  "${snapshot.data![index].program.title}",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          getProportionateScreenHeight(
-                                                              16),
-                                                      color: tPrimaryColor,
-                                                      // fontFamily: 'Ubuntu',
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                subtitle: Text(snapshot
-                                                    .data![index]
-                                                    .program
-                                                    .branch)),
-                                            ListTile(
+                                          ListTile(
                                               title: Text(
-                                                "By ${snapshot.data![index].program.company}",
-                                                // overflow: TextOverflow.ellipsis,
+                                                "${snapshot.data![index].program.title}",
+                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                     fontSize:
                                                         getProportionateScreenHeight(
@@ -211,20 +205,37 @@ class _RecommendedState extends State<Recommended> {
                                                     color: tPrimaryColor,
                                                     // fontFamily: 'Ubuntu',
                                                     fontWeight:
-                                                        FontWeight.normal),
+                                                        FontWeight.bold),
                                               ),
-                                              subtitle: Text(
-                                                " ${snapshot.data![index].program.start_date} \t-\t ${snapshot.data![index].program.end_date}",
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        getProportionateScreenHeight(
-                                                            13),
-                                                    color: Colors.black87,
-                                                    fontFamily: 'Ubuntu',
-                                                    fontWeight:
-                                                        FontWeight.normal),
-                                              ),
+                                              subtitle: Text(snapshot
+                                                  .data![index]
+                                                  .program
+                                                  .branch.name)),
+                                          ListTile(
+                                            title: Text(
+                                              "By ${snapshot.data![index].program.company}",
+                                              // overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      getProportionateScreenHeight(
+                                                          16),
+                                                  color: tPrimaryColor,
+                                                  // fontFamily: 'Ubuntu',
+                                                  fontWeight:
+                                                      FontWeight.normal),
                                             ),
+                                            subtitle: Text(
+                                              " ${snapshot.data![index].program.start_date} \t-\t ${snapshot.data![index].program.end_date}",
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      getProportionateScreenHeight(
+                                                          13),
+                                                  color: Colors.black87,
+                                                  fontFamily: 'Ubuntu',
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -266,7 +277,8 @@ class _RecommendedState extends State<Recommended> {
                                                     trainer: snapshot
                                                         .data![index]
                                                         .program
-                                                        .trainer,
+                                                        .trainer
+                                                        ,
                                                     user: widget.user,
                                                     skillsO: widget.skillsO,
                                                     student: widget.student,

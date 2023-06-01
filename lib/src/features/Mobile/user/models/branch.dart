@@ -1,16 +1,19 @@
 class Branch {
+  int id;
   final String name;
 
   Branch({
+    required this.id,
     required this.name,
   });
 
-  static Branch fromJson(json) => Branch(name: json['bName']);
+  static Branch fromJson(json) =>
+      Branch(id: json['id'].toInt(), name: json['bName']);
 
-  @override
-  toString() => 'Branch: $name';
+ 
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'name': name,
       };
 }

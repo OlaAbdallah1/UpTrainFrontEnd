@@ -16,12 +16,13 @@ import '../../../models/program.dart';
 import '../../../models/trainer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../Chat/chat_room_screen.dart';
 import '../../Program/Apply/application_screen.dart';
 import '../../Program/Program_Details/program_screen.dart';
 import '../../company/profile/company_profile_screen.dart';
 
 class TrainerDetails extends StatefulWidget {
-  final String trainer;
+  final Trainer trainer;
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
   final List<Skill> skillsO;
@@ -37,39 +38,9 @@ class TrainerDetails extends StatefulWidget {
 }
 
 class _TrainerDetailsState extends State<TrainerDetails> {
-  late Trainer _trainer = Trainer(
-      email: "",
-      password: '',
-      first_name: '',
-      last_name: '',
-      phone: '',
-      photo: '',
-      company: '');
-
   @override
   void initState() {
     super.initState();
-    _loadTrainer();
-  }
-
-  Future<List<Trainer>> getTrainer(String trainerEmail) async {
-    final response = await http
-        .get(Uri.parse('http://$ip/api/getProgramTrainer/$trainerEmail'));
-
-    final List<dynamic> data = json.decode(response.body);
-    return data.map((json) => Trainer.fromJson(json)).toList();
-  }
-
-  void _loadTrainer() async {
-    try {
-      print(widget.trainer);
-      final trainer = await getTrainer(_trainer.email);
-      setState(() {
-        _trainer = trainer.first;
-      });
-    } catch (e) {
-      print('Error loading trainer: $e');
-    }
   }
 
   List<Program> trainerPrograms = [];
@@ -90,12 +61,21 @@ class _TrainerDetailsState extends State<TrainerDetails> {
     }
   }
 
+  String chatRoomId(String user1, String user2) {
+    if (user1.toLowerCase().codeUnits[0] >
+        user2.toLowerCase().codeUnits[0]) {
+      return "$user1 $user2";
+    } else {
+      return "$user2 $user1";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(_trainer.photo);
+    print(widget.trainer.photo);
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      child: _trainer == null
+      child: widget.trainer == null
           ? const Center(child: CircularProgressIndicator())
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,14 +91,34 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                             "https://res.cloudinary.com/dsmn9brrg/image/upload/v1673876307/dngdfphruvhmu7cie95a.jpg"),
                       ),
                     ),
+                  Expanded(
+                      child:
+                    Text(
+                      '${widget.trainer.first_name} ${widget.trainer.last_name}',
+                      style: const TextStyle(
+                          color: tPrimaryColor,
+                          fontFamily: 'Ubuntu',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30),
+                    ),),
                     Expanded(
-                      child: Text(
-                        '${_trainer.first_name} ${_trainer.last_name}',
-                        style: const TextStyle(
-                            color: tPrimaryColor,
-                            fontFamily: 'Ubuntu',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30),
+                      child: ListTile(
+                        onTap: () {
+                          String roomId = chatRoomId(
+                              '${widget.user['first_name']} ${widget.user['last_name']}',
+                              '${widget.trainer.first_name} ${widget.trainer.last_name}');
+
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ChatRoom(
+                                chatRoomId: roomId,
+                                userMap: widget.trainer,
+                              ),
+                            ),
+                          );
+                        },
+                       
+                        trailing: Icon(Icons.chat, color: tPrimaryColor),
                       ),
                     )
                   ],
@@ -142,7 +142,7 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                     onPressed: () async {
                       EmailContent email = EmailContent(
                         to: [
-                          _trainer.email,
+                          widget.trainer.email,
                         ],
                       );
 
@@ -163,7 +163,7 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                       }
                     },
                     child: Text(
-                      _trainer.email,
+                      widget.trainer.email,
                       style: TextStyle(
                           fontSize: getProportionateScreenHeight(18),
                           color: tSecondaryColor),
@@ -183,9 +183,9 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                   height: getProportionateScreenHeight(10),
                 ),
                 TextButton(
-                    onPressed: () => _launchPhoneDialer(_trainer.phone),
+                    onPressed: () => _launchPhoneDialer(widget.trainer.phone),
                     child: Text(
-                      _trainer.phone,
+                      widget.trainer.phone,
                       style: TextStyle(
                           fontSize: getProportionateScreenHeight(18),
                           color: tSecondaryColor),
@@ -210,14 +210,14 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => CompanyAccount(
-                                  companyName: _trainer.company,
+                                  companyName: widget.trainer.company,
                                   user: widget.user,
                                   student: widget.student,
                                   skillsO: widget.skillsO,
                                 )));
                   },
                   child: Text(
-                    _trainer.company,
+                    widget.trainer.company,
                     style: TextStyle(
                         fontSize: getProportionateScreenHeight(20),
                         decoration: TextDecoration.underline,
@@ -237,235 +237,235 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                         color: tPrimaryColor),
                   ),
                 ]),
-                SizedBox(
-                    height: getProportionateScreenHeight(160),
-                    child:
-                        ListView(scrollDirection: Axis.horizontal, children: [
-                      Card(
-                        child: FutureBuilder(
-                          future: fetchTrainerPrograms(_trainer.email),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              getProportionateScreenWidth(2),
-                                          vertical:
-                                              getProportionateScreenHeight(2)),
-                                      child: Container(
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.horizontal(
-                                            right: Radius.circular(50),
-                                            left: Radius.circular(20),
-                                          ),
-                                        ),
-                                        width: getProportionateScreenWidth(250),
-                                        child: Card(
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(20),
-                                                topRight: Radius.circular(20),
-                                                bottomLeft: Radius.circular(20),
-                                                bottomRight:
-                                                    Radius.circular(20)),
-                                            side: BorderSide(
-                                              color: tPrimaryColor,
-                                              width: 1.0,
-                                            ),
-                                          ),
-                                          shadowColor: tPrimaryColor,
-                                          color: tLightColor,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                height:
-                                                    SizeConfig.screenHeight *
-                                                        0.01,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Expanded(
-                                                    child: Column(
-                                                      children: [
-                                                        ListTile(
-                                                            title: Text(
-                                                              "${snapshot.data![index].title}",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      getProportionateScreenHeight(
-                                                                          16),
-                                                                  color:
-                                                                      tPrimaryColor,
-                                                                  // fontFamily: 'Ubuntu',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            subtitle: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(snapshot
-                                                                      .data![
-                                                                          index]
-                                                                      .branch),
-                                                                  SizedBox(
-                                                                    height:
-                                                                        getProportionateScreenHeight(
-                                                                            10),
-                                                                  ),
-                                                                  Text(
-                                                                    " ${snapshot.data![index].start_date} \t-\t ${snapshot.data![index].end_date}",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            getProportionateScreenHeight(
-                                                                                13),
-                                                                        color: Colors
-                                                                            .black87,
-                                                                        fontFamily:
-                                                                            'Ubuntu',
-                                                                        fontWeight:
-                                                                            FontWeight.normal),
-                                                                  ),
-                                                                ])),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              // const SizedBox(
-                                              //   height: 10,
-                                              // ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          ProgramDetailsScreen(
-                                                                            programId:
-                                                                                snapshot.data![index].id,
-                                                                            title:
-                                                                                snapshot.data![index].title,
-                                                                            details:
-                                                                                snapshot.data![index].details,
-                                                                            image:
-                                                                                snapshot.data![index].image,
-                                                                            company:
-                                                                                snapshot.data![index].company,
-                                                                            startDate:
-                                                                                snapshot.data![index].start_date,
-                                                                            endDate:
-                                                                                snapshot.data![index].end_date,
-                                                                            trainer:
-                                                                                snapshot.data![index].trainer,
-                                                                            programSkills: [],
-                                                                            student:
-                                                                                widget.student,
-                                                                            user:
-                                                                                widget.user,
-                                                                            skillsO:
-                                                                                widget.skillsO,
-                                                                          ))),
-                                                      child: Text(
-                                                        "Show Details ",
-                                                        style: TextStyle(
-                                                            color:
-                                                                tPrimaryColor,
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .underline),
-                                                      )),
-                                                  OutlinedButton(
-                                                    onPressed: () =>
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        ApplicationScreen(
-                                                                          programId: snapshot
-                                                                              .data![index]
-                                                                              .id,
-                                                                          title: snapshot
-                                                                              .data![index]
-                                                                              .title,
-                                                                          student:
-                                                                              widget.student,
-                                                                          user:
-                                                                              widget.user,
-                                                                          skillsO:
-                                                                              widget.skillsO,
-                                                                        ))),
-                                                    style: OutlinedButton
-                                                        .styleFrom(
-                                                      backgroundColor:
-                                                          tPrimaryColor,
-                                                      side: const BorderSide(
-                                                        width: 1,
-                                                        color: Colors.white,
-                                                      ),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20)),
-                                                    ),
-                                                    child: Text(
-                                                      "Apply Now",
-                                                      style: TextStyle(
-                                                        color: tLightColor,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  });
-                            } else if (snapshot.hasError) {
-                              print(snapshot.error);
-                              return Text('${snapshot.error}');
-                            }
+                // SizedBox(
+                //     height: getProportionateScreenHeight(160),
+                //     child:
+                //         ListView(scrollDirection: Axis.horizontal, children: [
+                //       Card(
+                //         child: FutureBuilder(
+                //           future: fetchTrainerPrograms(widget.trainer.email),
+                //           builder: (context, snapshot) {
+                //             if (snapshot.hasData) {
+                //               return ListView.builder(
+                //                   scrollDirection: Axis.horizontal,
+                //                   shrinkWrap: true,
+                //                   physics: const NeverScrollableScrollPhysics(),
+                //                   itemCount: snapshot.data!.length,
+                //                   itemBuilder: (context, index) {
+                //                     return Padding(
+                //                       padding: EdgeInsets.symmetric(
+                //                           horizontal:
+                //                               getProportionateScreenWidth(2),
+                //                           vertical:
+                //                               getProportionateScreenHeight(2)),
+                //                       child: Container(
+                //                         decoration: const BoxDecoration(
+                //                           borderRadius: BorderRadius.horizontal(
+                //                             right: Radius.circular(50),
+                //                             left: Radius.circular(20),
+                //                           ),
+                //                         ),
+                //                         width: getProportionateScreenWidth(250),
+                //                         child: Card(
+                //                           shape: const RoundedRectangleBorder(
+                //                             borderRadius: BorderRadius.only(
+                //                                 topLeft: Radius.circular(20),
+                //                                 topRight: Radius.circular(20),
+                //                                 bottomLeft: Radius.circular(20),
+                //                                 bottomRight:
+                //                                     Radius.circular(20)),
+                //                             side: BorderSide(
+                //                               color: tPrimaryColor,
+                //                               width: 1.0,
+                //                             ),
+                //                           ),
+                //                           shadowColor: tPrimaryColor,
+                //                           color: tLightColor,
+                //                           child: Column(
+                //                             crossAxisAlignment:
+                //                                 CrossAxisAlignment.start,
+                //                             mainAxisAlignment:
+                //                                 MainAxisAlignment.center,
+                //                             children: [
+                //                               SizedBox(
+                //                                 height:
+                //                                     SizeConfig.screenHeight *
+                //                                         0.01,
+                //                               ),
+                //                               Row(
+                //                                 mainAxisAlignment:
+                //                                     MainAxisAlignment.center,
+                //                                 mainAxisSize: MainAxisSize.min,
+                //                                 children: [
+                //                                   Expanded(
+                //                                     child: Column(
+                //                                       children: [
+                //                                         ListTile(
+                //                                             title: Text(
+                //                                               "${snapshot.data![index].title}",
+                //                                               overflow:
+                //                                                   TextOverflow
+                //                                                       .ellipsis,
+                //                                               style: TextStyle(
+                //                                                   fontSize:
+                //                                                       getProportionateScreenHeight(
+                //                                                           16),
+                //                                                   color:
+                //                                                       tPrimaryColor,
+                //                                                   // fontFamily: 'Ubuntu',
+                //                                                   fontWeight:
+                //                                                       FontWeight
+                //                                                           .bold),
+                //                                             ),
+                //                                             subtitle: Column(
+                //                                                 mainAxisAlignment:
+                //                                                     MainAxisAlignment
+                //                                                         .start,
+                //                                                 crossAxisAlignment:
+                //                                                     CrossAxisAlignment
+                //                                                         .start,
+                //                                                 children: [
+                //                                                   Text(snapshot
+                //                                                       .data![
+                //                                                           index]
+                //                                                       .branch),
+                //                                                   SizedBox(
+                //                                                     height:
+                //                                                         getProportionateScreenHeight(
+                //                                                             10),
+                //                                                   ),
+                //                                                   Text(
+                //                                                     " ${snapshot.data![index].start_date} \t-\t ${snapshot.data![index].end_date}",
+                //                                                     style: TextStyle(
+                //                                                         fontSize:
+                //                                                             getProportionateScreenHeight(
+                //                                                                 13),
+                //                                                         color: Colors
+                //                                                             .black87,
+                //                                                         fontFamily:
+                //                                                             'Ubuntu',
+                //                                                         fontWeight:
+                //                                                             FontWeight.normal),
+                //                                                   ),
+                //                                                 ])),
+                //                                       ],
+                //                                     ),
+                //                                   ),
+                //                                 ],
+                //                               ),
+                //                               // const SizedBox(
+                //                               //   height: 10,
+                //                               // ),
+                //                               Row(
+                //                                 mainAxisAlignment:
+                //                                     MainAxisAlignment
+                //                                         .spaceAround,
+                //                                 children: [
+                //                                   TextButton(
+                //                                       onPressed: () =>
+                //                                           Navigator.push(
+                //                                               context,
+                //                                               MaterialPageRoute(
+                //                                                   builder:
+                //                                                       (context) =>
+                //                                                           ProgramDetailsScreen(
+                //                                                             programId:
+                //                                                                 snapshot.data![index].id,
+                //                                                             title:
+                //                                                                 snapshot.data![index].title,
+                //                                                             details:
+                //                                                                 snapshot.data![index].details,
+                //                                                             image:
+                //                                                                 snapshot.data![index].image,
+                //                                                             company:
+                //                                                                 snapshot.data![index].company,
+                //                                                             startDate:
+                //                                                                 snapshot.data![index].start_date,
+                //                                                             endDate:
+                //                                                                 snapshot.data![index].end_date,
+                //                                                             trainer:
+                //                                                                 widget.trainer,
+                //                                                             programSkills: [],
+                //                                                             student:
+                //                                                                 widget.student,
+                //                                                             user:
+                //                                                                 widget.user,
+                //                                                             skillsO:
+                //                                                                 widget.skillsO,
+                //                                                           ))),
+                //                                       child: Text(
+                //                                         "Show Details ",
+                //                                         style: TextStyle(
+                //                                             color:
+                //                                                 tPrimaryColor,
+                //                                             decoration:
+                //                                                 TextDecoration
+                //                                                     .underline),
+                //                                       )),
+                //                                   OutlinedButton(
+                //                                     onPressed: () =>
+                //                                         Navigator.push(
+                //                                             context,
+                //                                             MaterialPageRoute(
+                //                                                 builder:
+                //                                                     (context) =>
+                //                                                         ApplicationScreen(
+                //                                                           programId: snapshot
+                //                                                               .data![index]
+                //                                                               .id,
+                //                                                           title: snapshot
+                //                                                               .data![index]
+                //                                                               .title,
+                //                                                           student:
+                //                                                               widget.student,
+                //                                                           user:
+                //                                                               widget.user,
+                //                                                           skillsO:
+                //                                                               widget.skillsO,
+                //                                                         ))),
+                //                                     style: OutlinedButton
+                //                                         .styleFrom(
+                //                                       backgroundColor:
+                //                                           tPrimaryColor,
+                //                                       side: const BorderSide(
+                //                                         width: 1,
+                //                                         color: Colors.white,
+                //                                       ),
+                //                                       shape:
+                //                                           RoundedRectangleBorder(
+                //                                               borderRadius:
+                //                                                   BorderRadius
+                //                                                       .circular(
+                //                                                           20)),
+                //                                     ),
+                //                                     child: Text(
+                //                                       "Apply Now",
+                //                                       style: TextStyle(
+                //                                         color: tLightColor,
+                //                                       ),
+                //                                     ),
+                //                                   ),
+                //                                 ],
+                //                               ),
+                //                             ],
+                //                           ),
+                //                         ),
+                //                       ),
+                //                     );
+                //                   });
+                //             } else if (snapshot.hasError) {
+                //               print(snapshot.error);
+                //               return Text('${snapshot.error}');
+                //             }
 
-                            // By default, show a loading spinner
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                        ),
-                      )
-                    ]))
+                //             // By default, show a loading spinner
+                //             return const Center(
+                //               child: CircularProgressIndicator(),
+                //             );
+                //           },
+                //         ),
+                //       )
+                //     ])),
               ],
             ),
     );

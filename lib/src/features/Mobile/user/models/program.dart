@@ -1,18 +1,20 @@
+import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
 import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 
 import 'company.dart';
 
 class Program {
-  final int id;
+  int id;
   // final int user_id;
-  late final String title;
-  late final String image;
-  late final String start_date;
+  late String title;
+  late String image;
+  late String start_date;
   final String end_date;
-  late final String details;
-  late final String trainer;
-  late final String company;
-  late final String branch;
+  late String details;
+  // late final String trainer;
+  late Trainer trainer;
+  late String company;
+  late Branch branch;
 
   Program(
       {required this.id,
@@ -28,29 +30,18 @@ class Program {
 
   factory Program.fromJson(json) {
     return Program(
-      id: json['id'].toInt(),
-      // user_id: json['user_id'],
-      title: json['pTitle'],
-      image: json['cPhoto'],
-      company: json['cName'],
-      start_date: json['pStart_date'],
-      end_date: json['pEnd_date'],
-      branch: json['bName'],
-      details: json['pDetails'],
-      trainer: json['first_name'] + ' ' + json['last_name'],
-    );
+        id: json['id'].toInt(),
+        // user_id: json['user_id'],
+        title: json['pTitle'],
+        image: json['cPhoto'],
+        company: json['cName'],
+        start_date: json['pStart_date'],
+        end_date: json['pEnd_date'],
+        branch: Branch.fromJson(json),
+        details: json['pDetails'],
+        trainer: Trainer.fromJson(json));
   }
 
-  // Map<String, dynamic> toJson() => {
-  //       'pTitle': title,
-  //       'pPhoto': image,
-  //       'pStart_date': start_date,
-  //       'pEnd_date': end_date,
-  //       'bName': branch,
-  //       'cName': company,
-  //       'tName': trainer,
-  //       'pDetails':details
-  //     };
   Map<String, dynamic> toJson() => {
         'id': id,
         // 'user_id': user_id,
@@ -60,7 +51,7 @@ class Program {
         'end_date': end_date,
         'branch': branch,
         'company': company,
-        'trainer': trainer,
+        // 'trainer': trainer,
         'details': details,
       };
 }

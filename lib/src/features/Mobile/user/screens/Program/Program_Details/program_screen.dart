@@ -19,7 +19,7 @@ class ProgramDetailsScreen extends StatelessWidget {
   final String company;
   final String startDate;
   final String endDate;
-  final String trainer;
+  final Trainer trainer;
   final int programId;
 
 final Map<String, dynamic> user;

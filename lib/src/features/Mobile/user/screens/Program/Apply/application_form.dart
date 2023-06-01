@@ -91,7 +91,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
     combineData();
     fetchData();
     application =
-        Application(cv: '', status: 0, program_id: 0, user_id: 0, id: 0,program_name: '');
+        Application(cv: '', status: 0, program_id: 0, user_id: 0, id: 0,program_name: '',user: _user);
 
     super.initState();
   }

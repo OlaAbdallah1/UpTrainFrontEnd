@@ -18,6 +18,7 @@ class CompanyDashboardScreen extends StatefulWidget {
 
 class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
   Company _company = Company(
+    id: 0,
     email: '',
     description: '',
     location: '',

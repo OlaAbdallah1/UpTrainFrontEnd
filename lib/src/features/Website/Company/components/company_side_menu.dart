@@ -57,7 +57,7 @@ class CompanySideMenu extends StatelessWidget {
           ),
           DrawerListTile(
             title: "Applications",
-            svgSrc: "assets/icons/User.svg",
+            svgSrc: "assets/icons/apply-svgrepo-com.svg",
             press: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ApplicationsScreen(company: company),
             )),

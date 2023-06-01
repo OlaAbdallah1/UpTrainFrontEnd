@@ -131,7 +131,7 @@ class _CompanyProgramsState extends State<CompanyPrograms> {
                                                             .start,
                                                     children: [
                                                       Text(snapshot
-                                                          .data![index].branch),
+                                                          .data![index].branch.name),
                                                       SizedBox(
                                                         height:
                                                             getProportionateScreenHeight(

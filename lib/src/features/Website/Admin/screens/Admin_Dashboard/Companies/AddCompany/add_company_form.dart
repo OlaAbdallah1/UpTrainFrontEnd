@@ -213,6 +213,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
   }
 
   Company company = Company(
+        id: 0,
       email: '',
       phone: '',
       name: '',

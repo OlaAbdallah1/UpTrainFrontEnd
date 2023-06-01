@@ -1,27 +1,11 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:uptrain/src/constants/colors.dart';
-import 'package:uptrain/src/features/Mobile/authentication/models/user_skills.dart';
 import 'package:uptrain/src/features/Mobile/user/models/application.dart';
-import 'package:uptrain/src/utils/theme/widget_themes/button2_theme.dart';
 import '../../../../../../constants/connections.dart';
-import '../../../../../../constants/size_config.dart';
-import 'package:uptrain/global.dart' as global;
 import 'dart:convert';
-import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:flutter/services.dart';
 
-import '../../../../authentication/models/field.dart';
-import '../../../../authentication/models/location.dart';
-import '../../../../authentication/models/skills.dart';
 import '../../../../authentication/models/user.dart';
-import '../profile_pic.dart';
 
 class Applications extends StatefulWidget {
   // Applications({Key? key}) : super(key: key);

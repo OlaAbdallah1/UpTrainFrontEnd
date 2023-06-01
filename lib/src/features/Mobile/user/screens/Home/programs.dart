@@ -14,6 +14,7 @@ import '../../../../../constants/size_config.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../authentication/models/skills.dart';
+import '../../models/trainer.dart';
 import '../Program/Program_Details/program_screen.dart';
 import 'recommended.dart';
 import 'search_field.dart';
@@ -37,6 +38,7 @@ class Programs extends StatefulWidget {
 
 class _ProgramsState extends State<Programs> {
   _ProgramsState();
+
   @override
   void initState() {
     fetchBranches();
@@ -45,23 +47,25 @@ class _ProgramsState extends State<Programs> {
 
   ProgramSkills programSkills = ProgramSkills(
       program: Program(
-          id: 0,
-          // user_id: 0,
-          title: '',
-          image: '',
-          company: '',
-          start_date: '',
-          end_date: '',
-          branch: '',
-          details: '',
-          trainer: ''),
-      skills: []);
+        id: 0,
+        // user_id: 0,
+        title: '',
+        image: '',
+        company: '',
+        start_date: '',
+        end_date: '',
+        branch: Branch(id: 0, name: ''),
+        details: '',
+        trainer: Trainer(id:0, email: '', first_name: '', last_name: '', phone: '', photo: '', company: '')
+      ),
+      skills: [],
+      );
 
   String _selectedBranch = 'All';
 
   Future<List<Branch>> fetchBranches() async {
     List<Branch> branchesDate = [
-      Branch(name: 'All'),
+      Branch(id:0, name: 'All'),
     ];
 
     String url = "http://$ip/api/getbranches/${widget.student['field_id']}";
@@ -98,8 +102,10 @@ class _ProgramsState extends State<Programs> {
               program: Program.fromJson(program),
               skills: (program['skill'] as List<dynamic>)
                   .map((skillJson) => Skill.fromJson(skillJson))
-                  .toList());
-        
+                  .toList(),
+            
+              );
+
           programsData.add(programSkills);
         }
         return programsData;
@@ -126,6 +132,24 @@ class _ProgramsState extends State<Programs> {
     throw Exception('Failed to fetch items');
   }
 
+  late Program programTrainer;
+
+  Future<Program> fetchTrainerProgram() async {
+    final response = await http.get(Uri.parse(
+        'http://$ip/api/getProgramTrainer/${programSkills.program.id}'));
+    var responseData = json.decode(response.body);
+
+    if (response.statusCode == 201) {
+      for (Map program in responseData) {
+        // print(program);
+       
+      }
+      return programTrainer;
+    } else {
+      return programTrainer;
+    }
+  }
+
   // By default first one is selected
   int selectedIndex = 0;
   @override
@@ -135,7 +159,6 @@ class _ProgramsState extends State<Programs> {
       children: [
         SearchField(),
         SizedBox(height: getProportionateScreenHeight(10)),
-
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: FutureBuilder(
@@ -191,7 +214,6 @@ class _ProgramsState extends State<Programs> {
                 return const CircleAvatar();
               }),
         ),
-
         SizedBox(
           height: getProportionateScreenHeight(20),
         ),
@@ -214,9 +236,13 @@ class _ProgramsState extends State<Programs> {
             )
           ],
         ),
-         SizedBox(
-              height: getProportionateScreenHeight(240),
-       child:  Recommended(user: widget.user, student: widget.student,skillsO: widget.skills,)),
+        // SizedBox(
+        //     height: getProportionateScreenHeight(240),
+        //     child: Recommended(
+        //       user: widget.user,
+        //       student: widget.student,
+        //       skillsO: widget.skills,
+        //     )),
         SizedBox(
           height: getProportionateScreenHeight(10),
         ),
@@ -388,7 +414,7 @@ class _ProgramsState extends State<Programs> {
                                                 subtitle: Text(snapshot
                                                     .data![index]
                                                     .program
-                                                    .branch)),
+                                                    .branch.name)),
                                             ListTile(
                                               title: Text(
                                                 "By ${snapshot.data![index].program.company}",
@@ -460,10 +486,7 @@ class _ProgramsState extends State<Programs> {
                                                             .data![index]
                                                             .program
                                                             .end_date,
-                                                        trainer: snapshot
-                                                            .data![index]
-                                                            .program
-                                                            .trainer,
+                                                        trainer:snapshot.data![index].program.trainer,
                                                         programSkills: snapshot
                                                             .data![index]
                                                             .skills,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uptrain/notifications_service.dart';
 import 'package:uptrain/src/constants/image_strings.dart';
 import 'package:uptrain/src/constants/text.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
@@ -9,8 +10,26 @@ import '../../../../../constants/size_config.dart';
 import '../splash/splash_screen.dart';
 import '../student_signup/sign_up_screen.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  NotificationServices notificationServices = NotificationServices();
+  @override
+  void initState() {
+    // TODO: implement initState
+    notificationServices.requestNotificationPermission();
+    notificationServices.getDeviceToken().then((value) {
+      print('Device token:');
+      print(value);
+    });
+    // notificationServices.isTokenfresh();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

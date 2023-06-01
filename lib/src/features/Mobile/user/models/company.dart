@@ -1,4 +1,5 @@
 class Company {
+  int id;
   late String name;
   late String email;
   late String description;
@@ -11,7 +12,7 @@ class Company {
 
   Company(
       {
-      // required this.password,
+      required this.id,
       required this.phone,
       required this.name,
       required this.description,
@@ -21,6 +22,7 @@ class Company {
       required this.location});
 
   static Company fromJson(json) => Company(
+    id: json['id'].toInt(),
         name: json['cName'],
         phone: json['cPhone_number'],
         description: json['cDescription'],

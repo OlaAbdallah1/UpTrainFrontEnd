@@ -69,7 +69,7 @@ class Body extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          AddProgramScreen())),
+                                          AddProgramScreen(company: company,))),
                               child: const Text(
                                 "Add Trainer",
                                 style: TextStyle(
@@ -85,7 +85,7 @@ class Body extends StatelessWidget {
                         height: defaultPadding,
                       ),
                       SizedBox(
-                        // width: 1300,
+                        width: 900,
                         child: TrainerPage(company: company),
                       ),
                     ],

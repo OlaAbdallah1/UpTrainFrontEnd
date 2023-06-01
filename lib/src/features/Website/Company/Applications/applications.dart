@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
-import 'package:uptrain/src/features/Website/Company/Applications/program_applications.dart';
+import 'package:uptrain/src/features/Website/Company/Applications/programApplications/program_app_screen.dart';
+import 'package:uptrain/src/features/Website/Company/Applications/programApplications/program_applications.dart';
 import '../../../../constants/colors.dart';
 import '../../../../constants/size_config.dart';
 import '../../../Mobile/user/models/program.dart';
@@ -22,10 +23,7 @@ class _ApplicationsPageState extends State<ApplicationsPage> {
     final response = await http.get(
         Uri.parse('http://$ip/api/getCompanyPrograms/${widget.company.name}'));
     final List<dynamic> data = json.decode(response.body);
-    return data
-        .map((json) => Program.fromJson(json))
-        // .where((item) => item.branch == _selectedBranch)
-        .toList();
+    return data.map((json) => Program.fromJson(json)).toList();
   }
 
   late Future<List<Program>> _futurePrograms = fetchPrograms();
@@ -38,51 +36,58 @@ class _ApplicationsPageState extends State<ApplicationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        children: [
-          FutureBuilder(
-            future: _futurePrograms,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(
-                  children: [
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: getProportionateScreenWidth(5),
-                                  vertical: getProportionateScreenHeight(5)),
-                              child: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: TextButton(
-                                      onPressed: () => Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProgramApplicationsPage(
-                                                      program: snapshot
-                                                          .data![index]))),
-                                      child: Text(
-                                          '${snapshot.data![index].title} Program Applications'))));
-                        }),
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              // By default, show a loading spinner
-              return const Center(
-                child: CircularProgressIndicator(),
+    return Column(
+      children: [
+        FutureBuilder(
+          future: _futurePrograms,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextButton(
+                                    onPressed: () => Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProgramApplicationsScreen(
+                                                  program:
+                                                      snapshot.data![index],
+                                                  company: widget.company,
+                                                ))),
+                                    child: Text(
+                                      '${index+1}. ${snapshot.data![index].title} Program Applications ☞',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        
+                                      ),
+                                    ))
+                              ],
+                            ));
+                      }),
+                ],
               );
-            },
-          ),
-        ],
-      ),
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+
+            // By default, show a loading spinner
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ],
     );
   }
 }

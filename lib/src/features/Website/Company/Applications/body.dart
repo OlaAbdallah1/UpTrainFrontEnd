@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:provider/provider.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/features/Website/Company/Applications/applications.dart';
 
 import '../../../../../responsive.dart';
-import '../../../../constants/size_config.dart';
 import '../../../Mobile/user/models/company.dart';
-import '../../Admin/screens/Admin_Dashboard/components/admin_sidemenu.dart';
-import '../Programs/addProgram/add_program_screen.dart';
-import '../components/company_header.dart';
 import '../components/company_side_menu.dart';
 import 'applications_header.dart';
 
@@ -45,15 +39,28 @@ class Body extends StatelessWidget {
                   padding: const EdgeInsets.all(defaultPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ApplicationHeader(company: company),
                       const SizedBox(
                         height: defaultPadding,
                       ),
-                      
-                      ApplicationsPage(company: company)
-                     
-                      
+                      const Text(
+                        "Programs Applications",
+                        style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      Divider(
+                        color: tLightColor,
+                        thickness: 1,
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      ApplicationsPage(company: company),
                     ],
                   )),
             ),

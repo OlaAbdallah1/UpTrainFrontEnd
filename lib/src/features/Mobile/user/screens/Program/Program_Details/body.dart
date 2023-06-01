@@ -4,28 +4,20 @@ import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/size_config.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
+import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../company/profile/company_profile_screen.dart';
 import '../../trainer/profile/trainer_profile_screen.dart';
 
 class Body extends StatelessWidget {
-  //  final Trainer _trainer = Trainer(
-  //     email: '',
-  //     password: '',
-  //     first_name: '',
-  //     last_name: '',
-  //     phone_number: '',
-  //     photo: '',
-  //     company_id: 0);
-
   late final String title;
   late final String image;
   late final String details;
   late final String company;
   late final String startDate;
   late final String endDate;
-  String trainer;
+  Trainer trainer;
 
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
@@ -47,6 +39,7 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(trainer.email);
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
@@ -54,8 +47,9 @@ class Body extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ClipOval(
-                child: ImageFromUrl(imageUrl: image),
+              CircleAvatar(
+                radius: 75,
+                child: Image.asset('assets/images/${image}'),
               ),
               SizedBox(height: getProportionateScreenHeight(16)),
               TextButton(
@@ -166,7 +160,7 @@ class Body extends StatelessWidget {
                                   )));
                     },
                     child: Text(
-                      trainer,
+                      trainer.first_name + ' ' + trainer.last_name,
                       style: TextStyle(
                           decoration: TextDecoration.underline,
                           fontSize: getProportionateScreenHeight(18),

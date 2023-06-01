@@ -52,28 +52,28 @@ class _LoginFormState extends State<LoginForm> {
         // save user data to local storage
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('email', user.email);
-        global.token = decoded['token'];
+        // global.token = decoded['token'];
 
-        //Students
-        Map<String, dynamic> decodedUser = decoded['user'];
-        Map<String, dynamic> decodedStudent = decoded['student'];
+        // //Students
+        // Map<String, dynamic> decodedUser = decoded['user'];
+        // Map<String, dynamic> decodedStudent = decoded['student'];
 
-        List<Skill> skills = [];
+        // List<Skill> skills = [];
 
-        for (var skillJson in decoded['skills']) {
-          Skill skill = Skill.fromJson(skillJson);
-          skills.add(skill);
-        }
+        // for (var skillJson in decoded['skills']) {
+        //   Skill skill = Skill.fromJson(skillJson);
+        //   skills.add(skill);
+        // }
 
-        if (decodedUser.isNotEmpty) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              user: decodedUser,
-              student: decodedStudent,
-              skills: skills,
-            ),
-          ));
-        }
+        // if (decodedUser.isNotEmpty) {
+        //   Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => HomeScreen(
+        //       user: decodedUser,
+        //       student: decodedStudent,
+        //       skills: skills,
+        //     ),
+        //   ));
+        // }
 
         //   //Admin & Employees
         //   Map<String, dynamic> decodedEmployee = decoded['employee'];
@@ -93,13 +93,15 @@ class _LoginFormState extends State<LoginForm> {
         // if (decodedTrainer.isNotEmpty) {
 
         // }
+        print(decoded['company']);
 
-        // Map<String, dynamic> decodedCompany = decoded['company'];
-        // if (decodedCompany.isNotEmpty) {
-        //     Navigator.of(context).push(MaterialPageRoute(
-        //       builder: (context) => CompanyDashboardScreen(company: decodedCompany),
-        //     ));
-        // }
+        Map<String, dynamic> decodedCompany = decoded['company'];
+        if (decodedCompany.isNotEmpty) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                CompanyDashboardScreen(company: decodedCompany),
+          ));
+        }
       }
 
       if (res.statusCode == 400) {
@@ -181,8 +183,8 @@ class _LoginFormState extends State<LoginForm> {
                     children: [
                       SvgPicture.asset(
                         errorImg,
-                        height: getProportionateScreenWidth(14),
-                        width: getProportionateScreenWidth(14),
+                        height: 14,
+                        width: 14,
                       ),
                       SizedBox(
                         width: getProportionateScreenWidth(10),
@@ -201,8 +203,8 @@ class _LoginFormState extends State<LoginForm> {
                     children: [
                       SvgPicture.asset(
                         errorImg,
-                        height: getProportionateScreenWidth(14),
-                        width: getProportionateScreenWidth(14),
+                        height: 14,
+                        width: 14,
                       ),
                       SizedBox(
                         width: getProportionateScreenWidth(10),
