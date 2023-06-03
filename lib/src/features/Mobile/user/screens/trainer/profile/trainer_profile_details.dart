@@ -39,14 +39,15 @@ class TrainerDetails extends StatefulWidget {
 class _TrainerDetailsState extends State<TrainerDetails> {
   @override
   void initState() {
+    fetchTrainerPrograms(widget.trainer.id);
     super.initState();
   }
 
   List<Program> trainerPrograms = [];
 
-  Future<List<Program>> fetchTrainerPrograms(String trainerEmail) async {
+  Future<List<Program>> fetchTrainerPrograms(int trainerId) async {
     final response = await http
-        .get(Uri.parse('http://$ip/api/getTrainerPrograms/$trainerEmail'));
+        .get(Uri.parse('http://$ip/api/getTrainerPrograms/$trainerId'));
 
     var responseData = json.decode(response.body);
     print(responseData);
@@ -195,23 +196,23 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                 SizedBox(
                   height: getProportionateScreenHeight(20),
                 ),
-                Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text(
-                    "Programs",
-                    style: TextStyle(
-                        fontSize: getProportionateScreenHeight(22),
-                        decoration: TextDecoration.underline,
-                        fontFamily: 'Ubuntu',
-                        color: tPrimaryColor),
-                  ),
-                ]),
+                // Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                //   Text(
+                //     "Programs",
+                //     style: TextStyle(
+                //         fontSize: getProportionateScreenHeight(22),
+                //         decoration: TextDecoration.underline,
+                //         fontFamily: 'Ubuntu',
+                //         color: tPrimaryColor),
+                //   ),
+                // ]),
                 // SizedBox(
                 //     height: getProportionateScreenHeight(160),
                 //     child:
                 //         ListView(scrollDirection: Axis.horizontal, children: [
                 //       Card(
                 //         child: FutureBuilder(
-                //           future: fetchTrainerPrograms(widget.trainer.email),
+                //           future: fetchTrainerPrograms(widget.trainer.id),
                 //           builder: (context, snapshot) {
                 //             if (snapshot.hasData) {
                 //               return ListView.builder(
@@ -296,7 +297,8 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                 //                                                   Text(snapshot
                 //                                                       .data![
                 //                                                           index]
-                //                                                       .branch),
+                //                                                       .branch
+                //                                                       .name),
                 //                                                   SizedBox(
                 //                                                     height:
                 //                                                         getProportionateScreenHeight(

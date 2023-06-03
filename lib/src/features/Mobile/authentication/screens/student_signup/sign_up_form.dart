@@ -130,22 +130,22 @@ class _SignUpFormState extends State<SignUpForm> {
   void save() async {
     try {
       if (image != null) {
-        final cloudinary = CloudinaryPublic('dsmn9brrg', 'ul29zf8l');
+        // final cloudinary = CloudinaryPublic('dsmn9brrg', 'ul29zf8l');
 
-        CloudinaryResponse resImage = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(image!.path, folder: user.firstName),
-        );
-        // String basename = path.basename(image!.path);
+        // CloudinaryResponse resImage = await cloudinary.uploadFile(
+        //   CloudinaryFile.fromFile(image!.path, folder: user.firstName),
+        // );
+        String basename = path.basename(image!.path);
 
         setState(() {
-          imageUrl = resImage.secureUrl;
+          imageUrl = basename;
           user.photo = imageUrl;
           print(imageUrl);
           print(user.photo);
         });
       } else {
         setState(() {
-          user.photo = "https://ibb.co/8DCYH1P"; //set default url
+          user.photo = "profile.png"; //set default url
           print(user.photo);
 
           // const Image(image: AssetImage("assets/images/profile.png"))
@@ -211,32 +211,32 @@ class _SignUpFormState extends State<SignUpForm> {
         print("error : $error");
       }
     }
-     // ignore: use_build_context_synchronously
-     showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Welcome'),
-            content: const Text("Your have to verify your email"),
-            actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: tPrimaryColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                ),
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => VerifyEmailScreen(user: user))),
-                child: Text('Verify',
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(14),
-                      color: Colors.white,
-                    )),
-              ),
-            ],
+    // ignore: use_build_context_synchronously
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Welcome'),
+        content: const Text("Your have to verify your email"),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: tPrimaryColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+            ),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => VerifyEmailScreen(user: user))),
+            child: Text('Verify',
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(14),
+                  color: Colors.white,
+                )),
           ),
-        );
+        ],
+      ),
+    );
   }
 
   User user = User(

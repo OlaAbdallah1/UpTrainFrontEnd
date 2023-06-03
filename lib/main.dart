@@ -54,6 +54,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
+import 'package:uptrain/src/features/Mobile/authentication/screens/welcome_screen/welcome_screen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,25 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // _configureFirebaseMessaging();
   }
 
-  // void _configureFirebaseMessaging() {
-  //   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //     if (message.notification != null) {
-  //       print("Received message in foreground: ${message.notification!.title}");
-  //       // Handle the notification data as per your requirement
-  //     }
-  //   });
-  // }
-
-  // Future<void> _firebaseMessagingBackgroundHandler(
-  //     RemoteMessage message) async {
-  //   print("Handling a background message: ${message.messageId}");
-  //   // Handle the notification data as per your requirement
-  // }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LoginScreen());
+    return Scaffold(body: WelcomeScreen());
   }
 }

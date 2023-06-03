@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,9 +11,11 @@ import '../../../../../constants/text.dart';
 import '../../../../../utils/theme/widget_themes/button_theme.dart';
 import '../../fierbase_exceptions.dart';
 import 'change_password/change_password_screen.dart';
+import '../../../../../../../global.dart' as global;
 
 class ResetPassScreen extends StatelessWidget {
-  const ResetPassScreen({super.key});
+  String email;
+  ResetPassScreen({super.key, required this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +36,7 @@ class ResetPassScreen extends StatelessWidget {
                 style: bodyTextStyle,
               ),
               SizedBox(height: SizeConfig.screenHeight * 0.1),
-              ResetPassForm(),
+              ResetPassForm(email: email),
             ],
           ),
         ),
@@ -42,21 +46,23 @@ class ResetPassScreen extends StatelessWidget {
 }
 
 class ResetPassForm extends StatefulWidget {
+  String email;
+  ResetPassForm({super.key, required this.email});
   @override
   _ResetPassFormState createState() => _ResetPassFormState();
 }
 
 class _ResetPassFormState extends State<ResetPassForm> {
   final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
+  final codeController = TextEditingController();
 
   @override
   void dispose() {
-    emailController.dispose();
+    codeController.dispose();
     super.dispose();
   }
 
-  String email = '';
+  String code = '';
   String data = '';
   String errorImg = "assets/icons/white.svg";
   String codeError = '';
@@ -67,8 +73,7 @@ class _ResetPassFormState extends State<ResetPassForm> {
       child: Column(
         children: [
           TextFormField(
-            controller: emailController,
-            keyboardType: TextInputType.emailAddress,
+            controller: codeController,
             onChanged: (value) {
               if (value.isNotEmpty) {
                 setState(() {
@@ -76,7 +81,7 @@ class _ResetPassFormState extends State<ResetPassForm> {
                   data = '';
                 });
               }
-              // user.email = value;
+              // user.code = value;
             },
             decoration: const InputDecoration(
               prefixIcon: Icon(
@@ -90,7 +95,6 @@ class _ResetPassFormState extends State<ResetPassForm> {
               labelStyle: TextStyle(color: Colors.black),
             ),
           ),
-
           Row(
             children: [
               SvgPicture.asset(
@@ -104,20 +108,23 @@ class _ResetPassFormState extends State<ResetPassForm> {
               Text(data),
             ],
           ),
-        
-        SizedBox(height: getProportionateScreenHeight(30)),
-
+          SizedBox(height: getProportionateScreenHeight(30)),
           DefaultButton(
               text: "Confirm",
               press: () async {
                 if (_formKey.currentState!.validate()) {
-                  var res = await http.post(
-                    Uri.parse("http://$ip/verifyResetPassword"),
-                    headers: <String, String>{
-                      'Context-Type': 'application/json;charSet=UTF-8'
-                    },
-                  );
-                  if (res.statusCode == 400) {
+                  var response = await http.post(
+                      Uri.parse("http://$ip/verifyResetPassword"),
+                      headers: <String, String>{
+                        'Context-Type': 'application/json;charset=UTF-8'
+                      },
+                      body: {
+                        'email': widget.email,
+                        'code': codeController.text
+                      });
+              
+
+                  if (response.statusCode == 404) {
                     setState(() {
                       codeError = "Your code does not match the right one";
                     });
@@ -125,11 +132,11 @@ class _ResetPassFormState extends State<ResetPassForm> {
                     return;
                   } else {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ChangePasswordScreen()));
+                        builder: (context) => ChangePasswordScreen(email:widget.email)));
                   }
                 }
               }),
-        SizedBox(height: getProportionateScreenHeight(30)),
+          SizedBox(height: getProportionateScreenHeight(30)),
           TextButton(
             onPressed: () {},
             child: const Text(

@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 // import 'package:purple/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:uptrain/global.dart';
 import 'package:uptrain/src/constants/colors.dart';
+import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/constants/text.dart';
 
 import '../../../../../constants/size_config.dart';
@@ -26,7 +30,7 @@ class Body extends StatelessWidget {
               SizedBox(height: SizeConfig.screenHeight * 0.15),
               Text("Forgot Password", style: headingStyle),
               Text(
-                "Please enter your email and we will send \nyou a link to return to your account",
+                "Please enter your email to get code to return to your account",
                 textAlign: TextAlign.center,
                 style: bodyTextStyle,
               ),
@@ -48,23 +52,11 @@ class ForgotPassForm extends StatefulWidget {
 class _ForgotPassFormState extends State<ForgotPassForm> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
-  static final auth = FirebaseAuth.instance;
-  static late AuthStatus _status;
 
   @override
   void dispose() {
     emailController.dispose();
     super.dispose();
-  }
-
-  Future<AuthStatus> resetPassword({required String email}) async {
-    await auth
-        .sendPasswordResetEmail(email: email)
-        .then((value) => _status = AuthStatus.successful)
-        .catchError(
-            (e) => _status = AuthExceptionHandler.handleAuthException(e));
-
-    return _status;
   }
 
   String email = '';
@@ -87,7 +79,7 @@ class _ForgotPassFormState extends State<ForgotPassForm> {
                   data = '';
                 });
               }
-              // user.email = value;
+              // emailController.text = value;
             },
             validator: (Email) {
               if (Email == null || Email.isEmpty) {
@@ -140,40 +132,38 @@ class _ForgotPassFormState extends State<ForgotPassForm> {
           DefaultButton(
               text: "Reset Password",
               press: () async {
-                // if (_formKey.currentState!.validate()) {
-                //   // resetPassword();
-                //   final _status =
-                //       await resetPassword(email: emailController.text.trim());
-                //   if (_status == AuthStatus.successful) {
-                //     await FirebaseAuth.instance
-                //         .sendPasswordResetEmail(email: "user@example.com");
-                //   } else {
-                //     //your logic or show snackBar with error message
-                //     print('error');
-                //   }
-                // }
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const ResetPassScreen()));
+                print(emailController.text);
+                if (_formKey.currentState!.validate()) {
+                  var response = await http.post(
+                      Uri.parse("http://$ip/requestResetPassword"),
+                      headers: <String, String>{
+                        'Context-Type': 'application/json;charset=UTF-8'
+                      },
+                      body: {
+                        'email': emailController.text,
+                      });
+                  print(response.body);
+                  print(response.statusCode);
+                  if (response.statusCode == 201) {
+                    print('reset password');
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            ResetPassScreen(email: emailController.text)));
+                  }
+                  if (response.statusCode == 404) {
+                    print('erorr');
+
+                    return;
+                  } else {
+                    print("object");
+                  }
+                }
               }),
+              
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           // NoAccountText(),
         ],
       ),
     );
   }
-  // Future resetPassword() async {
-  //   showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (context) => Center(child: CircularProgressIndicator(),)
-  //   );
-  //   try {
-  //     await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text.trim());
-  //     Get.snackbar('','Password Reset Email Sent');
-  //     Navigator.of(context).popUntil((route) => route.isFirst);
-  //   } on FirebaseAuthException catch (e){
-  //     print(e);
-  //     Navigator.of(context).pop();
-  //   }
-  // }
 }

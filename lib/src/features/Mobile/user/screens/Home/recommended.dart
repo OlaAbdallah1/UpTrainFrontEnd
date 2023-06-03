@@ -101,7 +101,9 @@ class _RecommendedState extends State<Recommended> {
 
         programsData.add(programSkills);
       }
-      return programsData;
+      return programsData
+          .where((element) => element.program.branch.name == 'Back-End')
+          .toList();
     }
     return programsData;
   }

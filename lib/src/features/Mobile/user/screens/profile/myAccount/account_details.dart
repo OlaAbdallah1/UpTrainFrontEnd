@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/user_skills.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/profile/myAccount/changePassword/change_password_screen.dart';
 import 'package:uptrain/src/utils/theme/widget_themes/button2_theme.dart';
 import '../../../../../../constants/connections.dart';
 import '../../../../../../constants/size_config.dart';
@@ -77,7 +78,6 @@ class _AccountDetailsState extends State<AccountDetails> {
     combined.addAll(widget.student);
     print(combined);
     _user = User.fromJson(combined);
- 
   }
 
   void fetchData() {
@@ -336,7 +336,7 @@ class _AccountDetailsState extends State<AccountDetails> {
     // TextEditingController editSkillsController =
     //     TextEditingController(text: widget.skills);
     // print(_user.id);
-       print('id');
+    print('id');
     print(_user.id);
     locationChoose = _user.location;
     return Form(
@@ -475,68 +475,6 @@ class _AccountDetailsState extends State<AccountDetails> {
                       width: getProportionateScreenWidth(20),
                     ),
                     Expanded(child: buildPhoneFormField()),
-                  ]),
-                  SizedBox(
-                    height: getProportionateScreenHeight(10),
-                  ),
-                  const Divider(color: Colors.black54),
-                  SizedBox(
-                    height: getProportionateScreenHeight(10),
-                  ),
-                  Row(children: [
-                    const Text(
-                      'Location',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Ubuntu',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(
-                      width: getProportionateScreenWidth(20),
-                    ),
-                    if (!isEnabled) Expanded(child: buildLocationFormField()),
-                    if (isEnabled)
-                      Expanded(
-                        child: FutureBuilder(
-                            future: locations,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                locationsList = snapshot.data!;
-                                return FormBuilder(
-                                  enabled: isEnabled,
-                                  child: FormBuilderDropdown<dynamic>(
-                                    decoration: const InputDecoration(
-                                      labelText: 'Select Your Country',
-                                      labelStyle:
-                                          TextStyle(color: Colors.black),
-                                    ),
-                                    onChanged: (dynamic newLocationId) {
-                                      setState(() {
-                                        locationChooseint = newLocationId.id;
-                                        _user.location_id = locationChooseint;
-                                        print(_user.location_id);
-                                        _user.location = newLocationId.name;
-                                        print(newLocationId.name);
-                                        print(_user.location);
-                                      });
-                                    },
-                                    valueTransformer: (dynamic value) =>
-                                        value.name,
-                                    items: locationsList
-                                        .map((location) => DropdownMenuItem(
-                                            value: location,
-                                            child: Text(location.name)))
-                                        .toList(),
-                                    name: _user.location,
-                                  ),
-                                );
-                              }
-                              print("No locations");
-                              return const CircleAvatar();
-                            }),
-                      )
                   ]),
                   SizedBox(
                     height: getProportionateScreenHeight(10),
@@ -710,7 +648,15 @@ class _AccountDetailsState extends State<AccountDetails> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25)),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ChangeUserPasswordScreen(
+                                      email: _user.email,
+                                      skillsO: widget.skillsO,
+                                      user: widget.user,
+                                      student: widget.student,
+                                    )));
+                          },
                           child: const Text(
                             "Change Password",
                             style: TextStyle(
@@ -801,41 +747,6 @@ class _AccountDetailsState extends State<AccountDetails> {
           });
         }
         _user.email = value;
-      },
-      style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.normal,
-        color: tPrimaryColor,
-      ),
-    );
-  }
-
-  TextFormField buildLocationFormField() {
-    return TextFormField(
-      initialValue: _user.location,
-      validator: (Location) {
-        if (Location == null || Location.isEmpty) {
-          setState(() {
-            errorLocImg = "assets/icons/Error.svg";
-            locationData = 'Please enter your email';
-          });
-          return "";
-        } else if (Location.isNotEmpty) {
-          setState(() {
-            errorLocImg = "assets/icons/white.svg";
-            locationData = '';
-          });
-        }
-        return null;
-      },
-      onChanged: (value) {
-        if (value.isNotEmpty) {
-          setState(() {
-            errorLocImg = 'assets/icons/white.svg';
-            locationData = '';
-          });
-        }
-        _user.location = value;
       },
       style: const TextStyle(
         fontSize: 18,

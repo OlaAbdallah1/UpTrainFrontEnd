@@ -30,6 +30,7 @@ class Body extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 SizedBox(height: getProportionateScreenHeight(20)),
                 Programs(student: student, user: user, skills: skills),
               ],

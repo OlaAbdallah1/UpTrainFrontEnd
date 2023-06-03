@@ -98,7 +98,6 @@ class _VerifyEmailFormState extends State<VerifyEmailForm> {
               labelStyle: TextStyle(color: Colors.black),
             ),
           ),
-
           Row(
             children: [
               SvgPicture.asset(
@@ -113,7 +112,6 @@ class _VerifyEmailFormState extends State<VerifyEmailForm> {
             ],
           ),
           SizedBox(height: getProportionateScreenHeight(30)),
-
           DefaultButton(
               text: "Confirm",
               press: () async {
@@ -128,70 +126,71 @@ class _VerifyEmailFormState extends State<VerifyEmailForm> {
                       headers: <String, String>{
                         'Context-Type': 'application/json;charSet=UTF-8'
                       },
-                      body: jsonEncode({
+                      body: {
                         'email': widget.user.email,
                         'code': verifyController.text
-                      })
-                      // {'code': verifyController.text,
-                      // 'email': widget.user.email},
-                      );
-                  // if (response.statusCode == 201) {
-                  //   // Verification successful
-                  //   final responseBody = jsonDecode(response.body);
-                  //   final token = responseBody['token'];
-                  //   // Do something with the token
+                      });
+                  print(response.statusCode);
+                  final responseBody = json.decode(response.body);
 
-                  //   // ignore: use_build_context_synchronously
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Welcome'),
-                      content: const Text("Your account created successfully"),
-                      actions: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: tPrimaryColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
+                  print(responseBody);
+                  if (response.statusCode == 201) {
+                    // ignore: use_build_context_synchronously
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Welcome'),
+                        content:
+                            const Text("Your account created successfully"),
+                        actions: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: tPrimaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                            ),
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen())),
+                            child: Text('Login',
+                                style: TextStyle(
+                                  fontSize: getProportionateScreenWidth(14),
+                                  color: Colors.white,
+                                )),
                           ),
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen())),
-                          child: Text('Login',
-                              style: TextStyle(
-                                fontSize: getProportionateScreenWidth(14),
-                                color: Colors.white,
-                              )),
-                        ),
-                      ],
-                    ),
-                  );
+                        ],
+                      ),
+                    );
+                  // ignore: use_build_context_synchronously
+                  } showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Welcome'),
+                        content:
+                            const Text("Your account created successfully"),
+                        actions: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: tPrimaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                            ),
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen())),
+                            child: Text('Login',
+                                style: TextStyle(
+                                  fontSize: getProportionateScreenWidth(14),
+                                  color: Colors.white,
+                                )),
+                          ),
+                        ],
+                      ),
+                    );
                 }
-                // else {
-                //   // Verification failed
-                //   final responseBody = json.decode(response.body);
-                //   final errors = responseBody['errors']['message'];
-                //   print(responseBody);
-                //   print(errors);
-                //   // Do something with the error message
-                // }
-                // //   else {
-                // //   print("final error : jaym " + response.body);
-                // // }
-
-                // // print(json.encode(widget.user.toJson()));
-                // // print(response.statusCode);
-
-                // // // ignore: use_build_context_synchronously
-
-                // // if (response.statusCode == 400) {
-                // //   setState(() {
-                // //     codeError = "Your code does not match the right one";
-                // //   });
-
-                // //   return;
-                // }
+             
                 else {
                   showDialog(
                     context: context,
@@ -241,7 +240,11 @@ class _VerifyEmailFormState extends State<VerifyEmailForm> {
                 print(errors);
               }
             },
-            child: const Text("Resend Code",style: TextStyle(fontSize: 18,decoration: TextDecoration.underline),),
+            child: const Text(
+              "Resend Code",
+              style:
+                  TextStyle(fontSize: 18, decoration: TextDecoration.underline),
+            ),
           ),
         ],
       ),

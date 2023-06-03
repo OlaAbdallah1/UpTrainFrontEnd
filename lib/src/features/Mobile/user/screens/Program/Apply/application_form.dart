@@ -90,8 +90,14 @@ class _ApplicationFormState extends State<ApplicationForm> {
     skills = getSkills();
     combineData();
     fetchData();
-    application =
-        Application(cv: '', status: 0, program_id: 0, user_id: 0, id: 0,program_name: '',user: _user);
+    application = Application(
+        cv: '',
+        status: 0,
+        program_id: 0,
+        user_id: 0,
+        id: 0,
+        program_name: '',
+        user: _user);
 
     super.initState();
   }
@@ -197,7 +203,7 @@ class _ApplicationFormState extends State<ApplicationForm> {
   }
 
   PlatformFile? cvFile;
-  late String cvFilePath;
+  late String cvFilePath = '';
 
   Future<void> _selectCVFile() async {
     FilePickerResult? result = await FilePicker.platform
@@ -239,6 +245,8 @@ class _ApplicationFormState extends State<ApplicationForm> {
         TextEditingController(text: _user.phone);
     TextEditingController locationController =
         TextEditingController(text: _user.location);
+    TextEditingController cvController =
+        TextEditingController(text: cvFilePath.split('/').last);
     print(_user.id);
     print(widget.programId);
     return SingleChildScrollView(
@@ -429,7 +437,17 @@ class _ApplicationFormState extends State<ApplicationForm> {
                           SizedBox(
                             width: getProportionateScreenWidth(200),
                             height: getProportionateScreenHeight(45),
-                            child: buildAttachCVFormField(),
+                            child: Expanded(
+                              child: TextFormField(
+                                controller: cvController,
+                                enabled: false,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
+                                  color: tPrimaryColor,
+                                ),
+                              ),
+                            ),
                           ),
                           SizedBox(
                             width: getProportionateScreenWidth(12),
