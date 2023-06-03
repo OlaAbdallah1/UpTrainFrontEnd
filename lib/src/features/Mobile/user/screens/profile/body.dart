@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/size_config.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/models/application.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/profile/MyApplications/applications_screen.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/profile/MyTasks/tasks_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/profile/myAccount/my_account.dart';
 import '../../../../../constants/colors.dart';
+import '../../../../../constants/connections.dart';
 import '../../../../../utils/theme/widget_themes/image_from_url.dart';
 import '../../../authentication/models/skills.dart';
 import '../../../authentication/models/user.dart';
 import 'profile_menu.dart';
+import 'package:http/http.dart' as http;
 
 class Body extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -64,11 +68,13 @@ class _BodyFormState extends State<Body> {
             "Your Profile",
             style: headingStyle,
           ),
-          // SizedBox(height: getProportionateScreenHeight(20)),
-          ClipOval(
-            child: ImageFromUrl(
-              imageUrl: _user.photo,
-            ),
+          SizedBox(
+            height: getProportionateScreenHeight(150),
+            width: getProportionateScreenWidth(150),
+            child: ClipOval(child: Image.asset('assets/images/${_user.photo}')),
+          ),
+          SizedBox(
+            height: getProportionateScreenHeight(15),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -100,7 +106,13 @@ class _BodyFormState extends State<Body> {
           ProfileMenu(
             text: "Tasks",
             icon: "assets/icons/tasks-list-svgrepo-com.svg",
-            press: () {},
+            press: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MyTasks(
+                        user: widget.user,
+                        student: widget.student,
+                      )));
+            },
           ),
           ProfileMenu(
             text: "Applications",
@@ -114,14 +126,18 @@ class _BodyFormState extends State<Body> {
             },
           ),
           ProfileMenu(
-            text: "Settings",
-            icon: "assets/icons/Settings.svg",
-            press: () {},
-          ),
-          ProfileMenu(
             text: "Log Out",
             icon: "assets/icons/Log out.svg",
-            press: () {},
+            press: ()  {
+              // final response =
+              //     await http.post(Uri.parse('http://$ip/api/logout/}'));
+
+              // print(response.body);
+              // if (response.statusCode == 201) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              // }
+            },
           ),
         ],
       ),

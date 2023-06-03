@@ -148,11 +148,7 @@ class _ProfilePicFormState extends State<ProfilePic> {
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          ClipOval(
-            child: ImageFromUrl(
-              imageUrl: widget.user.photo,
-            ),
-          ),
+          ClipOval(child: Image.asset('assets/images/${widget.user.photo}')),
           Positioned(
             right: -16,
             bottom: 0,

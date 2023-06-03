@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:uptrain/global.dart';
 import 'package:uptrain/src/constants/connections.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
@@ -17,7 +18,7 @@ import '../../../../../../utils/theme/widget_themes/button_theme.dart';
 class AddTaskForm extends StatefulWidget {
   int programId;
   int trainerId;
-  AddTaskForm({super.key, required this.programId,required this.trainerId});
+  AddTaskForm({super.key, required this.programId, required this.trainerId});
 
   @override
   State<AddTaskForm> createState() => _AddTaskFormState();
@@ -35,10 +36,10 @@ class _AddTaskFormState extends State<AddTaskForm> {
           },
           body: {
             'title': titledata,
-            'details': detailsdata,
+            // 'description': detailsdata,
             'deadline': _deadlineController.text,
             'program_id': widget.programId,
-            'trainer_id':widget.trainerId
+            'trainer_id': widget.trainerId
           });
       print(response.statusCode);
       print("final error : jaym " + response.body);
@@ -46,6 +47,37 @@ class _AddTaskFormState extends State<AddTaskForm> {
       print("error : ${error}");
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> sendTaskNotification(
+      String taTitle,
+      // String taDetails,
+      String taDeadline,
+      int program_id,
+      int trainer_id,
+      List<String> tokens) async {
+    const url = 'http://$ip/api/sendTaskNotification';
+
+    final body = {
+      'title': taTitle,
+      // 'details': taDetails,
+      'deadline': taDeadline,
+      'program_id': program_id,
+      'trainer_id': trainer_id,
+      'tokens': tokens,
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 201) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification');
     }
   }
 
@@ -163,6 +195,15 @@ class _AddTaskFormState extends State<AddTaskForm> {
                   press: () {
                     if (_formKey.currentState!.validate()) {
                       save();
+                      // sendTaskNotification(
+                      //     titledata,
+                      //     // detailsdata,
+                      //     _deadlineController.text,
+                      //     widget.programId,
+                      //     widget.trainerId, [
+                      //   token,
+                      //   'fBeuNmsfQDixGG_JIsrbVg:APA91bFBd29jhIOOsG9EcAlVl4emWLPg977rnxDsHjHhlwYFAJArFwIqGzZhYqV8aj21AxKihkj6hj3VtbJAU5BYNKLHwUW1IOmAIx6kN3cJ8qjbYMjLN5s4W5jAHjQwRb6oVEdbyRoL'
+                      // ]);
                     } else {
                       print("not oky");
                     }

@@ -16,7 +16,6 @@ import '../../../models/program.dart';
 import '../../../models/trainer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../Chat/chat_room_screen.dart';
 import '../../Program/Apply/application_screen.dart';
 import '../../Program/Program_Details/program_screen.dart';
 import '../../company/profile/company_profile_screen.dart';
@@ -62,8 +61,7 @@ class _TrainerDetailsState extends State<TrainerDetails> {
   }
 
   String chatRoomId(String user1, String user2) {
-    if (user1.toLowerCase().codeUnits[0] >
-        user2.toLowerCase().codeUnits[0]) {
+    if (user1.toLowerCase().codeUnits[0] > user2.toLowerCase().codeUnits[0]) {
       return "$user1 $user2";
     } else {
       return "$user2 $user1";
@@ -91,36 +89,6 @@ class _TrainerDetailsState extends State<TrainerDetails> {
                             "https://res.cloudinary.com/dsmn9brrg/image/upload/v1673876307/dngdfphruvhmu7cie95a.jpg"),
                       ),
                     ),
-                  Expanded(
-                      child:
-                    Text(
-                      '${widget.trainer.first_name} ${widget.trainer.last_name}',
-                      style: const TextStyle(
-                          color: tPrimaryColor,
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30),
-                    ),),
-                    Expanded(
-                      child: ListTile(
-                        onTap: () {
-                          String roomId = chatRoomId(
-                              '${widget.user['first_name']} ${widget.user['last_name']}',
-                              '${widget.trainer.first_name} ${widget.trainer.last_name}');
-
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => ChatRoom(
-                                chatRoomId: roomId,
-                                userMap: widget.trainer,
-                              ),
-                            ),
-                          );
-                        },
-                       
-                        trailing: Icon(Icons.chat, color: tPrimaryColor),
-                      ),
-                    )
                   ],
                 ),
                 SizedBox(

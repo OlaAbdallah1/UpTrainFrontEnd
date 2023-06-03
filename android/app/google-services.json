@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "978436407454",
-    "project_id": "notifications-bb3bf",
-    "storage_bucket": "notifications-bb3bf.appspot.com"
+    "project_number": "528714588207",
+    "project_id": "uptrainnotifications",
+    "storage_bucket": "uptrainnotifications.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:978436407454:android:69d4b2bb8ca0c6a0a4bb8f",
+        "mobilesdk_app_id": "1:528714588207:android:a3262c45660367049826da",
         "android_client_info": {
           "package_name": "com.example.uptrain"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "528714588207-2tboa1ihi6q06lndk5na4nmjg240u750.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDUUAON59bQRmXzALDJIJRJZAJ96pHr8mY"
+          "current_key": "AIzaSyA2VzHb4BUkC2xONXeBz5zo_gwitYwRuvw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "528714588207-2tboa1ihi6q06lndk5na4nmjg240u750.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

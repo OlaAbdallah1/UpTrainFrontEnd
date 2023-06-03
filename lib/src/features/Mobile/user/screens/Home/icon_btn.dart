@@ -7,16 +7,15 @@ import '../../../../../constants/size_config.dart';
 class IconBtnWithCounter extends StatelessWidget {
   const IconBtnWithCounter(
       {Key? key,
-      required this.svgSrc,
+      required this.icon,
       this.numOfitem = 0,
-      required this.press,
-      required this.color})
+      required this.press,})
       : super(key: key);
 
-  final String svgSrc;
+  final Icon icon;
   final int numOfitem;
   final GestureTapCallback press;
-  final Color color;
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +29,7 @@ class IconBtnWithCounter extends StatelessWidget {
             padding: EdgeInsets.all(getProportionateScreenWidth(12)),
             height: getProportionateScreenWidth(46),
             width: getProportionateScreenWidth(46),
-            child: SvgPicture.asset(
-              svgSrc,
-            ),
+            child: icon
           ),
           if (numOfitem != 0)
             Positioned(

@@ -35,7 +35,7 @@ class ProfileMenu extends StatelessWidget {
               width: 22,
             ),
             SizedBox(width: 20),
-            Expanded(child: Text(text,style: TextStyle(fontSize: 16,fontFamily: 'Ubuntu'),)),
+            Expanded(child: Text(text,style: TextStyle(fontSize: 16,fontFamily: 'Ubuntu',fontWeight: FontWeight.bold),)),
             Icon(Icons.arrow_forward_ios),
           ],
         ),

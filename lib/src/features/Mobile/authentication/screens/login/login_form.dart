@@ -58,24 +58,24 @@ class _LoginFormState extends State<LoginForm> {
 
         // //Students
         Map<String, dynamic> decodedUser = decoded['user'];
-        // Map<String, dynamic> decodedStudent = decoded['student'];
+        Map<String, dynamic> decodedStudent = decoded['student'];
 
-        // List<Skill> skills = [];
+        List<Skill> skills = [];
 
-        // for (var skillJson in decoded['skills']) {
-        //   Skill skill = Skill.fromJson(skillJson);
-        //   skills.add(skill);
-        // }
+        for (var skillJson in decoded['skills']) {
+          Skill skill = Skill.fromJson(skillJson);
+          skills.add(skill);
+        }
 
-        // if (decodedUser.isNotEmpty) {
-        //   Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => HomeScreen(
-        //       user: decodedUser,
-        //       student: decodedStudent,
-        //       skills: skills,
-        //     ),
-        //   ));
-        // }
+        if (decodedUser.isNotEmpty) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              user: decodedUser,
+              student: decodedStudent,
+              skills: skills,
+            ),
+          ));
+        }
 
         //   //Admin & Employees
         //   Map<String, dynamic> decodedEmployee = decoded['employee'];
@@ -90,16 +90,16 @@ class _LoginFormState extends State<LoginForm> {
         //       builder: (context) => EmployeeDashboardScreen(employee: decodedEmployee, user: decodedUser,),
         //     ));
         //   }
-        Map<String, dynamic> decodedTrainer = decoded['trainer'];
+        // Map<String, dynamic> decodedTrainer = decoded['trainer'];
 
-        if (decodedTrainer.isNotEmpty) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => TrainerDashboardScreen(
-              trainer: decodedTrainer,
-              user: decodedUser,
-            ),
-          ));
-        }
+        // if (decodedTrainer.isNotEmpty) {
+        //   Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (context) => TrainerDashboardScreen(
+        //       trainer: decodedTrainer,
+        //       user: decodedUser,
+        //     ),
+        //   ));
+        // }
         //   print(decoded['company']);
 
         //   Map<String, dynamic> decodedCompany = decoded['company'];

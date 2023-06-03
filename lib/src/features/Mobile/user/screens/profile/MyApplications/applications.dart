@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:uptrain/src/features/Mobile/user/models/application.dart';
+import 'package:uptrain/src/constants/colors.dart';
+import 'package:uptrain/src/constants/size_config.dart';
+import 'package:uptrain/src/features/Mobile/user/models/studentApplication.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/profile/MyApplications/program_app_details.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../../../constants/connections.dart';
 import 'dart:convert';
 
@@ -53,19 +57,21 @@ class _ApplicationsState extends State<Applications> {
 
   @override
   void dispose() {
-    fetchApplications();
+    futureApplications = fetchApplications();
     super.dispose();
   }
 
-  List<Application> studentApp = [];
-  Future<List<Application>> fetchApplications() async {
+  List<StudentApplication> studentApp = [];
+  late Future<List<StudentApplication>> futureApplications =
+      fetchApplications();
+  Future<List<StudentApplication>> fetchApplications() async {
     String url = "http://$ip/api/getStudentApplications/${_user.id}";
     final response = await http.get(Uri.parse(url));
     var responseData = json.decode(response.body);
 
     if (response.statusCode == 201) {
       for (Map application in responseData) {
-        studentApp.add(Application.fromJson(application));
+        studentApp.add(StudentApplication.fromJson(application));
       }
       return studentApp;
     } else {
@@ -73,14 +79,14 @@ class _ApplicationsState extends State<Applications> {
     }
   }
 
+  String status = '';
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 300,
         child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: FutureBuilder(
-              future: fetchApplications(),
+              future: futureApplications,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // Display a loading indicator while fetching the files
@@ -96,15 +102,70 @@ class _ApplicationsState extends State<Applications> {
                       scrollDirection: Axis.vertical,
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: TextButton(
-                            child: Text(snapshot.data![index].cv),
-                            onPressed: () async {
-                              await http.get(Uri.parse(
-                                  'http://$ip/api/downloadFile/${snapshot.data![index].id}'));
-                            },
-                          ),
-                          subtitle: Text(snapshot.data![index].program_name),
+                        if (snapshot.data![index].status == 0) {
+                          status = 'Waiting';
+                        } else if (snapshot.data![index].status == 2) {
+                          status = 'In Process';
+                        } else if (snapshot.data![index].status == 3) {
+                          status = 'Accepted';
+                        } else if (snapshot.data![index].status == 4) {
+                          status = 'Declined';
+                        }
+                        return Column(
+                          children: [
+                            Row(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                TextButton(
+                                    child: Text(snapshot.data![index].cv,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 18,
+                                            color: Colors.blue[900])),
+                                    onPressed: () async {
+                                      final String url =
+                                          'http://$ip/api/downloadFile/${snapshot.data![index].id}'; // Replace with your API endpoint
+
+                                      // ignore: deprecated_member_use
+                                      if (await canLaunch(url)) {
+                                        // ignore: deprecated_member_use
+                                        await launch(url);
+                                      }
+                                    }),
+                                    SizedBox(width: getProportionateScreenWidth(50),),
+                                    Text(status ,style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            color: Colors.blue[900])),
+                              ],
+                            ),
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  TextButton(
+                                      child: Text(
+                                          snapshot.data![index].program_name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 20,
+                                              color: tPrimaryColor)),
+                                      onPressed: () => {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProgramAppDetails(
+                                                            program_id: snapshot
+                                                                .data![index]
+                                                                .id)))
+                                          }),
+                                ]),
+                            Divider(
+                              color: tLightColor,
+                              thickness: 1,
+                            )
+                          ],
                         );
                       });
                 } else {
@@ -112,42 +173,6 @@ class _ApplicationsState extends State<Applications> {
                   return Center(child: Text('No application files found'));
                 }
               },
-            )
-            // future: fetchApplications(),
-            // builder: (context, snapshot) {
-            //   if (snapshot.hasData) {
-            //     print(studentApp);
-            //     if (snapshot.data!.isEmpty) {
-            //       return Padding(
-            //           padding: EdgeInsets.symmetric(
-            //               horizontal: getProportionateScreenWidth(2),
-            //               vertical: getProportionateScreenHeight(2)),
-            //           child: Container(
-            //               height: getProportionateScreenHeight(120),
-            //               child: Column(
-            //                   crossAxisAlignment: CrossAxisAlignment.start,
-            //                   mainAxisAlignment: MainAxisAlignment.center,
-            //                   children: [
-            //                     ListView.builder(
-            //                         shrinkWrap: true,
-            //                         physics:
-            //                             const NeverScrollableScrollPhysics(),
-            //                         scrollDirection: Axis.horizontal,
-            //                         itemCount: snapshot.data!.length,
-            //                         itemBuilder:
-            //                             (BuildContext context, int index) {
-            //                           return ListTile(
-            //                             title: Text(snapshot.data![index].cv),
-            //                           );
-            //                         })
-            //                   ])));
-            //     }
-            //     print("No Applications");
-            //   }
-            //   return const Center(
-            //     child: CircularProgressIndicator(),
-            //   );
-            // })
-            ));
+            )));
   }
 }

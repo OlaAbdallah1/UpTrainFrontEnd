@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
@@ -46,7 +47,7 @@ class _ProgramsState extends State<Programs> {
   }
 
   ProgramSkills programSkills = ProgramSkills(
-      program: Program(
+    program: Program(
         id: 0,
         // user_id: 0,
         title: '',
@@ -56,16 +57,23 @@ class _ProgramsState extends State<Programs> {
         end_date: '',
         branch: Branch(id: 0, name: ''),
         details: '',
-        trainer: Trainer(id:0, email: '', first_name: '', last_name: '', phone: '', photo: '', company: '')
-      ),
-      skills: [],
-      );
+        trainer: Trainer(
+            id: 0,
+            email: '',
+            first_name: '',
+            last_name: '',
+            phone: '',
+            photo: '',
+            company: '')),
+    skills: [],
+  );
+
 
   String _selectedBranch = 'All';
 
   Future<List<Branch>> fetchBranches() async {
     List<Branch> branchesDate = [
-      Branch(id:0, name: 'All'),
+      Branch(id: 0, name: 'All'),
     ];
 
     String url = "http://$ip/api/getbranches/${widget.student['field_id']}";
@@ -99,12 +107,11 @@ class _ProgramsState extends State<Programs> {
         for (Map program in responseData) {
           // print(program);
           programSkills = ProgramSkills(
-              program: Program.fromJson(program),
-              skills: (program['skill'] as List<dynamic>)
-                  .map((skillJson) => Skill.fromJson(skillJson))
-                  .toList(),
-            
-              );
+            program: Program.fromJson(program),
+            skills: (program['skill'] as List<dynamic>)
+                .map((skillJson) => Skill.fromJson(skillJson))
+                .toList(),
+          );
 
           programsData.add(programSkills);
         }
@@ -119,14 +126,21 @@ class _ProgramsState extends State<Programs> {
       // print(responseData);
 
       if (response.statusCode == 201) {
-        // final List<dynamic> data = json.decode(response.body);
-        // print(data);
+        for (Map program in responseData) {
+          // print(program);
+          programSkills = ProgramSkills(
+            program: Program.fromJson(program),
+            skills: (program['skill'] as List<dynamic>)
+                .map((skillJson) => Skill.fromJson(skillJson))
+                .toList(),
+          );
+
+          programsData.add(programSkills);
+        }
+
         return programsData
-            .where((element) => element.program.branch == _selectedBranch)
+            .where((element) => element.program.branch.name == _selectedBranch)
             .toList();
-        // .map((json) => Program.fromJson(json))
-        // .where((item) => item.branch == _selectedBranch)
-        // .toList();
       }
     }
     throw Exception('Failed to fetch items');
@@ -142,7 +156,6 @@ class _ProgramsState extends State<Programs> {
     if (response.statusCode == 201) {
       for (Map program in responseData) {
         // print(program);
-       
       }
       return programTrainer;
     } else {
@@ -236,13 +249,13 @@ class _ProgramsState extends State<Programs> {
             )
           ],
         ),
-        // SizedBox(
-        //     height: getProportionateScreenHeight(240),
-        //     child: Recommended(
-        //       user: widget.user,
-        //       student: widget.student,
-        //       skillsO: widget.skills,
-        //     )),
+        SizedBox(
+            height: getProportionateScreenHeight(240),
+            child: Recommended(
+              user: widget.user,
+              student: widget.student,
+              skillsO: widget.skills,
+            )),
         SizedBox(
           height: getProportionateScreenHeight(10),
         ),
@@ -414,7 +427,8 @@ class _ProgramsState extends State<Programs> {
                                                 subtitle: Text(snapshot
                                                     .data![index]
                                                     .program
-                                                    .branch.name)),
+                                                    .branch
+                                                    .name)),
                                             ListTile(
                                               title: Text(
                                                 "By ${snapshot.data![index].program.company}",
@@ -486,7 +500,10 @@ class _ProgramsState extends State<Programs> {
                                                             .data![index]
                                                             .program
                                                             .end_date,
-                                                        trainer:snapshot.data![index].program.trainer,
+                                                        trainer: snapshot
+                                                            .data![index]
+                                                            .program
+                                                            .trainer,
                                                         programSkills: snapshot
                                                             .data![index]
                                                             .skills,

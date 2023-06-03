@@ -1,16 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/skills.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/Home/Notifications/notifications.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/profile/MyTasks/tasks_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/profile/profile_screen.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../constants/colors.dart';
+import '../../../constants/connections.dart';
 import '../../../features/Mobile/authentication/models/user.dart';
+import '../../../features/Mobile/user/models/notification.dart';
 import '../../../features/Mobile/user/screens/Home/home_page_screen.dart';
 import '../../../features/Mobile/user/screens/Home/icon_btn.dart';
 import '/enums.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavBar extends StatefulWidget {
   late User user1;
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
@@ -24,6 +31,37 @@ class CustomBottomNavBar extends StatelessWidget {
       : super(key: key);
 
   final MenuState selectedMenu;
+
+  @override
+  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
+}
+
+class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    futureNotifications = getNotifications();
+  }
+
+  late List<UserNotification> notifications = [];
+  late Future<List<UserNotification>> futureNotifications;
+
+  Future<List<UserNotification>> getNotifications() async {
+    final response =
+        await http.get(Uri.parse('http://$ip/api/getNotifications'));
+    final data = json.decode(response.body);
+
+    List<UserNotification> fetchedNotifications = data
+        .map<UserNotification>((json) => UserNotification.fromJson(json))
+        .toList();
+
+    setState(() {
+      notifications = fetchedNotifications;
+    });
+
+    return fetchedNotifications;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +91,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 icon: Icon(
                   FontAwesomeIcons.home,
                   size: 25,
-                  color: MenuState.home == selectedMenu
+                  color: MenuState.home == widget.selectedMenu
                       ? tPrimaryColor
                       : inActiveIconColor,
                 ),
@@ -61,43 +99,52 @@ class CustomBottomNavBar extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => HomeScreen(
-                              user: user,
-                              student: student,
-                              skills: skills,
+                              user: widget.user,
+                              student: widget.student,
+                              skills: widget.skills,
                             ))),
               ),
               IconButton(
                 icon: Icon(
                   FontAwesomeIcons.tasks,
                   size: 25,
-                  color: MenuState.tasks == selectedMenu
+                  color: MenuState.tasks == widget.selectedMenu
                       ? tPrimaryColor
                       : inActiveIconColor,
                 ),
                 // icon: SvgPicture.asset("assets/icons/Task Icon.svg"),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyTasks(
+                              student: widget.student,
+                              user: widget.user,
+                            ))),
               ),
               IconBtnWithCounter(
-                svgSrc: "assets/icons/Chat bubble Icon.svg",
-                numOfitem: 1,
-                press: () {},
-                color: MenuState.tasks == selectedMenu
+                icon: Icon(
+                  FontAwesomeIcons.bell,
+                  size: 25,
+                  color: MenuState.notifications == widget.selectedMenu
                       ? tPrimaryColor
                       : inActiveIconColor,
-              ),
-              IconBtnWithCounter(
-                svgSrc: "assets/icons/Bell.svg",
-                numOfitem: 3,
-                press: () {},
-                color: MenuState.tasks == selectedMenu
-                      ? tPrimaryColor
-                      : inActiveIconColor,
+                ),
+                numOfitem: notifications.length,
+                press: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => NotificationsScreen(
+                            notifications: notifications,
+                            user: widget.user,
+                            student: widget.student,
+                            skills: widget.skills,
+                          )));
+                },
               ),
               IconButton(
                 icon: SvgPicture.asset(
                   "assets/icons/User Icon.svg",
                   width: 25,
-                  color: MenuState.profile == selectedMenu
+                  color: MenuState.profile == widget.selectedMenu
                       ? tPrimaryColor
                       : inActiveIconColor,
                 ),
@@ -105,9 +152,9 @@ class CustomBottomNavBar extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ProfileScreen(
-                              user: user,
-                              student: student,
-                              skills: skills,
+                              user: widget.user,
+                              student: widget.student,
+                              skills: widget.skills,
                             ))),
               ),
             ],

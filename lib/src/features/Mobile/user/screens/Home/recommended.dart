@@ -46,7 +46,7 @@ class _RecommendedState extends State<Recommended> {
         branch: Branch(id: 0, name: ''),
         details: '',
         trainer: Trainer(
-          id:0,
+            id: 0,
             email: '',
             first_name: '',
             last_name: '',
@@ -82,8 +82,8 @@ class _RecommendedState extends State<Recommended> {
 
   List skills = [];
   Future<List<ProgramSkills>> fetchProgramData() async {
-    final response = await http
-        .get(Uri.parse('http://$ip/api/getRecommendedPrograms/${_user.id}'));
+    final response = await http.get(
+        Uri.parse('http://$ip/api/getPrograms/${widget.student['field_id']}'));
 
     var responseData = json.decode(response.body);
     // print(responseData);
@@ -93,14 +93,12 @@ class _RecommendedState extends State<Recommended> {
       for (Map program in responseData) {
         print(program);
         programSkills = ProgramSkills(
-            program: Program.fromJson(program),
-            skills: (program['skill'] as List<dynamic>)
-                .map((skillJson) => Skill.fromJson(skillJson))
-                .toList(),
-           );
+          program: Program.fromJson(program),
+          skills: (program['skill'] as List<dynamic>)
+              .map((skillJson) => Skill.fromJson(skillJson))
+              .toList(),
+        );
 
-        // programSkills.skills =
-        // print(programSkills.skills);
         programsData.add(programSkills);
       }
       return programsData;
@@ -210,7 +208,8 @@ class _RecommendedState extends State<Recommended> {
                                               subtitle: Text(snapshot
                                                   .data![index]
                                                   .program
-                                                  .branch.name)),
+                                                  .branch
+                                                  .name)),
                                           ListTile(
                                             title: Text(
                                               "By ${snapshot.data![index].program.company}",
@@ -277,8 +276,7 @@ class _RecommendedState extends State<Recommended> {
                                                     trainer: snapshot
                                                         .data![index]
                                                         .program
-                                                        .trainer
-                                                        ,
+                                                        .trainer,
                                                     user: widget.user,
                                                     skillsO: widget.skillsO,
                                                     student: widget.student,

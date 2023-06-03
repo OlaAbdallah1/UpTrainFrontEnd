@@ -60,7 +60,7 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
     final data = json.decode(response.body);
     print(data[0]['user']);
     print(data[0]['skills']);
-    final user = data.map<User>((json) => User.fromJson(json[0]['user']));
+    final user = data.map<User>((json) => User.fromJson(json[0]['student']));
     final skills = (data[0]['skills'] as List<dynamic>)
         .map((json) => Skill.fromJson(json))
         .toList();

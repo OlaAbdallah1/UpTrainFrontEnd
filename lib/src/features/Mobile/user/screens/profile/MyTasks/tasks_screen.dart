@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:uptrain/src/features/Mobile/user/screens/profile/MyTasks/tasks.dart';
 
 import '../../../../../../constants/colors.dart';
 import '../../../../../../constants/size_config.dart';
 import '../../../../../../utils/theme/widget_themes/appbar.dart';
 import '../../../../authentication/models/skills.dart';
-import 'applications.dart';
 
-class MyApplications extends StatelessWidget {
+class MyTasks extends StatelessWidget {
   static String routeName = "/profile";
   final Map<String, dynamic> user;
   final Map<String, dynamic> student;
-  const MyApplications({
+
+  const MyTasks({
     super.key,
     required this.user,
     required this.student,
@@ -27,22 +28,24 @@ class MyApplications extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: getProportionateScreenHeight(10)),
-            Text(
-              "Applications",
-              style: TextStyle(
-                  color: tPrimaryColor,
-                  fontFamily: 'Ubuntu',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22),
-            ),
             SizedBox(height: getProportionateScreenHeight(20)),
-          
-            Applications(user: user, student: student),
-            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text('Your Tasks',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Ubuntu',
+                        fontSize: 25,
+                        color: tPrimaryColor))
+              ],
+            ),
+            Tasks(user: user, student: student),
           ],
         ),
       ),
+      
     );
   }
 }

@@ -1,50 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/colors.dart';
-import 'package:uptrain/src/constants/connections.dart';
 import 'package:uptrain/src/constants/size_config.dart';
-import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
 import 'package:uptrain/src/features/Mobile/user/models/studentApplication.dart';
-import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 import 'package:uptrain/src/features/Mobile/user/models/user_task.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/profile/MyApplications/program_app_details.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/profile/MyTasks/tasks_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uptrain/src/features/Mobile/user/models/task.dart';
+import '../../../../../../constants/connections.dart';
 import 'dart:convert';
 
-class TrainerTasks extends StatefulWidget {
+import '../../../../authentication/models/user.dart';
+
+class Tasks extends StatefulWidget {
   // Tasks({Key? key}) : super(key: key);
   final Map<String, dynamic> user;
-  final Map<String, dynamic> trainer;
+  final Map<String, dynamic> student;
 
-  const TrainerTasks({
+  const Tasks({
     super.key,
     required this.user,
-    required this.trainer,
+    required this.student,
   });
 
   @override
-  State<TrainerTasks> createState() => _TrainerTasksState();
+  State<Tasks> createState() => _TasksState();
 }
 
-class _TrainerTasksState extends State<TrainerTasks> {
+class _TasksState extends State<Tasks> {
   late Map<String, dynamic> combined = {};
 
-  late Trainer _trainer = Trainer(
+  late User _user = User(
       id: 0,
       email: '',
-      first_name: '',
-      last_name: '',
+      firstName: '',
+      lastName: '',
       phone: '',
+      field: '',
       photo: '',
-      company: '');
+      location: '',
+      field_id: 0,
+      location_id: 0);
 
   void combineData() {
     combined.addAll(widget.user);
-    combined.addAll(widget.trainer);
+    combined.addAll(widget.student);
     // print(combined);
-    _trainer = Trainer.fromJson(combined);
+    _user = User.fromJson(combined);
   }
 
   @override
@@ -60,20 +63,48 @@ class _TrainerTasksState extends State<TrainerTasks> {
     super.dispose();
   }
 
+  UserTasks userTasks = UserTasks(
+      user: User(
+          id: 0,
+          email: '',
+          firstName: '',
+          lastName: '',
+          phone: '',
+          photo: '',
+          location: '',
+          location_id: 0,
+          field_id: 0,
+          field: ''),
+      tasks: []);
+
+  List<UserTasks> studentTasks = [];
+
   List<Task> tasks = [];
   late Future<List<Task>> futureTasks = fetchTasks();
   Future<List<Task>> fetchTasks() async {
-    String url = "http://$ip/api/getTrainerTasks/${_trainer.id}";
+    String url = "http://$ip/api/getStudentTasks/${_user.id}";
     final response = await http.get(Uri.parse(url));
     var responseData = json.decode(response.body);
-    if (response.statusCode == 201) {}
+    if (response.statusCode == 201) {
+      userTasks = UserTasks(
+          tasks: (responseData['tasks'] as List<dynamic>)
+              .map((taskJson) => Task.fromJson(taskJson))
+              .toList(),
+          user: _user);
 
-    return tasks;
+      // print(userTasks.tasks);
+      for (Task task in userTasks.tasks) {
+        tasks.add(task);
+      }
+
+      return tasks;
+    }
+    return userTasks.tasks;
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_trainer.id);
+    print(_user.id);
     return Container(
         child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -212,15 +243,15 @@ class _TrainerTasksState extends State<TrainerTasks> {
                                   IconButton(
                                     onPressed: () async {
                                       final response = await http.post(Uri.parse(
-                                          'http://$ip/api/trainer/deleteTask/${snapshot.data![index].id}'));
+                                          'http://$ip/api/taskDone/${snapshot.data![index].id}'));
 
                                       print(response.body);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  TrainerTasks(
-                                                    trainer: widget.trainer,
+                                                  MyTasks(
+                                                    student: widget.student,
                                                     user: widget.user,
                                                   )));
 
@@ -228,9 +259,9 @@ class _TrainerTasksState extends State<TrainerTasks> {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(
-                                                  '${snapshot.data![index].title} Task ')));
+                                                  '${snapshot.data![index].title} Task Done')));
                                     },
-                                    icon: const Icon(Icons.delete),
+                                    icon: const Icon(Icons.task_rounded),
                                     color: Colors.green,
                                   ),
                                 ],
