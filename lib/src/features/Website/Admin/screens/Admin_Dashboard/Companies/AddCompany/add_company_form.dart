@@ -156,7 +156,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
             'phone': company.phone,
             'photo': company.photo,
             'description': company.description,
-            'location_id': company.location_id,
+            'location_id': '1',
             'webSite': company.website,
           });
 
@@ -213,7 +213,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
   }
 
   Company company = Company(
-        id: 0,
+      id: 0,
       email: '',
       phone: '',
       name: '',
@@ -379,8 +379,7 @@ class _AddCompanyFormState extends State<AddCompanyForm> {
                                 onChanged: (dynamic newLocation) {
                                   setState(() {
                                     locationChooseint = (newLocation.id);
-                                    company.location_id =
-                                        int.parse(newLocation.id);
+                                    company.location_id = newLocation.id;
                                     print(company.location_id);
                                   });
                                 },

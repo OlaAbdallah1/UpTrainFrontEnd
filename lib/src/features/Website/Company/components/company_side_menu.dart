@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/Program/Apply/application_screen.dart';
 import 'package:uptrain/src/features/Website/Company/Applications/applications_screen.dart';
+import 'package:uptrain/src/features/Website/Company/Profile/profile_screen.dart';
 import 'package:uptrain/src/features/Website/Company/Programs/programs_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
+import 'package:uptrain/src/features/Website/Company/company_dashboard.dart';
 
 import '../../../../constants/size_config.dart';
 import '../../../../utils/theme/widget_themes/image_from_url.dart';
@@ -28,7 +31,7 @@ class CompanySideMenu extends StatelessWidget {
                   radius: 40,
                   child: Image.asset('assets/images/${company.photo}'),
                 ),
-                 Text(
+                Text(
                   company.name,
                   style: TextStyle(
                       fontSize: 20,
@@ -63,21 +66,15 @@ class CompanySideMenu extends StatelessWidget {
             )),
           ),
           DrawerListTile(
-            title: "Notification",
-            svgSrc: "assets/icons/menu_notification.svg",
-            press: () {},
+            title: "Profile",
+            svgSrc: "assets/icons/menu_profile.svg",
+            press: () => {}
           ),
           DrawerListTile(
-              title: "Profile",
-              svgSrc: "assets/icons/menu_profile.svg",
-              press: () => {}
-              // Navigator.push(context,
-              // MaterialPageRoute(builder: (context) => CompanyProfilePage())),
-              ),
-          DrawerListTile(
-            title: "Settings",
-            svgSrc: "assets/icons/menu_setting.svg",
-            press: () {},
+            title: "Logout",
+            svgSrc: "assets/icons/Log out.svg",
+            press: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LoginScreen())),
           ),
         ],
       ),

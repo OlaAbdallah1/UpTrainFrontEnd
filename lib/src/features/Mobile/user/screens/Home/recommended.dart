@@ -82,8 +82,8 @@ class _RecommendedState extends State<Recommended> {
 
   List skills = [];
   Future<List<ProgramSkills>> fetchProgramData() async {
-    final response = await http.get(
-        Uri.parse('http://$ip/api/getPrograms/${widget.student['field_id']}'));
+    final response = await http
+        .get(Uri.parse('http://$ip/api/getRecommendedPrograms/${_user.id}'));
 
     var responseData = json.decode(response.body);
     // print(responseData);
@@ -101,9 +101,7 @@ class _RecommendedState extends State<Recommended> {
 
         programsData.add(programSkills);
       }
-      return programsData
-          .where((element) => element.program.branch.name == 'Back-End')
-          .toList();
+      return programsData;
     }
     return programsData;
   }

@@ -4,43 +4,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:uptrain/src/constants/connections.dart';
+import 'package:uptrain/src/features/Mobile/authentication/models/fieldsusers.dart';
 import 'package:uptrain/src/features/Website/Admin/models/Employee.dart';
 import 'package:uptrain/src/utils/theme/widget_themes/image_from_url.dart';
 
 import '../../../../constants/colors.dart';
 import '../../../Mobile/authentication/models/user.dart';
-import 'students_screen.dart';
+import 'training_students_screen.dart';
 
-class StudentsPage extends StatefulWidget {
+class TrainingStudentsPage extends StatefulWidget {
   Employee employee;
-  StudentsPage({super.key, required this.employee});
+  TrainingStudentsPage({super.key, required this.employee});
 
   @override
-  State<StudentsPage> createState() => _StudentsPageState();
+  State<TrainingStudentsPage> createState() => _TrainingStudentsPageState();
 }
 
-List<User> filteredStudents = [];
-List<User> students = [];
+List<FieldUsers> filteredStudents = [];
+List<FieldUsers> students = [];
 final controller = TextEditingController();
 
-class _StudentsPageState extends State<StudentsPage> {
-  Future<List<User>> fetchStudents() async {
-    final response = await http.get(
-        Uri.parse('http://$ip/api/getStudents/${widget.employee.field_id}'));
+class _TrainingStudentsPageState extends State<TrainingStudentsPage> {
+  Future<List<FieldUsers>> fetchStudents() async {
+    final response = await http.get(Uri.parse(
+        'http://$ip/api/getTrainingStudents/${widget.employee.field_id}'));
     final List<dynamic> data = json.decode(response.body);
     setState(() {
-      students = data.map((json) => User.fromJson(json)).toList();
+      students = data.map((json) => FieldUsers.fromJson(json)).toList();
     });
 
-    return data.map((json) => User.fromJson(json)).toList();
+    return data
+        .map((json) => FieldUsers.fromJson(json))
+        .where((element) => element.program != " ")
+        .toList();
   }
 
-  late Future<List<User>> _futureStudents = fetchStudents();
+  late Future<List<FieldUsers>> _futureStudents = fetchStudents();
 
   @override
   void initState() {
     super.initState();
-    // print(widget.employee.field_id);
     fetchStudents();
   }
 
@@ -78,7 +81,14 @@ class _StudentsPageState extends State<StudentsPage> {
                             fontSize: 18,
                             color: tPrimaryColor))),
                 DataColumn(
-                    label: Text('Field',
+                    label: Text('Company',
+                        style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: tPrimaryColor))),
+                DataColumn(
+                    label: Text('Program',
                         style: TextStyle(
                             fontFamily: 'Ubuntu',
                             fontWeight: FontWeight.bold,
@@ -111,7 +121,12 @@ class _StudentsPageState extends State<StudentsPage> {
                                   fontWeight: FontWeight.normal,
                                   fontSize: 16,
                                   color: Colors.black))),
-                          DataCell(Text(data.field,
+                          DataCell(Text(data.company,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16,
+                                  color: Colors.black))),
+                          DataCell(Text(data.program,
                               style: const TextStyle(
                                   fontWeight: FontWeight.normal,
                                   fontSize: 16,
@@ -134,7 +149,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          StudentsScreen(
+                                          TrainingStudentsScreen(
                                             employee: widget.employee,
                                           )));
                               // });

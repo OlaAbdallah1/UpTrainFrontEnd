@@ -8,6 +8,7 @@ import 'package:uptrain/src/features/Mobile/user/models/branch.dart';
 import 'package:uptrain/src/features/Mobile/user/models/company.dart';
 import 'package:uptrain/src/features/Mobile/user/models/program_skills.dart';
 import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
+import 'package:uptrain/src/features/Website/Company/Programs/programs_screen.dart';
 
 import '../../../../constants/colors.dart';
 import '../../../../constants/size_config.dart';
@@ -236,14 +237,68 @@ class _ProgramsPageState extends State<ProgramsPage> {
                                                       TextDecoration.underline),
                                             )),
                                         TextButton(
-                                            onPressed: () {},
+                                            onPressed: () async {
+                                              final response =
+                                                  await http.post(Uri.parse(
+                                                      'http://$ip/api/company/deleteProgram/${snapshot.data![index].program.id}'));
+                                              print(response.body);
+                                              if (response.statusCode == 201) {
+                                                print('deleter');
+
+                                                // ignore: use_build_context_synchronously
+                                                Navigator.pushReplacement(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            ProgramsScreen(
+                                                              company: widget
+                                                                  .company,
+                                                            )));
+                                                // ignore: use_build_context_synchronously
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      '${snapshot.data![index].program.title} Program deleted'),
+                                                ));
+                                              }
+                                            },
                                             child: Row(
                                               children: [
                                                 IconButton(
                                                   icon:
                                                       const Icon(Icons.delete),
                                                   color: tPrimaryColor,
-                                                  onPressed: () => {},
+                                                  onPressed: () async {
+                                                    final response = await http
+                                                        .post(Uri.parse(
+                                                            'http://$ip/api/company/deleteProgram/${snapshot.data![index].program.id}'));
+                                                    print(response.body);
+                                                    if (response.statusCode ==
+                                                        201) {
+                                                      print('deleter');
+
+                                                      // ignore: use_build_context_synchronously
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  ProgramsScreen(
+                                                                    company: widget
+                                                                        .company,
+                                                                  )));
+                                                      setState(() {});
+                                                      // ignore: use_build_context_synchronously
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                              SnackBar(
+                                                        content: Text(
+                                                            '${snapshot.data![index].program.title} Program deleted'),
+                                                      ));
+                                                    }
+                                                  },
                                                 ),
                                                 Text(
                                                   'Delete Program',

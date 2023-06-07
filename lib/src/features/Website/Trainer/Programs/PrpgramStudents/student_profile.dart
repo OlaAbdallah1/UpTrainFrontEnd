@@ -1,10 +1,10 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/user.dart';
 import 'package:uptrain/src/features/Mobile/authentication/models/user_skills.dart';
+import 'package:uptrain/src/features/Mobile/user/models/task.dart';
 import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 import 'package:uptrain/src/features/Website/Trainer/components/trainer_header.dart';
 import 'package:uptrain/src/features/Website/Trainer/components/trainer_sideMaenu.dart';
@@ -33,45 +33,63 @@ class StudentProfilePage extends StatefulWidget {
 class _StudentProfilePageState extends State<StudentProfilePage> {
   @override
   void initState() {
-    getUser();
+    futureUser = getUser();
+    tasks = getTasks();
     super.initState();
   }
 
-  UserSkills userSkills = UserSkills(
+  late UserSkills userSkills = UserSkills(
       user: User(
           id: 0,
           email: '',
           firstName: '',
           lastName: '',
           phone: '',
+          photo: '',
           location: '',
           location_id: 0,
-          field: '',
-          photo: '',
-          field_id: 0),
+          field_id: 0,
+          field: ''),
       skills: []);
 
-  Future<User> getUser() async {
+  late Future<UserSkills> futureUser = getUser();
+
+  Future<UserSkills> getUser() async {
     print(widget.student.id);
     print(widget.student.lastName);
 
     final response = await http
         .get(Uri.parse('http://$ip/api/getUser/${widget.student.id}'));
-    final data = json.decode(response.body);
-    print(data[0]['user']);
-    print(data[0]['skills']);
-    final user = data.map<User>((json) => User.fromJson(json[0]['student']));
-    final skills = (data[0]['skills'] as List<dynamic>)
-        .map((json) => Skill.fromJson(json))
-        .toList();
+    List<dynamic> decodedData = json.decode(response.body);
 
-    setState(() {
-      userSkills.user = user;
-      userSkills.skills = skills;
-      print(userSkills.user.email);
-    });
+    List<Map<String, dynamic>> data = decodedData.cast<Map<String, dynamic>>();
+    UserSkills userSkills = UserSkills(
+      user: User.fromJson(data[0]['student']),
+      skills: (data[0]['skills'] as List<dynamic>)
+          .cast<Map<String, dynamic>>()
+          .map<Skill>((json) => Skill.fromJson(json))
+          .toList(),
+    );
 
-    return user;
+    return userSkills;
+  }
+
+  List<Task> tasksData = [];
+  late Future<List<Task>> tasks;
+  Future<List<Task>> getTasks() async {
+    String url = "http://$ip/api/getDoneTask/${widget.student.id}";
+    final response = await http.get(Uri.parse(url));
+    var responseData = jsonDecode(response.body);
+    print(responseData);
+    if (response.statusCode == 201) {
+      for (Map task in responseData) {
+        tasksData.add(Task.fromJson(task));
+      }
+      print(tasksData.first);
+      return tasksData;
+    } else {
+      return tasksData;
+    }
   }
 
   @override
@@ -99,95 +117,121 @@ class _StudentProfilePageState extends State<StudentProfilePage> {
               flex: 5,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      THeader(
-                        trainer: widget.trainer,
-                      ),
-                      const SizedBox(height: 16.0),
-                      Row(
-                        children: [
-                          ClipOval(child: Image.asset(userSkills.user.photo)),
-                          const SizedBox(width: 16.0),
-                          Text(
-                            "${userSkills.user.firstName} ${userSkills.user.lastName}",
-                            style: const TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                                color: tPrimaryColor),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16.0),
-                      Card(
-                        elevation: 4.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const Text(
-                                'Personal Information',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              ListTile(
-                                leading: const Icon(Icons.email),
-                                title: const Text('Email'),
-                                subtitle: Text(userSkills.user.email),
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.phone),
-                                title: const Text('Phone'),
-                                subtitle: Text(userSkills.user.phone),
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.location_city),
-                                title: const Text('Location'),
-                                subtitle: Text(userSkills.user.location),
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.location_city),
-                                title: const Text('Skills'),
-                                subtitle: Text(userSkills.user.location),
-                              ),
-                              const Text("Skills",
-                                  style: TextStyle(
-                                      color: tPrimaryColor,
-                                      fontSize: 20,
-                                      fontFamily: 'Ubuntu',
-                                      decoration: TextDecoration.underline)),
-                              SizedBox(
-                                  height: getProportionateScreenHeight(10)),
-                              SizedBox(
-                                width: getProportionateScreenWidth(200),
-                                child: Wrap(
-                                  spacing: 6,
-                                  children: userSkills.skills
-                                      .map((skill) => Text(
-                                            skill.name,
-                                            style: TextStyle(
-                                                backgroundColor:
-                                                    Colors.grey[300],
-                                                color: Colors.black,
-                                                fontSize: 20),
-                                          ))
-                                      .toList(),
-                                ),
-                              ),
-                            ],
-                          ),
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        FutureBuilder<UserSkills?>(
+                          future: getUser(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                            } else if (snapshot.hasError) {
+                              return Text(
+                                  'Error: ${snapshot.error}'); // Show an error message if an error occurs
+                            } else if (snapshot.hasData) {
+                              UserSkills? userSkills = snapshot.data;
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // ... your existing code ...
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 100,
+                                        width: 100,
+                                        child: ClipOval(
+                                            child: Image.asset(
+                                                'assets/images/${userSkills!.user.photo}')),
+                                      ),
+                                      const SizedBox(width: 16.0),
+                                      Text(
+                                        "${userSkills?.user.firstName} ${userSkills?.user.lastName}",
+                                        style: const TextStyle(
+                                            fontSize: 24.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: tPrimaryColor),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                  // ... your existing code ...
+                                  ListTile(
+                                    leading: const Icon(Icons.email),
+                                    title: const Text('Email'),
+                                    subtitle:
+                                        Text(userSkills?.user.email ?? ''),
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.phone),
+                                    title: const Text('Phone'),
+                                    subtitle:
+                                        Text(userSkills?.user.phone ?? ''),
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.location_city),
+                                    title: const Text('Location'),
+                                    subtitle:
+                                        Text(userSkills?.user.location ?? ''),
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.settings),
+                                    title: const Text('Skills'),
+                                    subtitle: Wrap(
+                                      spacing: 4,
+                                      children: userSkills!.skills
+                                          .map((e) => Text(e.name))
+                                          // .map((skill) => Text(
+                                          //       (skill.name),
+                                          //     ))
+                                          .toList(),
+                                    ),
+                                  ),
+                                  // ... your existing code ...
+                                ],
+                              );
+                            } else {
+                              return Text(
+                                  'No data available'); // Show a message if no data is available
+                            }
+                          },
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                        SizedBox(
+                          height: 250,
+                          child: Expanded(
+                            child: FutureBuilder(
+                              future: tasks,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return SizedBox(
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: snapshot.data!.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return ListTile(
+                                              title: Text(
+                                                  snapshot.data![index].title),
+                                              subtitle: Text(snapshot
+                                                      .data![index]
+                                                      .description +
+                                                  ' for ' +
+                                                  snapshot.data![index]
+                                                      .program_name),
+                                            );
+                                          }));
+                                } else {
+                                  return Text(
+                                      'No data available'); // Show a message if no data is available
+                                }
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    )),
               ),
             ),
           ],

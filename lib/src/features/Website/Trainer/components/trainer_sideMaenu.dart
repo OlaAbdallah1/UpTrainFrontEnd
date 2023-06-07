@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
 import 'package:uptrain/src/features/Mobile/user/screens/Program/Apply/application_screen.dart';
 import 'package:uptrain/src/features/Website/Company/Applications/applications_screen.dart';
@@ -48,15 +49,8 @@ class TrainerSideMenu extends StatelessWidget {
               builder: (context) => TrainerProgramsScreen(trainer: trainer),
             )),
             ),
-          DrawerListTile(
-              title: "Students",
-            svgSrc: "assets/icons/User.svg",
-              press: () => {}),
-          DrawerListTile(
-            title: "Notification",
-            svgSrc: "assets/icons/menu_notification.svg",
-            press: () {},
-          ),
+         
+        
           DrawerListTile(
               title: "Profile",
               svgSrc: "assets/icons/menu_profile.svg",
@@ -64,10 +58,11 @@ class TrainerSideMenu extends StatelessWidget {
               // Navigator.push(context,
               // MaterialPageRoute(builder: (context) => TrainerProfilePage())),
               ),
-          DrawerListTile(
-            title: "Settings",
-            svgSrc: "assets/icons/menu_setting.svg",
-            press: () {},
+           DrawerListTile(
+            title: "Logout",
+            svgSrc: "assets/icons/Log out.svg",
+            press: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LoginScreen())),
           ),
         ],
       ),

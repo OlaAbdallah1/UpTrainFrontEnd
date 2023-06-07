@@ -70,7 +70,8 @@ class _ProfileCardState extends State<ProfileCard> {
       phone: '',
       photo: '',
       field: '',
-      location: '',field_id: 0);
+      location: '',
+      field_id: 0);
 
   Future<List<Employee>> getAdmin() async {
     final response = await http.get(Uri.parse('http://$ip/api/getAdmin'));
@@ -139,7 +140,11 @@ class _ProfileCardState extends State<ProfileCard> {
           PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == 'logout') {
-                  logout();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
+                } else {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -172,13 +177,10 @@ class _ProfileCardState extends State<ProfileCard> {
                     );
                     showMenu<String>(
                       context: context,
-                      position: RelativeRect.fromLTRB(
-                        position.left,
-                        position.top + 50,
-                        position.right,
-                        position.bottom 
-                             // Adjust the value to change the menu's vertical position
-                      ),
+                      position: RelativeRect.fromLTRB(position.left,
+                          position.top + 50, position.right, position.bottom
+                          // Adjust the value to change the menu's vertical position
+                          ),
                       items: <PopupMenuEntry<String>>[
                         PopupMenuItem<String>(
                           value: 'logout',

@@ -61,7 +61,7 @@ class _CompanyPageState extends State<CompanyPage> {
   @override
   void initState() {
     super.initState();
-    _futureCompanies = fetchCompanies(controller.text);
+    fetchCompanies(controller.text);
   }
 
   @override
@@ -224,18 +224,29 @@ class _CompanyPageState extends State<CompanyPage> {
                                 final response = await http.delete(Uri.parse(
                                     'http://$ip/api/admin/deleteCompany/${data.name}'));
                                 print(response.body);
-                                // ignore: use_build_context_synchronously
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            CompaniesScreen()));
+                                if (response.statusCode == 201) {
+                                  // ignore: use_build_context_synchronously
 
-                                // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            '${data.name} Company deleted')));
+                                  setState(() {});
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                          content: Row(
+                                    children: [
+                                      Text('${data.name} Company deleted'),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        CompaniesScreen()));
+                                          },
+                                          child: Text('Companies'))
+                                    ],
+                                  )));
+                                }
                               },
                             ))),
                       ],

@@ -39,7 +39,7 @@ class _FieldPageState extends State<FieldPage> {
     }
   }
 
-void filterFields(String query) {
+  void filterFields(String query) {
     setState(() {
       // Filter the companies based on the search query
       filteredFields = fields.where((field) {
@@ -48,7 +48,6 @@ void filterFields(String query) {
       }).toList();
     });
   }
-
 
   late Future<List<Field>> _futureFields = fetchFields(controller.text);
 
@@ -63,88 +62,88 @@ void filterFields(String query) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
-       mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(alignment:AlignmentDirectional.centerStart, width: 250, child: fieldsSearchField()),
+          Container(
+              alignment: AlignmentDirectional.centerStart,
+              width: 250,
+              child: fieldsSearchField()),
+          DataTable(
+            // border: TableBorder.all(width: 1.5),
+            columns: const [
+              DataColumn(
+                  label: Text(
+                'Field',
+                style: TextStyle(
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: tPrimaryColor),
+              )),
+              DataColumn(
+                  label: Text(
+                'Collage',
+                style: TextStyle(
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: tPrimaryColor),
+              )),
+              DataColumn(
+                  label: Text(
+                'Supervisor',
+                style: TextStyle(
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: tPrimaryColor),
+              )),
+              DataColumn(label: Text(' ')),
+            ],
+            rows: filteredFields
+                .map((data) => DataRow(
+                      cells: [
+                        DataCell(Text('${data.name} ',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16,
+                                color: Colors.black))),
+                        DataCell(Text('${data.collage} ',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16,
+                                color: Colors.black))),
+                        DataCell(TextButton(
+                            onPressed: () {},
+                            child: Text('${data.employee}',
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    color: Colors.blue)))),
+                        DataCell(IconButton(
+                          icon: const Icon(Icons.delete),
+                          color: tPrimaryColor,
+                          onPressed: () async {
+                            final response = await http.delete(Uri.parse(
+                                'http://$ip/api/admin/deleteField/${data.id}'));
+                            print(response.body);
+                            // ignore: use_build_context_synchronously
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const FieldsScreen()));
 
-         DataTable(
-                  // border: TableBorder.all(width: 1.5),
-                  columns: const [
-                    DataColumn(
-                        label: Text(
-                      'Field',
-                      style: TextStyle(
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: tPrimaryColor),
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'Collage',
-                      style: TextStyle(
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: tPrimaryColor),
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'Supervisor',
-                      style: TextStyle(
-                          fontFamily: 'Ubuntu',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: tPrimaryColor),
-                    )),
-                    DataColumn(label: Text(' ')),
-                  ],
-                  rows: filteredFields
-                      .map((data) => DataRow(
-                            cells: [
-                              DataCell(Text('${data.name} ',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 16,
-                                      color: Colors.black))),
-                              DataCell(Text('${data.collage} ',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 16,
-                                      color: Colors.black))),
-                              DataCell(TextButton(
-                                  onPressed: () {},
-                                  child: const Text('Select Supervisor',
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 16,
-                                          color: Colors.blue)))),
-                              DataCell(IconButton(
-                                icon: const Icon(Icons.delete),
-                                color: tPrimaryColor,
-                                onPressed: () async {
-                                  final response = await http.delete(Uri.parse(
-                                      'http://$ip/api/admin/deleteField/${data.id}'));
-                                  print(response.body);
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              const FieldsScreen()));
-
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              '${data.name} Field deleted')));
-                                },
-                              )),
-                            ],
-                          ))
-                      .toList(),
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('${data.name} Field deleted')));
+                          },
+                        )),
+                      ],
+                    ))
+                .toList(),
           )
         ],
       ),

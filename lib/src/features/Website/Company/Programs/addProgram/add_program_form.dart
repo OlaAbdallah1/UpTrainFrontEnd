@@ -18,6 +18,8 @@ import 'package:uptrain/src/features/Mobile/user/models/company.dart';
 import 'package:uptrain/src/features/Mobile/user/models/program.dart';
 import 'package:uptrain/src/features/Mobile/user/models/program_skills.dart';
 import 'package:uptrain/src/features/Mobile/user/models/trainer.dart';
+import 'package:uptrain/src/features/Website/Company/Programs/programs.dart';
+import 'package:uptrain/src/features/Website/Company/Programs/programs_screen.dart';
 
 import '../../../../../constants/colors.dart';
 import '../../../../../constants/size_config.dart';
@@ -35,113 +37,10 @@ class AddProgramForm extends StatefulWidget {
 class _AddProgramFormState extends State<AddProgramForm> {
   final _formKey = GlobalKey<FormState>();
 
-  // File? image = File('');
-  // String imageUrl = '';
-
-  // Future pickImage(ImageSource source) async {
-  //   try {
-  //     final img = await ImagePicker().pickImage(source: source);
-  //     if (img == null) return;
-  //     final imgTemp = File(img.path);
-
-  //     setState(() {
-  //       image = imgTemp;
-  //     });
-  //   } on PlatformException catch (e) {
-  //     print('Failed to pick image: $e');
-  //   }
-  // }
-
-  // void myAlert() {
-  //   showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           shape:
-  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-  //           title: const Text('Please choose your profile photo'),
-  //           content: SizedBox(
-  //             height: MediaQuery.of(context).size.height / 6,
-  //             child: Column(
-  //               children: [
-  //                 ElevatedButton(
-  //                   style: ElevatedButton.styleFrom(
-  //                     backgroundColor: tPrimaryColor,
-  //                   ),
-  //                   onPressed: () {
-  //                     pickImage(ImageSource.gallery);
-  //                     Navigator.pop(context);
-  //                   },
-  //                   child: Row(
-  //                     children: [
-  //                       const Icon(Icons.image),
-  //                       Text(
-  //                         ' From Gallery',
-  //                         style: TextStyle(
-  //                           fontSize: getProportionateScreenWidth(18),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //                 ElevatedButton(
-  //                   style: ElevatedButton.styleFrom(
-  //                     backgroundColor: tPrimaryColor,
-  //                   ),
-  //                   //if Program click this button. Program can upload image from camera
-  //                   onPressed: () {
-  //                     pickImage(ImageSource.camera);
-  //                     Navigator.pop(context);
-  //                   },
-  //                   child: Row(
-  //                     children: [
-  //                       const Icon(Icons.camera),
-  //                       Text(
-  //                         ' From Camera',
-  //                         style: TextStyle(
-  //                           fontSize: getProportionateScreenWidth(18),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-            // ),
-          // );
-        // });
-
-  
-
   void save() async {
     try {
-      // if (image != null) {
-      //   final cloudinary = CloudinaryPublic('dsmn9brrg', 'ul29zf8l');
-
-      //   CloudinaryResponse resImage = await cloudinary.uploadFile(
-      //     CloudinaryFile.fromFile(image!.path,
-      //         folder: programSkills.program.title),
-      //   );
-      //   String basename = path.basename(image!.path);
-
-      //   setState(() {
-      //     imageUrl = resImage.secureUrl;
-      //     programSkills.program.image = imageUrl;
-      //     print(imageUrl);
-      //     print(programSkills.program.image);
-      //   });
-      // } else {
-      //   setState(() {
-      //     programSkills.program.image =
-      //         path.basename("assets/images/profile.png");
-      //     print(programSkills.program.image);
-
-      //     // const Image(image: AssetImage("assets/images/profile.png"))
-      //     //     as String;
-      //   });
-      //   print("Picture ${programSkills.program.image}");
-      // }
-      var response = await http.post(Uri.parse("http://$ip/api/company/addProgram"),
+      var response = await http.post(
+          Uri.parse("http://$ip/api/company/addProgram"),
           headers: <String, String>{
             'Context-Type': 'application/json;charset=UTF-8'
           },
@@ -151,11 +50,12 @@ class _AddProgramFormState extends State<AddProgramForm> {
             'end_date': _selectedDateRange?.end.toString().split(' ')[0],
             'photo': widget.company.photo,
             'details': programSkills.program.details,
-            'branch_id': programSkills.program.branch.id,
-            'company_id': widget.company.id,
-            'trainer_id': programSkills.program.trainer.id,
+            'branch_id': programSkills.program.branch.id.toString(),
+            'company_id': widget.company.id.toString(),
+            'trainer_id': programSkills.program.trainer.id.toString(),
             'skills': selectedSkillsId.join(',')
           });
+
       print(response.statusCode);
       // print(response.headers);
 
@@ -163,6 +63,43 @@ class _AddProgramFormState extends State<AddProgramForm> {
 
       print(json.encode(programSkills.program.toJson()));
       print(response.statusCode);
+      if (response.statusCode == 201) {
+        // ignore: use_build_context_synchronously
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Company'),
+            content: Text("${programSkills.program.title} Added Successfully"),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: tPrimaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                ),
+                onPressed: () => {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => ProgramsScreen(
+                                company: widget.company,
+                              ))),
+
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          '${programSkills.program.title} Program Added'))),
+                },
+                child: Text('Ok',
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(8),
+                      color: Colors.white,
+                    )),
+              ),
+            ],
+          ),
+        );
+      }
       // ignore: use_build_context_synchronously
     } catch (error) {
       print("error : ${error}");
@@ -334,44 +271,6 @@ class _AddProgramFormState extends State<AddProgramForm> {
             SizedBox(
               height: getProportionateScreenHeight(15),
             ),
-            SizedBox(
-              height: 115,
-              width: 115,
-              child: Stack(
-                clipBehavior: Clip.none,
-                fit: StackFit.expand,
-                children: [
-                  // image != null
-                  //     ? CircleAvatar(
-                  //         backgroundImage: FileImage(image!), radius: 200.0)
-                  //     : const CircleAvatar(
-                  //         backgroundImage:
-                  //             AssetImage("assets/images/profile.png"),
-                  //       ),
-                  Positioned(
-                    right: -16,
-                    bottom: 0,
-                    child: SizedBox(
-                      height: 46,
-                      width: 46,
-                      child: TextButton(
-                        onPressed: () {
-                          // myAlert();
-                        },
-                        style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                            side: const BorderSide(color: Colors.white),
-                          ),
-                          backgroundColor: Colors.white,
-                        ),
-                        child: SvgPicture.asset("assets/icons/Camera Icon.svg"),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,10 +347,14 @@ class _AddProgramFormState extends State<AddProgramForm> {
                                   // trainerLastName = '${trainer.last_name}';
                                   // program.trainer.last_name = trainerLastName;
                                   // program.trainer.first_name = trainerFirstName;
+                                  programSkills.program.trainer.id =
+                                      trainer.id.toInt();
                                   programSkills.program.trainer.email =
                                       '${trainer.email}';
                                   // print("trainer selected");
-                                  // print(program.trainer);
+                                  print(trainer.id);
+                                  print('trainer');
+                                  print(programSkills.program.trainer.id);
                                 });
                               },
                               valueTransformer: (dynamic value) => value.id,
@@ -488,8 +391,10 @@ class _AddProgramFormState extends State<AddProgramForm> {
                               ),
                               onChanged: (dynamic branch) {
                                 setState(() {
-                                  programSkills.program.branch.id = branch.id;
-
+                                  programSkills.program.branch.id =
+                                      branch.id.toInt();
+                                  print('branch');
+                                  print(branch.id);
                                   print(programSkills.program.branch.name);
                                   print(programSkills.program.branch.id);
                                 });
@@ -612,13 +517,6 @@ class _AddProgramFormState extends State<AddProgramForm> {
                   press: () {
                     if (_formKey.currentState!.validate()) {
                       save();
-                      print(
-                          "${programSkills.program.title} added successfully");
-                      print("${programSkills.program.company}");
-                      print("${widget.company.id}");
-                      print("${programSkills.program.branch.id}");
-                      print("${programSkills.program.trainer.email}");
-                      print("${programSkills.skills.join(',')}");
                     } else {
                       print("not oky");
                     }

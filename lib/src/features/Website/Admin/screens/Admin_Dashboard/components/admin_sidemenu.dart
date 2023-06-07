@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:uptrain/src/constants/colors.dart';
 import 'package:uptrain/src/constants/text.dart';
+import 'package:uptrain/src/features/Mobile/authentication/screens/login/login_screen.dart';
 import 'package:uptrain/src/features/Website/Admin/screens/Admin_Dashboard/Fields/fields_screen.dart';
 import 'package:uptrain/src/features/Website/Admin/screens/Admin_Dashboard/dashboard_screen.dart';
 
@@ -10,12 +11,10 @@ import '../AdminProfile/profile_screen.dart';
 import '../Companies/companies_screen.dart';
 import '../Employees/employees_screen.dart';
 
-
-
 class AdminSideMenu extends StatelessWidget {
-    // Map<String, dynamic> admin;
+  // Map<String, dynamic> admin;
 
-   AdminSideMenu({
+  AdminSideMenu({
     Key? key,
 // required this.admin
   }) : super(key: key);
@@ -50,7 +49,6 @@ class AdminSideMenu extends StatelessWidget {
             press: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => DashboardScreen())),
           ),
-         
           DrawerListTile(
             title: "Companies",
             svgSrc: "assets/icons/menu_store.svg",
@@ -69,19 +67,18 @@ class AdminSideMenu extends StatelessWidget {
             press: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => FieldsScreen())),
           ),
-        
-          DrawerListTile(
-            title: "Notification",
-            svgSrc: "assets/icons/menu_notification.svg",
-            press: () {},
-          ),
           DrawerListTile(
             title: "Profile",
             svgSrc: "assets/icons/menu_profile.svg",
             press: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => AdminProfilePage())),
           ),
-         
+          DrawerListTile(
+            title: "Logout",
+            svgSrc: "assets/icons/Log out.svg",
+            press: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LoginScreen())),
+          ),
         ],
       ),
     );

@@ -35,12 +35,13 @@ class _AddTaskFormState extends State<AddTaskForm> {
             'Context-Type': 'application/json;charset=UTF-8'
           },
           body: {
-            'title': titledata,
-            // 'description': detailsdata,
+            'title': titleController.text,
+            'description': detailsController.text,
             'deadline': _deadlineController.text,
-            'program_id': widget.programId,
-            'trainer_id': widget.trainerId
+            'program_id': widget.programId.toString(),
+            'trainer_id': widget.trainerId.toString()
           });
+
       print(response.statusCode);
       print("final error : jaym " + response.body);
     } catch (error) {
@@ -92,6 +93,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
   String detailsdata = '';
 
   TextEditingController _deadlineController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController detailsController = TextEditingController();
 
   Future<void> _selectDateTime(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -195,15 +198,28 @@ class _AddTaskFormState extends State<AddTaskForm> {
                   press: () {
                     if (_formKey.currentState!.validate()) {
                       save();
-                      // sendTaskNotification(
-                      //     titledata,
-                      //     // detailsdata,
-                      //     _deadlineController.text,
-                      //     widget.programId,
-                      //     widget.trainerId, [
-                      //   token,
-                      //   'fBeuNmsfQDixGG_JIsrbVg:APA91bFBd29jhIOOsG9EcAlVl4emWLPg977rnxDsHjHhlwYFAJArFwIqGzZhYqV8aj21AxKihkj6hj3VtbJAU5BYNKLHwUW1IOmAIx6kN3cJ8qjbYMjLN5s4W5jAHjQwRb6oVEdbyRoL'
-                      // ]);
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Task'),
+                          content: Text("Task Added Successfully"),
+                          actions: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: tPrimaryColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                              ),
+                              onPressed: () => {Navigator.pop(context)},
+                              child: Text('Ok',
+                                  style: TextStyle(
+                                    fontSize: getProportionateScreenWidth(8),
+                                    color: Colors.white,
+                                  )),
+                            ),
+                          ],
+                        ),
+                      );
                     } else {
                       print("not oky");
                     }
@@ -217,6 +233,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   TextFormField buildTitleFormField() {
     return TextFormField(
+      controller: titleController,
       validator: (Title) {
         if (Title == null || Title.isEmpty) {
           setState(() {
@@ -236,7 +253,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
         if (value.isNotEmpty) {
           setState(() {
             errorImg = 'assets/icons/white.svg';
-            titledata = value;
+            titledata = '';
           });
         }
       },
@@ -259,6 +276,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   TextFormField buildDetailsFormField() {
     return TextFormField(
+      controller: detailsController,
+
       maxLines: 3,
       validator: (Details) {
         if (Details == null || Details.isEmpty) {
@@ -279,7 +298,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
         if (value.isNotEmpty) {
           setState(() {
             errorImg = 'assets/icons/white.svg';
-            detailsdata = value;
+            detailsdata = '';
           });
         }
       },
